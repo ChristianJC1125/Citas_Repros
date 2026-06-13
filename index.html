@@ -1,0 +1,882 @@
+<DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Supervisor - CRM de Citas y Seguimiento</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1600px;
+            margin: auto;
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-top: 0;
+            color: #0a2540;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #d4af37;
+            color: #0a2540;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .filtros {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            align-items: flex-end;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 16px;
+        }
+        .filtros label {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+        .filtros input, .filtros select {
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+        .grupo-busqueda {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .grupo-busqueda input {
+            min-width: 200px;
+        }
+        button {
+            background: #0a2540;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #d4af37;
+            color: #0a2540;
+        }
+        .btn-excel {
+            background: #1b5e3a;
+        }
+        .btn-excel:hover {
+            background: #0f4a2d;
+            color: white;
+        }
+        .btn-estadisticas {
+            background: #8b5cf6;
+        }
+        .btn-estadisticas:hover {
+            background: #7c3aed;
+        }
+        .btn-buscar {
+            background: #2563eb;
+        }
+        .btn-limpiar-busqueda {
+            background: #64748b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            display: block;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 10px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #0a2540;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .asistencia-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .btn-llego { background: #2e7d32; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-no-llego { background: #c62828; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-cita { background: #f59e0b; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-cita-nuevo { background: #8b5cf6; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-contesto { background: #06b6d4; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-no-contesto { background: #7f8c8d; font-size: 0.75rem; padding: 5px 10px; }
+        .asistencia-estado {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.75rem;
+        }
+        .estado-llego { background: #c8e6c9; color: #1b5e20; }
+        .estado-no-llego { background: #ffcdd2; color: #b71c1c; }
+        .estado-cita { background: #fff3e0; color: #e65100; }
+        .estado-cita-nuevo { background: #ede9fe; color: #5b21b6; }
+        .estado-contesto { background: #cffafe; color: #0e7490; }
+        .estado-no-contesto { background: #e0e0e0; color: #424242; }
+        .sin-registro { color: #64748b; font-style: italic; }
+        .comentario-textarea {
+            width: 250px;
+            min-width: 200px;
+            font-size: 0.8rem;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            resize: vertical;
+            font-family: inherit;
+            background: #fefce8;
+        }
+        .comentario-textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: white;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+        .resumen {
+            background: linear-gradient(135deg, #e8f0fe 0%, #f1f5f9 100%);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: bold;
+            border-left: 4px solid #d4af37;
+        }
+        .resumen span {
+            margin-right: 20px;
+        }
+
+        /* Modal de estadísticas */
+        .modal-estadisticas {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+        }
+        .modal-estadisticas-contenido {
+            background: white;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            color: #0a2540;
+        }
+        .cerrar-modal-estadisticas {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .cerrar-modal-estadisticas:hover {
+            color: #c62828;
+        }
+        .password-input {
+            padding: 12px;
+            width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+        .tabla-estadisticas {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabla-estadisticas th {
+            background: #0a2540;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        .tabla-estadisticas td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tabla-estadisticas tr:hover {
+            background: #f8fafc;
+        }
+        .reprobo {
+            background: #ffebee;
+            color: #c62828;
+            font-weight: bold;
+        }
+        .sin-marcar {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .btn-cerrar-modal {
+            background: #475569;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 1200px) {
+            .comentario-textarea { width: 180px; min-width: 150px; }
+            th, td { font-size: 0.7rem; padding: 6px; }
+        }
+        @media (max-width: 800px) {
+            .comentario-textarea { width: 140px; min-width: 120px; }
+        }
+    </style>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>
+        📋 CRM de Citas - Seguimiento por Supervisor
+        <span class="badge">Conectado a Premanifiesto</span>
+    </h1>
+
+    <div class="filtros">
+        <div>
+            <label>📅 Fecha del evento:</label>
+            <input type="date" id="fechaEvento" required>
+        </div>
+        <div>
+            <label>👩‍💼 Supervisor:</label>
+            <select id="filtroSupervisor">
+                <option value="">Todos</option>
+            </select>
+        </div>
+        <div>
+            <label>🔍 Buscar por nombre o teléfono:</label>
+            <div class="grupo-busqueda">
+                <input type="text" id="buscarInput" placeholder="Ej: Juan o 5512345678">
+                <button id="buscarBtn" class="btn-buscar">🔍 Buscar</button>
+                <button id="limpiarBusquedaBtn" class="btn-limpiar-busqueda">✖️ Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="filtros" style="margin-top: -10px;">
+        <button id="cargarCitasBtn">🔍 Cargar citas</button>
+        <button id="recargarBtn" style="background:#475569;">🔄 Recargar</button>
+        <button id="descargarExcelBtn" class="btn-excel">📊 Descargar Excel</button>
+        <button id="btnEstadisticasSup" class="btn-estadisticas">📈 Estadísticas de Supervisores</button>
+    </div>
+
+    <div id="resumenContainer" class="resumen" style="display: none;"></div>
+
+    <div style="overflow-x: auto;">
+        <table id="tablaCitas">
+            <thead>
+                <tr>
+                    <th style="min-width: 60px;">N° Cita</th>
+                    <th style="min-width: 180px;">Cliente</th>
+                    <th style="min-width: 100px;">Teléfono</th>
+                    <th style="min-width: 70px;">Hora</th>
+                    <th style="min-width: 140px;">Hotel</th>
+                    <th style="min-width: 120px;">Supervisor</th>
+                    <th style="min-width: 120px;">Operador</th>
+                    <th style="min-width: 100px;">Asistencia</th>
+                    <th style="min-width: 130px;">Estado Llamada</th>
+                    <th style="min-width: 260px;">Comentarios</th>
+                    <th style="min-width: 380px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="citasBody">
+                <tr><td colspan="11" style="text-align:center;">Selecciona una fecha y presiona "Cargar citas"</td</tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footer">
+        ✅ Registro en tiempo real | Los cambios se guardan automáticamente en Firebase<br>
+        🎯 <strong>Leyenda:</strong> 📅 Cita (agendó) | 🔄 Cita de nuevo (reagendó) | 📞 Contestó | 📵 No contestó
+    </div>
+</div>
+
+<!-- Modal de Estadísticas de Supervisores -->
+<div id="modalEstadisticas" class="modal-estadisticas">
+    <div class="modal-estadisticas-contenido">
+        <div class="modal-header">
+            <h2>📊 Estadísticas de Supervisores</h2>
+            <span class="cerrar-modal-estadisticas">&times;</span>
+        </div>
+        <div id="contenidoEstadisticas">
+            <div style="text-align: center; padding: 20px;">
+                <label>🔐 Ingrese la contraseña para acceder:</label>
+                <input type="password" id="passwordEstadisticas" class="password-input" placeholder="Contraseña">
+                <button id="verificarPasswordEstadisticas" style="background: #0a2540;">Verificar Acceso</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyASUJrQNMW80DDMV8gFzjTYPUd8x3B5YDk",
+        authDomain: "invitacionpremanfiesto.firebaseapp.com",
+        databaseURL: "https://invitacionpremanfiesto-default-rtdb.firebaseio.com",
+        projectId: "invitacionpremanfiesto",
+        storageBucket: "invitacionpremanfiesto.firebasestorage.app",
+        messagingSenderId: "362764197269",
+        appId: "1:362764197269:web:058b028dcc53d299df6a9c"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let citasOriginales = [];
+    let citasFiltradasActuales = [];
+    let fechaSeleccionada = '';
+    let supervisorSeleccionado = '';
+    
+    const PASSWORD_ESTADISTICAS = "supervisor2024"; // Cambia esta contraseña si quieres
+
+    // Cargar supervisoras
+    function cargarSupervisorasEnFiltro() {
+        database.ref('supervisoras').once('value').then(snapshot => {
+            const data = snapshot.val();
+            let supervisoras = data && Array.isArray(data) ? data : ['ABRAHAM ROLDAN','LUIS COLULA', 'MACARENA ZAMORA', 'THALIA PINEDA', 'YARET NAJERA', 'MISAEL NAVARRO'];
+            const select = document.getElementById('filtroSupervisor');
+            select.innerHTML = '<option value="">Todos</option>';
+            supervisoras.forEach(sup => {
+                const option = document.createElement('option');
+                option.value = sup;
+                option.textContent = sup;
+                select.appendChild(option);
+            });
+        }).catch(err => console.error(err));
+    }
+
+    // Mostrar citas en tabla
+    function mostrarCitas(citas) {
+        const tbody = document.getElementById('citasBody');
+        if (!citas.length) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">📭 No hay citas para mostrar</td></tr>';
+            document.getElementById('resumenContainer').style.display = 'none';
+            return;
+        }
+
+        tbody.innerHTML = '';
+        let llegaron = 0, noLlegaron = 0, citasAgendadas = 0, citasDeNuevo = 0, contestaron = 0, noContesto = 0;
+
+        citas.forEach(cita => {
+            const tr = document.createElement('tr');
+            
+            tr.appendChild(crearCelda(cita.citaPorDia || cita.cita || '-'));
+            tr.appendChild(crearCelda(cita.nombre || 'Sin nombre', 35));
+            tr.appendChild(crearCelda(cita.telefono || '-'));
+            tr.appendChild(crearCelda(cita.hora || '-'));
+            tr.appendChild(crearCelda(cita.hotel || '-', 25));
+            tr.appendChild(crearCelda(cita.supervisora || '-', 20));
+            tr.appendChild(crearCelda(cita.operador || '-', 20));
+
+            // Asistencia física (Llegó/No llegó)
+            const tdAsistencia = document.createElement('td');
+            const asistencia = cita.asistencia;
+            let asistenciaHtml = '';
+            if (asistencia === 'Llegó') {
+                asistenciaHtml = '<span class="asistencia-estado estado-llego">✅ Llegó</span>';
+                llegaron++;
+            } else if (asistencia === 'No llegó') {
+                asistenciaHtml = '<span class="asistencia-estado estado-no-llego">❌ No llegó</span>';
+                noLlegaron++;
+            } else {
+                asistenciaHtml = '<span class="sin-registro">⚪ Sin registrar</span>';
+            }
+            tdAsistencia.innerHTML = asistenciaHtml;
+            tr.appendChild(tdAsistencia);
+
+            // Estado de llamada (con 4 opciones)
+            const tdEstadoLlamada = document.createElement('td');
+            const estadoLlamada = cita.estadoLlamada || '';
+            let estadoHtml = '';
+            if (estadoLlamada === 'Cita') {
+                estadoHtml = '<span class="asistencia-estado estado-cita">📅 Cita agendada</span>';
+                citasAgendadas++;
+            } else if (estadoLlamada === 'Cita de nuevo') {
+                estadoHtml = '<span class="asistencia-estado estado-cita-nuevo">🔄 Cita de nuevo</span>';
+                citasDeNuevo++;
+            } else if (estadoLlamada === 'Contestó') {
+                estadoHtml = '<span class="asistencia-estado estado-contesto">📞 Contestó</span>';
+                contestaron++;
+            } else if (estadoLlamada === 'No contestó') {
+                estadoHtml = '<span class="asistencia-estado estado-no-contesto">📵 No contestó</span>';
+                noContesto++;
+            } else {
+                estadoHtml = '<span class="sin-registro">⚪ Pendiente</span>';
+            }
+            tdEstadoLlamada.innerHTML = estadoHtml;
+            tr.appendChild(tdEstadoLlamada);
+
+            // Comentarios (más ancho)
+            const tdComentarios = document.createElement('td');
+            const textarea = document.createElement('textarea');
+            textarea.value = cita.comentarios || '';
+            textarea.placeholder = 'Escribe observaciones, notas del seguimiento...';
+            textarea.className = 'comentario-textarea';
+            textarea.rows = 2;
+            textarea.onblur = () => guardarComentario(cita.id, textarea.value);
+            tdComentarios.appendChild(textarea);
+            tr.appendChild(tdComentarios);
+
+            // Acciones (botones)
+            const tdAcciones = document.createElement('td');
+            tdAcciones.className = 'asistencia-btns';
+            
+            const btnLlego = crearBoton('✅ Llegó', 'btn-llego', () => registrarAsistencia(cita.id, 'Llegó'));
+            const btnNoLlego = crearBoton('❌ No llegó', 'btn-no-llego', () => registrarAsistencia(cita.id, 'No llegó'));
+            const btnCita = crearBoton('📅 Cita', 'btn-cita', () => registrarEstadoLlamada(cita.id, 'Cita'));
+            const btnCitaNuevo = crearBoton('🔄 Cita de nuevo', 'btn-cita-nuevo', () => registrarEstadoLlamada(cita.id, 'Cita de nuevo'));
+            const btnContesto = crearBoton('📞 Contestó', 'btn-contesto', () => registrarEstadoLlamada(cita.id, 'Contestó'));
+            const btnNoContesto = crearBoton('📵 No contestó', 'btn-no-contesto', () => registrarEstadoLlamada(cita.id, 'No contestó'));
+            
+            tdAcciones.appendChild(btnLlego);
+            tdAcciones.appendChild(btnNoLlego);
+            tdAcciones.appendChild(btnCita);
+            tdAcciones.appendChild(btnCitaNuevo);
+            tdAcciones.appendChild(btnContesto);
+            tdAcciones.appendChild(btnNoContesto);
+            tr.appendChild(tdAcciones);
+            
+            tbody.appendChild(tr);
+        });
+
+        document.getElementById('resumenContainer').style.display = 'block';
+        document.getElementById('resumenContainer').innerHTML = `
+            📊 <strong>RESUMEN DE SEGUIMIENTO</strong><br>
+            <span>📋 Total citas: ${citas.length}</span>
+            <span>✅ Llegaron: ${llegaron}</span>
+            <span>❌ No llegaron: ${noLlegaron}</span>
+            <span>📅 Cita agendada: ${citasAgendadas}</span>
+            <span>🔄 Cita de nuevo: ${citasDeNuevo}</span>
+            <span>📞 Contestó: ${contestaron}</span>
+            <span>📵 No contestó: ${noContesto}</span>
+        `;
+    }
+
+    function crearCelda(texto, maxLength = null) {
+        const td = document.createElement('td');
+        let contenido = texto || '';
+        if (maxLength && contenido.length > maxLength) {
+            td.textContent = contenido.substring(0, maxLength) + '...';
+            td.title = contenido;
+        } else {
+            td.textContent = contenido;
+        }
+        return td;
+    }
+
+    function crearBoton(texto, clase, onClick) {
+        const btn = document.createElement('button');
+        btn.textContent = texto;
+        btn.className = clase;
+        btn.onclick = onClick;
+        return btn;
+    }
+
+    async function registrarAsistencia(id, estado) {
+        try {
+            await database.ref(`registrosPremanifiesto/${id}`).update({
+                asistencia: estado,
+                fechaRegistroAsistencia: new Date().toISOString()
+            });
+            mostrarNotificacion(`✅ Asistencia: ${estado}`);
+            cargarCitasPorFecha();
+        } catch (error) {
+            mostrarNotificacion('Error al guardar', 'error');
+        }
+    }
+
+    async function registrarEstadoLlamada(id, estado) {
+        try {
+            await database.ref(`registrosPremanifiesto/${id}`).update({
+                estadoLlamada: estado,
+                fechaEstadoLlamada: new Date().toISOString()
+            });
+            mostrarNotificacion(`📞 Estado llamada: ${estado}`);
+            cargarCitasPorFecha();
+        } catch (error) {
+            mostrarNotificacion('Error al guardar', 'error');
+        }
+    }
+
+    async function guardarComentario(id, comentario) {
+        try {
+            await database.ref(`registrosPremanifiesto/${id}`).update({
+                comentarios: comentario,
+                fechaComentario: new Date().toISOString()
+            });
+            mostrarNotificacion('💬 Comentario guardado', 'success');
+        } catch (error) {
+            mostrarNotificacion('Error al guardar comentario', 'error');
+        }
+    }
+
+    async function cargarCitasPorFecha() {
+        const fechaEvento = document.getElementById('fechaEvento').value;
+        if (!fechaEvento) { alert("Selecciona una fecha"); return; }
+        
+        fechaSeleccionada = fechaEvento;
+        supervisorSeleccionado = document.getElementById('filtroSupervisor').value;
+
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) { citasOriginales = []; mostrarCitas([]); return; }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            const fechaNormalizada = new Date(fechaEvento).toISOString().split('T')[0];
+
+            let filtradas = todasCitas.filter(cita => {
+                if (!cita.diaEvento) return false;
+                let fechaCita = cita.diaEvento;
+                try { fechaCita = new Date(cita.diaEvento).toISOString().split('T')[0]; } catch(e) {}
+                return fechaCita === fechaNormalizada;
+            });
+
+            if (supervisorSeleccionado) {
+                filtradas = filtradas.filter(c => c.supervisora === supervisorSeleccionado);
+            }
+
+            filtradas.sort((a,b) => (a.hora || '').localeCompare(b.hora || '') || (a.citaPorDia || 0) - (b.citaPorDia || 0));
+            
+            citasOriginales = filtradas;
+            citasFiltradasActuales = [...citasOriginales];
+            mostrarCitas(citasFiltradasActuales);
+            mostrarNotificacion(`📋 ${filtradas.length} cita(s) cargadas`);
+        } catch (error) {
+            mostrarNotificacion('Error de conexión', 'error');
+        }
+    }
+
+    // Función de búsqueda local
+    function buscarPorNombreOTelefono() {
+        const termino = document.getElementById('buscarInput').value.trim().toLowerCase();
+        if (!termino) {
+            citasFiltradasActuales = [...citasOriginales];
+            mostrarCitas(citasFiltradasActuales);
+            mostrarNotificacion('Búsqueda limpiada');
+            return;
+        }
+
+        const resultados = citasOriginales.filter(cita => {
+            const nombre = (cita.nombre || '').toLowerCase();
+            const telefono = (cita.telefono || '');
+            return nombre.includes(termino) || telefono.includes(termino);
+        });
+
+        citasFiltradasActuales = resultados;
+        mostrarCitas(resultados);
+        mostrarNotificacion(`🔍 ${resultados.length} coincidencia(s) encontradas`);
+    }
+
+    function limpiarBusqueda() {
+        document.getElementById('buscarInput').value = '';
+        citasFiltradasActuales = [...citasOriginales];
+        mostrarCitas(citasFiltradasActuales);
+        mostrarNotificacion('Búsqueda limpiada');
+    }
+
+    // =============== ESTADÍSTICAS DE SUPERVISORES (CONTRASEÑA) ===============
+    async function mostrarEstadisticasSupervisores() {
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) {
+                document.getElementById('contenidoEstadisticas').innerHTML = '<p style="text-align:center;">No hay datos registrados</p>';
+                return;
+            }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            
+            // Agrupar por supervisor
+            const estadisticas = {};
+            
+            todasCitas.forEach(cita => {
+                const supervisor = cita.supervisora || 'Sin supervisor';
+                if (!estadisticas[supervisor]) {
+                    estadisticas[supervisor] = {
+                        total: 0,
+                        llegaron: 0,
+                        noLlegaron: 0,
+                        sinMarcar: 0,
+                        reprobados: 0  // citas que no llegaron (reprobados)
+                    };
+                }
+                
+                estadisticas[supervisor].total++;
+                
+                if (cita.asistencia === 'Llegó') {
+                    estadisticas[supervisor].llegaron++;
+                } else if (cita.asistencia === 'No llegó') {
+                    estadisticas[supervisor].noLlegaron++;
+                    estadisticas[supervisor].reprobados++;
+                } else {
+                    estadisticas[supervisor].sinMarcar++;
+                }
+            });
+            
+            // Convertir a array y ordenar
+            const estadisticasArray = Object.entries(estadisticas).map(([supervisor, stats]) => ({
+                supervisor,
+                ...stats,
+                porcentajeLlegaron: stats.total > 0 ? ((stats.llegaron / stats.total) * 100).toFixed(1) : 0,
+                porcentajeReprobados: stats.total > 0 ? ((stats.reprobados / stats.total) * 100).toFixed(1) : 0
+            })).sort((a, b) => b.total - a.total);
+            
+            let html = `
+                <div style="overflow-x: auto;">
+                    <table class="tabla-estadisticas">
+                        <thead>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Total Citas</th>
+                                <th>✅ Llegaron</th>
+                                <th>❌ No llegaron (Reprobados)</th>
+                                <th>⚪ Sin marcar</th>
+                                <th>% Efectividad</th>
+                                <th>% Reprobados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            estadisticasArray.forEach(stat => {
+                const reprobadoClass = stat.reprobados > stat.llegaron ? 'reprobo' : '';
+                const sinMarcarClass = stat.sinMarcar > 0 ? 'sin-marcar' : '';
+                
+                html += `
+                    <tr>
+                        <td style="text-align:left; font-weight:bold;">${stat.supervisor}</td>
+                        <td>${stat.total}</td>
+                        <td style="color:#2e7d32; font-weight:bold;">${stat.llegaron}</td>
+                        <td class="${reprobadoClass}">${stat.noLlegaron}</td>
+                        <td class="${sinMarcarClass}">${stat.sinMarcar}</td>
+                        <td>${stat.porcentajeLlegaron}%</td>
+                        <td class="${reprobadoClass}">${stat.porcentajeReprobados}%</td>
+                    </tr>
+                `;
+            });
+            
+            // Totales generales
+            const totalGeneral = estadisticasArray.reduce((sum, s) => sum + s.total, 0);
+            const totalLlegaron = estadisticasArray.reduce((sum, s) => sum + s.llegaron, 0);
+            const totalNoLlegaron = estadisticasArray.reduce((sum, s) => sum + s.noLlegaron, 0);
+            const totalSinMarcar = estadisticasArray.reduce((sum, s) => sum + s.sinMarcar, 0);
+            
+            html += `
+                        <tr style="background: #e8f0fe; font-weight: bold;">
+                            <td><strong>TOTALES</strong></td>
+                            <td><strong>${totalGeneral}</strong></td>
+                            <td style="color:#2e7d32;"><strong>${totalLlegaron}</strong></td>
+                            <td style="color:#c62828;"><strong>${totalNoLlegaron}</strong></td>
+                            <td style="color:#e65100;"><strong>${totalSinMarcar}</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalNoLlegaron / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px;">
+                    <p><strong>📌 Nota:</strong></p>
+                    <p>• <strong class="reprobo">Celdas rojas</strong> = Supervisor con más reprobados que asistentes</p>
+                    <p>• <strong class="sin-marcar">Celdas naranja</strong> = Citas que aún no han sido marcadas (sin asistencia registrada)</p>
+                    <p>• <strong>Reprobados</strong> = Citas que NO llegaron al evento</p>
+                </div>
+            `;
+            
+            document.getElementById('contenidoEstadisticas').innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error cargando estadísticas:", error);
+            document.getElementById('contenidoEstadisticas').innerHTML = '<p style="color:red;">Error al cargar las estadísticas</p>';
+        }
+    }
+    
+    // Verificar contraseña y mostrar estadísticas
+    function verificarYMostrarEstadisticas() {
+        const password = document.getElementById('passwordEstadisticas').value;
+        if (password === PASSWORD_ESTADISTICAS) {
+            mostrarEstadisticasSupervisores();
+        } else {
+            alert("❌ Contraseña incorrecta. Acceso denegado.");
+            document.getElementById('passwordEstadisticas').value = '';
+        }
+    }
+
+    // Excel profesional mejorado
+    function descargarExcelProfesional() {
+        if (!citasFiltradasActuales.length) {
+            alert("No hay citas para exportar");
+            return;
+        }
+
+        const datos = citasFiltradasActuales.map(c => ({
+            "N° Cita": c.citaPorDia || c.cita || '-',
+            "Cliente": c.nombre || '',
+            "Teléfono": c.telefono || '',
+            "Hora": c.hora || '',
+            "Hotel": c.hotel || '',
+            "Supervisor": c.supervisora || '',
+            "Operador": c.operador || '',
+            "Asistencia Física": c.asistencia || 'Sin registrar',
+            "Estado Llamada": c.estadoLlamada || 'Pendiente',
+            "Comentarios": c.comentarios || '',
+            "Base Datos": c.baseDatos || '',
+            "Edad": c.edad || '',
+            "Fecha Registro": c.fechaRegistro || ''
+        }));
+
+        // Contadores para resumen
+        const llegaron = citasFiltradasActuales.filter(c => c.asistencia === 'Llegó').length;
+        const noLlegaron = citasFiltradasActuales.filter(c => c.asistencia === 'No llegó').length;
+        const citasAgendadas = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Cita').length;
+        const citasDeNuevo = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Cita de nuevo').length;
+        const contestaron = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Contestó').length;
+        const noContesto = citasFiltradasActuales.filter(c => c.estadoLlamada === 'No contestó').length;
+
+        const resumen = [
+            { "REPORTE DE SEGUIMIENTO - DESTINATION CONNECT": "" },
+            { "Fecha del evento": fechaSeleccionada },
+            { "Supervisor": supervisorSeleccionado || 'Todos' },
+            { "Fecha de generación": new Date().toLocaleString() },
+            { "--- RESUMEN DE ESTADÍSTICAS ---": "" },
+            { "Total citas": citasFiltradasActuales.length },
+            { "Llegaron": llegaron },
+            { "No llegaron": noLlegaron },
+            { "Citas agendadas (por llamada)": citasAgendadas },
+            { "Citas de nuevo (reagendadas)": citasDeNuevo },
+            { "Contestaron (sin cita aún)": contestaron },
+            { "No contestaron": noContesto },
+            {},
+            { "--- DETALLE DE CITAS ---": "" }
+        ];
+
+        const wsData = [...resumen, ...datos];
+        const ws = XLSX.utils.json_to_sheet(wsData, { skipHeader: false });
+        
+        ws['!cols'] = [{ wch: 15 }, { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 25 }, { wch: 22 }, { wch: 22 }, { wch: 18 }, { wch: 20 }, { wch: 45 }, { wch: 22 }, { wch: 12 }, { wch: 15 }];
+        
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Seguimiento_Citas");
+        
+        const nombreArchivo = `Reporte_Seguimiento_${fechaSeleccionada}_${supervisorSeleccionado || 'Todos'}.xlsx`;
+        XLSX.writeFile(wb, nombreArchivo);
+        mostrarNotificacion(`📥 Excel descargado: ${nombreArchivo}`);
+    }
+
+    function mostrarNotificacion(mensaje, tipo = 'success') {
+        const div = document.createElement('div');
+        div.textContent = mensaje;
+        div.style.position = 'fixed';
+        div.style.bottom = '20px';
+        div.style.right = '20px';
+        div.style.backgroundColor = tipo === 'error' ? '#c62828' : '#2e7d32';
+        div.style.color = 'white';
+        div.style.padding = '10px 20px';
+        div.style.borderRadius = '30px';
+        div.style.zIndex = '9999';
+        div.style.fontWeight = 'bold';
+        div.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
+        document.body.appendChild(div);
+        setTimeout(() => div.remove(), 2500);
+    }
+
+    // Modal de estadísticas
+    const modalEstadisticas = document.getElementById('modalEstadisticas');
+    const btnEstadisticasSup = document.getElementById('btnEstadisticasSup');
+    const cerrarModal = document.querySelector('.cerrar-modal-estadisticas');
+    
+    btnEstadisticasSup.addEventListener('click', () => {
+        // Resetear contenido a formulario de contraseña
+        document.getElementById('contenidoEstadisticas').innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <label>🔐 Ingrese la contraseña para acceder:</label>
+                <input type="password" id="passwordEstadisticas" class="password-input" placeholder="Contraseña">
+                <button id="verificarPasswordEstadisticas" style="background: #0a2540;">Verificar Acceso</button>
+            </div>
+        `;
+        document.getElementById('passwordEstadisticas').value = '';
+        const btnVerificar = document.getElementById('verificarPasswordEstadisticas');
+        if (btnVerificar) {
+            btnVerificar.addEventListener('click', verificarYMostrarEstadisticas);
+        }
+        modalEstadisticas.style.display = 'block';
+    });
+    
+    cerrarModal.addEventListener('click', () => {
+        modalEstadisticas.style.display = 'none';
+    });
+    
+    window.addEventListener('click', (e) => {
+        if (e.target === modalEstadisticas) {
+            modalEstadisticas.style.display = 'none';
+        }
+    });
+
+    // Event listeners
+    document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasPorFecha);
+    document.getElementById('recargarBtn').addEventListener('click', () => { if(document.getElementById('fechaEvento').value) cargarCitasPorFecha(); else alert("Elige fecha"); });
+    document.getElementById('descargarExcelBtn').addEventListener('click', descargarExcelProfesional);
+    document.getElementById('buscarBtn').addEventListener('click', buscarPorNombreOTelefono);
+    document.getElementById('limpiarBusquedaBtn').addEventListener('click', limpiarBusqueda);
+    document.getElementById('buscarInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') buscarPorNombreOTelefono(); });
+
+    cargarSupervisorasEnFiltro();
+    const hoy = new Date().toISOString().split('T')[0];
+    document.getElementById('fechaEvento').value = hoy;
+    setTimeout(() => { if(document.getElementById('fechaEvento').value) cargarCitasPorFecha(); }, 500);
+</script>
+</body>
+</html>
