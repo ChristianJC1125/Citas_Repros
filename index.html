@@ -79,6 +79,10 @@
             background: #d4af37;
             color: #0a2540;
         }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         .btn-excel {
             background: #1b5e3a;
         }
@@ -92,11 +96,30 @@
         .btn-estadisticas:hover {
             background: #7c3aed;
         }
+        .btn-inactivos {
+            background: #dc2626;
+        }
+        .btn-inactivos:hover {
+            background: #b91c1c;
+            color: white;
+        }
+        .btn-reporte-mensual {
+            background: #059669;
+        }
+        .btn-reporte-mensual:hover {
+            background: #047857;
+            color: white;
+        }
         .btn-buscar {
             background: #2563eb;
         }
         .btn-limpiar-busqueda {
             background: #64748b;
+        }
+        .btn-desbloquear {
+            background: #f59e0b;
+            font-size: 0.7rem;
+            padding: 3px 8px;
         }
         table {
             width: 100%;
@@ -161,6 +184,10 @@
             border-color: #d4af37;
             background: white;
         }
+        .comentario-textarea:disabled {
+            background: #f1f5f9;
+            color: #64748b;
+        }
         .footer {
             margin-top: 20px;
             font-size: 0.75rem;
@@ -180,9 +207,38 @@
         .resumen span {
             margin-right: 20px;
         }
+        .fila-bloqueada {
+            background: #f1f5f9 !important;
+            opacity: 0.85;
+        }
+        .fila-bloqueada td {
+            border-color: #cbd5e1;
+        }
+        .badge-bloqueado {
+            background: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .cliente-acompanante {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .cliente-principal {
+            font-weight: bold;
+            color: #0a2540;
+        }
+        .acompanante {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
 
-        /* Modal de estadísticas */
-        .modal-estadisticas {
+        /* Modales */
+        .modal-estadisticas, .modal-inactivos, .modal-reporte-mensual {
             display: none;
             position: fixed;
             z-index: 1000;
@@ -193,7 +249,7 @@
             background-color: rgba(0,0,0,0.5);
             backdrop-filter: blur(3px);
         }
-        .modal-estadisticas-contenido {
+        .modal-estadisticas-contenido, .modal-inactivos-contenido, .modal-reporte-contenido {
             background: white;
             margin: 5% auto;
             padding: 25px;
@@ -216,13 +272,13 @@
             margin: 0;
             color: #0a2540;
         }
-        .cerrar-modal-estadisticas {
+        .cerrar-modal {
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
             color: #64748b;
         }
-        .cerrar-modal-estadisticas:hover {
+        .cerrar-modal:hover {
             color: #c62828;
         }
         .password-input {
@@ -264,6 +320,52 @@
         .btn-cerrar-modal {
             background: #475569;
             margin-top: 20px;
+        }
+        .inactivo-tag {
+            background: #dc2626;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .tabla-inactivos {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabla-inactivos th {
+            background: #dc2626;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        .tabla-inactivos td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tabla-inactivos tr:hover {
+            background: #fef2f2;
+        }
+        .mes-selector {
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+        .btn-mes {
+            background: #0a2540;
+            padding: 8px 16px;
+            border-radius: 30px;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-mes:hover {
+            background: #d4af37;
+            color: #0a2540;
         }
 
         @media (max-width: 1200px) {
@@ -308,7 +410,9 @@
         <button id="cargarCitasBtn">🔍 Cargar citas</button>
         <button id="recargarBtn" style="background:#475569;">🔄 Recargar</button>
         <button id="descargarExcelBtn" class="btn-excel">📊 Descargar Excel</button>
-        <button id="btnEstadisticasSup" class="btn-estadisticas">📈 Estadísticas de Supervisores</button>
+        <button id="btnEstadisticasSup" class="btn-estadisticas">📈 Estadísticas</button>
+        <button id="btnInactivosSup" class="btn-inactivos">🚫 Inactivos</button>
+        <button id="btnReporteMensual" class="btn-reporte-mensual">📆 Reporte Mensual</button>
     </div>
 
     <div id="resumenContainer" class="resumen" style="display: none;"></div>
@@ -318,7 +422,7 @@
             <thead>
                 <tr>
                     <th style="min-width: 60px;">N° Cita</th>
-                    <th style="min-width: 180px;">Cliente</th>
+                    <th style="min-width: 200px;">Cliente / Acompañante</th>
                     <th style="min-width: 100px;">Teléfono</th>
                     <th style="min-width: 70px;">Hora</th>
                     <th style="min-width: 140px;">Hotel</th>
@@ -331,13 +435,14 @@
                 </tr>
             </thead>
             <tbody id="citasBody">
-                <tr><td colspan="11" style="text-align:center;">Selecciona una fecha y presiona "Cargar citas"</td</tr>
+                <tr><td colspan="11" style="text-align:center;">Selecciona una fecha y presiona "Cargar citas"</td></tr>
             </tbody>
         </table>
     </div>
     <div class="footer">
         ✅ Registro en tiempo real | Los cambios se guardan automáticamente en Firebase<br>
-        🎯 <strong>Leyenda:</strong> 📅 Cita (agendó) | 🔄 Cita de nuevo (reagendó) | 📞 Contestó | 📵 No contestó
+        🎯 <strong>Leyenda:</strong> 📅 Cita (agendó) | 🔄 Cita de nuevo (reagendó) | 📞 Contestó | 📵 No contestó<br>
+        🔒 <strong>Citas bloqueadas:</strong> Las citas marcadas como "Llegó" quedan bloqueadas para evitar cambios accidentales
     </div>
 </div>
 
@@ -346,7 +451,7 @@
     <div class="modal-estadisticas-contenido">
         <div class="modal-header">
             <h2>📊 Estadísticas de Supervisores</h2>
-            <span class="cerrar-modal-estadisticas">&times;</span>
+            <span class="cerrar-modal cerrar-estadisticas">&times;</span>
         </div>
         <div id="contenidoEstadisticas">
             <div style="text-align: center; padding: 20px;">
@@ -354,6 +459,38 @@
                 <input type="password" id="passwordEstadisticas" class="password-input" placeholder="Contraseña">
                 <button id="verificarPasswordEstadisticas" style="background: #0a2540;">Verificar Acceso</button>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Supervisores Inactivos -->
+<div id="modalInactivos" class="modal-inactivos">
+    <div class="modal-inactivos-contenido">
+        <div class="modal-header">
+            <h2>🚫 Supervisores Inactivos</h2>
+            <span class="cerrar-modal cerrar-inactivos">&times;</span>
+        </div>
+        <div id="contenidoInactivos">
+            <p style="text-align:center; color:#64748b;">Cargando lista de supervisores inactivos...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Reporte Mensual -->
+<div id="modalReporteMensual" class="modal-reporte-mensual">
+    <div class="modal-reporte-contenido">
+        <div class="modal-header">
+            <h2>📆 Reporte Mensual por Supervisor</h2>
+            <span class="cerrar-modal cerrar-reporte-mensual">&times;</span>
+        </div>
+        <div style="margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <label><strong>Seleccionar mes:</strong></label>
+            <input type="month" id="selectorMes" class="mes-selector">
+            <button id="btnCargarReporteMes" class="btn-mes">📊 Cargar Reporte</button>
+            <button id="btnDescargarReporteMes" class="btn-excel" style="margin-left: auto;">📥 Descargar Excel</button>
+        </div>
+        <div id="contenidoReporteMensual">
+            <p style="text-align:center; color:#64748b;">Selecciona un mes y presiona "Cargar Reporte"</p>
         </div>
     </div>
 </div>
@@ -379,8 +516,76 @@
     let citasFiltradasActuales = [];
     let fechaSeleccionada = '';
     let supervisorSeleccionado = '';
+    let datosReporteMensual = [];
     
-    const PASSWORD_ESTADISTICAS = "supervisor2024"; // Cambia esta contraseña si quieres
+    const PASSWORD_ESTADISTICAS = "supervisor2024";
+    const PASSWORD_DESBLOQUEO = "admin123";
+
+    const SUPERVISORES_INACTIVOS = [
+        'YARET NAJERA',
+        'ABRAHAM ROLDAN',
+        'MACARENA ZAMORA',
+        'MISAEL NAVARRO',
+        'ARACELI TORRES'
+    ];
+
+    // =============== SEPARAR CLIENTE Y ACOMPAÑANTE ===============
+    function separarClienteYAcompanante(nombreCompleto) {
+        if (!nombreCompleto) return { cliente: '', acompanante: '' };
+        
+        let cliente = nombreCompleto;
+        let acompanante = '';
+        
+        if (nombreCompleto.includes('/')) {
+            const partes = nombreCompleto.split('/').map(p => p.trim());
+            cliente = partes[0] || '';
+            acompanante = partes.slice(1).join(' / ') || '';
+        }
+        else if (nombreCompleto.includes(' Y ')) {
+            const partes = nombreCompleto.split(' Y ').map(p => p.trim());
+            cliente = partes[0] || '';
+            acompanante = partes.slice(1).join(' Y ') || '';
+        }
+        else if (nombreCompleto.includes(' y ')) {
+            const partes = nombreCompleto.split(' y ').map(p => p.trim());
+            cliente = partes[0] || '';
+            acompanante = partes.slice(1).join(' y ') || '';
+        }
+        else if (nombreCompleto.includes(',')) {
+            const partes = nombreCompleto.split(',').map(p => p.trim());
+            cliente = partes[0] || '';
+            acompanante = partes.slice(1).join(', ') || '';
+        }
+        
+        if (cliente.startsWith('[REAGENDADO] ')) {
+            cliente = cliente.replace('[REAGENDADO] ', '');
+        }
+        
+        return { cliente, acompanante };
+    }
+
+    // =============== BLOQUEO DE CITAS ===============
+    function estaBloqueada(cita) {
+        return cita.asistencia === 'Llegó';
+    }
+
+    async function desbloquearCita(id) {
+        const password = prompt("🔐 Ingresa la contraseña para desbloquear esta cita:");
+        if (password === PASSWORD_DESBLOQUEO) {
+            try {
+                await database.ref(`registrosPremanifiesto/${id}`).update({
+                    asistencia: null,
+                    fechaRegistroAsistencia: null
+                });
+                mostrarNotificacion('🔓 Cita desbloqueada correctamente');
+                cargarCitasPorFecha();
+            } catch (error) {
+                mostrarNotificacion('Error al desbloquear', 'error');
+            }
+        } else if (password !== null) {
+            alert('❌ Contraseña incorrecta');
+        }
+    }
 
     // Cargar supervisoras
     function cargarSupervisorasEnFiltro() {
@@ -412,16 +617,31 @@
 
         citas.forEach(cita => {
             const tr = document.createElement('tr');
+            const bloqueada = estaBloqueada(cita);
+            if (bloqueada) tr.className = 'fila-bloqueada';
             
+            // N° Cita
             tr.appendChild(crearCelda(cita.citaPorDia || cita.cita || '-'));
-            tr.appendChild(crearCelda(cita.nombre || 'Sin nombre', 35));
+            
+            // Cliente / Acompañante (separado)
+            const tdCliente = document.createElement('td');
+            const { cliente, acompanante } = separarClienteYAcompanante(cita.nombre);
+            tdCliente.innerHTML = `
+                <div class="cliente-acompanante">
+                    <span class="cliente-principal">${cliente || 'Sin nombre'}</span>
+                    ${acompanante ? `<span class="acompanante">👤 ${acompanante}</span>` : ''}
+                    ${bloqueada ? '<span class="badge-bloqueado">🔒 BLOQUEADO</span>' : ''}
+                </div>
+            `;
+            tr.appendChild(tdCliente);
+            
             tr.appendChild(crearCelda(cita.telefono || '-'));
             tr.appendChild(crearCelda(cita.hora || '-'));
             tr.appendChild(crearCelda(cita.hotel || '-', 25));
             tr.appendChild(crearCelda(cita.supervisora || '-', 20));
             tr.appendChild(crearCelda(cita.operador || '-', 20));
 
-            // Asistencia física (Llegó/No llegó)
+            // Asistencia física
             const tdAsistencia = document.createElement('td');
             const asistencia = cita.asistencia;
             let asistenciaHtml = '';
@@ -437,7 +657,7 @@
             tdAsistencia.innerHTML = asistenciaHtml;
             tr.appendChild(tdAsistencia);
 
-            // Estado de llamada (con 4 opciones)
+            // Estado de llamada
             const tdEstadoLlamada = document.createElement('td');
             const estadoLlamada = cita.estadoLlamada || '';
             let estadoHtml = '';
@@ -459,34 +679,44 @@
             tdEstadoLlamada.innerHTML = estadoHtml;
             tr.appendChild(tdEstadoLlamada);
 
-            // Comentarios (más ancho)
+            // Comentarios
             const tdComentarios = document.createElement('td');
             const textarea = document.createElement('textarea');
             textarea.value = cita.comentarios || '';
-            textarea.placeholder = 'Escribe observaciones, notas del seguimiento...';
+            textarea.placeholder = 'Escribe observaciones...';
             textarea.className = 'comentario-textarea';
             textarea.rows = 2;
-            textarea.onblur = () => guardarComentario(cita.id, textarea.value);
+            if (bloqueada) {
+                textarea.disabled = true;
+                textarea.placeholder = '🔒 Bloqueado - No se pueden editar comentarios';
+            } else {
+                textarea.onblur = () => guardarComentario(cita.id, textarea.value);
+            }
             tdComentarios.appendChild(textarea);
             tr.appendChild(tdComentarios);
 
-            // Acciones (botones)
+            // Acciones
             const tdAcciones = document.createElement('td');
             tdAcciones.className = 'asistencia-btns';
             
-            const btnLlego = crearBoton('✅ Llegó', 'btn-llego', () => registrarAsistencia(cita.id, 'Llegó'));
-            const btnNoLlego = crearBoton('❌ No llegó', 'btn-no-llego', () => registrarAsistencia(cita.id, 'No llegó'));
-            const btnCita = crearBoton('📅 Cita', 'btn-cita', () => registrarEstadoLlamada(cita.id, 'Cita'));
-            const btnCitaNuevo = crearBoton('🔄 Cita de nuevo', 'btn-cita-nuevo', () => registrarEstadoLlamada(cita.id, 'Cita de nuevo'));
-            const btnContesto = crearBoton('📞 Contestó', 'btn-contesto', () => registrarEstadoLlamada(cita.id, 'Contestó'));
-            const btnNoContesto = crearBoton('📵 No contestó', 'btn-no-contesto', () => registrarEstadoLlamada(cita.id, 'No contestó'));
-            
-            tdAcciones.appendChild(btnLlego);
-            tdAcciones.appendChild(btnNoLlego);
-            tdAcciones.appendChild(btnCita);
-            tdAcciones.appendChild(btnCitaNuevo);
-            tdAcciones.appendChild(btnContesto);
-            tdAcciones.appendChild(btnNoContesto);
+            if (bloqueada) {
+                const btnDesbloquear = crearBoton('🔓 Desbloquear', 'btn-desbloquear', () => desbloquearCita(cita.id));
+                tdAcciones.appendChild(btnDesbloquear);
+            } else {
+                const btnLlego = crearBoton('✅ Llegó', 'btn-llego', () => registrarAsistencia(cita.id, 'Llegó'));
+                const btnNoLlego = crearBoton('❌ No llegó', 'btn-no-llego', () => registrarAsistencia(cita.id, 'No llegó'));
+                const btnCita = crearBoton('📅 Cita', 'btn-cita', () => registrarEstadoLlamada(cita.id, 'Cita'));
+                const btnCitaNuevo = crearBoton('🔄 Cita de nuevo', 'btn-cita-nuevo', () => registrarEstadoLlamada(cita.id, 'Cita de nuevo'));
+                const btnContesto = crearBoton('📞 Contestó', 'btn-contesto', () => registrarEstadoLlamada(cita.id, 'Contestó'));
+                const btnNoContesto = crearBoton('📵 No contestó', 'btn-no-contesto', () => registrarEstadoLlamada(cita.id, 'No contestó'));
+                
+                tdAcciones.appendChild(btnLlego);
+                tdAcciones.appendChild(btnNoLlego);
+                tdAcciones.appendChild(btnCita);
+                tdAcciones.appendChild(btnCitaNuevo);
+                tdAcciones.appendChild(btnContesto);
+                tdAcciones.appendChild(btnNoContesto);
+            }
             tr.appendChild(tdAcciones);
             
             tbody.appendChild(tr);
@@ -502,6 +732,7 @@
             <span>🔄 Cita de nuevo: ${citasDeNuevo}</span>
             <span>📞 Contestó: ${contestaron}</span>
             <span>📵 No contestó: ${noContesto}</span>
+            <span>🔒 Bloqueadas: ${llegaron}</span>
         `;
     }
 
@@ -628,7 +859,7 @@
         mostrarNotificacion('Búsqueda limpiada');
     }
 
-    // =============== ESTADÍSTICAS DE SUPERVISORES (CONTRASEÑA) ===============
+    // =============== ESTADÍSTICAS DE SUPERVISORES ===============
     async function mostrarEstadisticasSupervisores() {
         try {
             const snapshot = await database.ref('registrosPremanifiesto').once('value');
@@ -640,7 +871,6 @@
 
             let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
             
-            // Agrupar por supervisor
             const estadisticas = {};
             
             todasCitas.forEach(cita => {
@@ -651,7 +881,7 @@
                         llegaron: 0,
                         noLlegaron: 0,
                         sinMarcar: 0,
-                        reprobados: 0  // citas que no llegaron (reprobados)
+                        reprobados: 0
                     };
                 }
                 
@@ -667,7 +897,6 @@
                 }
             });
             
-            // Convertir a array y ordenar
             const estadisticasArray = Object.entries(estadisticas).map(([supervisor, stats]) => ({
                 supervisor,
                 ...stats,
@@ -683,7 +912,7 @@
                                 <th>Supervisor</th>
                                 <th>Total Citas</th>
                                 <th>✅ Llegaron</th>
-                                <th>❌ No llegaron (Reprobados)</th>
+                                <th>❌ No llegaron</th>
                                 <th>⚪ Sin marcar</th>
                                 <th>% Efectividad</th>
                                 <th>% Reprobados</th>
@@ -709,7 +938,6 @@
                 `;
             });
             
-            // Totales generales
             const totalGeneral = estadisticasArray.reduce((sum, s) => sum + s.total, 0);
             const totalLlegaron = estadisticasArray.reduce((sum, s) => sum + s.llegaron, 0);
             const totalNoLlegaron = estadisticasArray.reduce((sum, s) => sum + s.noLlegaron, 0);
@@ -731,20 +959,318 @@
                 <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px;">
                     <p><strong>📌 Nota:</strong></p>
                     <p>• <strong class="reprobo">Celdas rojas</strong> = Supervisor con más reprobados que asistentes</p>
-                    <p>• <strong class="sin-marcar">Celdas naranja</strong> = Citas que aún no han sido marcadas (sin asistencia registrada)</p>
-                    <p>• <strong>Reprobados</strong> = Citas que NO llegaron al evento</p>
+                    <p>• <strong class="sin-marcar">Celdas naranja</strong> = Citas que aún no han sido marcadas</p>
                 </div>
             `;
             
             document.getElementById('contenidoEstadisticas').innerHTML = html;
             
         } catch (error) {
-            console.error("Error cargando estadísticas:", error);
+            console.error("Error:", error);
             document.getElementById('contenidoEstadisticas').innerHTML = '<p style="color:red;">Error al cargar las estadísticas</p>';
         }
     }
     
-    // Verificar contraseña y mostrar estadísticas
+    // =============== SUPERVISORES INACTIVOS ===============
+    async function mostrarSupervisoresInactivos() {
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) {
+                document.getElementById('contenidoInactivos').innerHTML = '<p style="text-align:center;">No hay datos registrados</p>';
+                return;
+            }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            
+            const estadisticasInactivos = {};
+            let totalCitasInactivos = 0;
+            
+            SUPERVISORES_INACTIVOS.forEach(supervisor => {
+                estadisticasInactivos[supervisor] = {
+                    total: 0,
+                    llegaron: 0,
+                    noLlegaron: 0,
+                    sinMarcar: 0
+                };
+            });
+            
+            todasCitas.forEach(cita => {
+                const supervisor = cita.supervisora || '';
+                if (SUPERVISORES_INACTIVOS.includes(supervisor)) {
+                    estadisticasInactivos[supervisor].total++;
+                    totalCitasInactivos++;
+                    
+                    if (cita.asistencia === 'Llegó') {
+                        estadisticasInactivos[supervisor].llegaron++;
+                    } else if (cita.asistencia === 'No llegó') {
+                        estadisticasInactivos[supervisor].noLlegaron++;
+                    } else {
+                        estadisticasInactivos[supervisor].sinMarcar++;
+                    }
+                }
+            });
+            
+            const inactivosArray = Object.entries(estadisticasInactivos).map(([supervisor, stats]) => ({
+                supervisor,
+                ...stats
+            })).sort((a, b) => b.total - a.total);
+            
+            let html = `
+                <div style="margin-bottom: 20px; padding: 15px; background: #fef2f2; border-radius: 12px; border-left: 4px solid #dc2626;">
+                    <p style="margin: 0;"><strong>🚫 Supervisores que ya no están activos</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #64748b;">
+                        Total de citas asignadas: <strong style="color: #dc2626;">${totalCitasInactivos}</strong>
+                    </p>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="tabla-inactivos">
+                        <thead>
+                            <tr>
+                                <th>Supervisor Inactivo</th>
+                                <th>Total Citas</th>
+                                <th>✅ Llegaron</th>
+                                <th>❌ No llegaron</th>
+                                <th>⚪ Sin marcar</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            if (inactivosArray.every(s => s.total === 0)) {
+                html += `
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding: 30px; color: #64748b;">
+                            ✅ No hay citas asignadas a supervisores inactivos
+                        </td>
+                    </tr>
+                `;
+            } else {
+                inactivosArray.forEach(stat => {
+                    const sinMarcarClass = stat.sinMarcar > 0 ? 'sin-marcar' : '';
+                    
+                    html += `
+                        <tr>
+                            <td style="text-align:left; font-weight:bold;">${stat.supervisor}</td>
+                            <td><strong>${stat.total}</strong></td>
+                            <td style="color:#2e7d32;">${stat.llegaron}</td>
+                            <td style="color:#c62828;">${stat.noLlegaron}</td>
+                            <td class="${sinMarcarClass}">${stat.sinMarcar}</td>
+                            <td>
+                                <span class="inactivo-tag">INACTIVO</span>
+                                ${stat.total > 0 ? ` <span style="font-size:0.75rem; color:#dc2626;">⚠️ ${stat.total} cita(s)</span>` : ''}
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('contenidoInactivos').innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('contenidoInactivos').innerHTML = '<p style="color:red;">Error al cargar los supervisores inactivos</p>';
+        }
+    }
+
+    // =============== REPORTE MENSUAL ===============
+    async function cargarReporteMensual() {
+        const mesSeleccionado = document.getElementById('selectorMes').value;
+        if (!mesSeleccionado) {
+            alert("Selecciona un mes primero");
+            return;
+        }
+
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) {
+                document.getElementById('contenidoReporteMensual').innerHTML = '<p style="text-align:center;">No hay datos registrados</p>';
+                return;
+            }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            
+            const [year, month] = mesSeleccionado.split('-');
+            const citasDelMes = todasCitas.filter(cita => {
+                if (!cita.diaEvento) return false;
+                try {
+                    const fechaCita = new Date(cita.diaEvento);
+                    return fechaCita.getFullYear() === parseInt(year) && 
+                           (fechaCita.getMonth() + 1) === parseInt(month);
+                } catch(e) { return false; }
+            });
+
+            const reportePorSupervisor = {};
+            citasDelMes.forEach(cita => {
+                const supervisor = cita.supervisora || 'Sin supervisor';
+                if (!reportePorSupervisor[supervisor]) {
+                    reportePorSupervisor[supervisor] = {
+                        total: 0,
+                        llegaron: 0,
+                        noLlegaron: 0,
+                        pendientes: 0,
+                        citas: []
+                    };
+                }
+                
+                reportePorSupervisor[supervisor].total++;
+                
+                if (cita.asistencia === 'Llegó') {
+                    reportePorSupervisor[supervisor].llegaron++;
+                } else if (cita.asistencia === 'No llegó') {
+                    reportePorSupervisor[supervisor].noLlegaron++;
+                } else {
+                    reportePorSupervisor[supervisor].pendientes++;
+                }
+                
+                reportePorSupervisor[supervisor].citas.push(cita);
+            });
+
+            datosReporteMensual = reportePorSupervisor;
+            
+            const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            const nombreMes = meses[parseInt(month) - 1];
+            
+            let html = `
+                <h3 style="color:#0a2540;">📆 ${nombreMes} ${year}</h3>
+                <p style="color:#64748b; margin-bottom: 15px;">Total de citas en el mes: <strong>${citasDelMes.length}</strong></p>
+                <div style="overflow-x: auto;">
+                    <table class="tabla-estadisticas">
+                        <thead>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Total Citas</th>
+                                <th>✅ Llegaron</th>
+                                <th>❌ No llegaron</th>
+                                <th>⚪ Pendientes</th>
+                                <th>% Efectividad</th>
+                                <th>% Pendientes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            const reporteArray = Object.entries(reportePorSupervisor).map(([supervisor, stats]) => ({
+                supervisor,
+                ...stats,
+                porcentajeEfectividad: stats.total > 0 ? ((stats.llegaron / stats.total) * 100).toFixed(1) : 0,
+                porcentajePendientes: stats.total > 0 ? ((stats.pendientes / stats.total) * 100).toFixed(1) : 0
+            })).sort((a, b) => b.total - a.total);
+            
+            reporteArray.forEach(stat => {
+                const pendienteClass = stat.pendientes > stat.total * 0.3 ? 'sin-marcar' : '';
+                
+                html += `
+                    <tr>
+                        <td style="text-align:left; font-weight:bold;">${stat.supervisor}</td>
+                        <td><strong>${stat.total}</strong></td>
+                        <td style="color:#2e7d32; font-weight:bold;">${stat.llegaron}</td>
+                        <td style="color:#c62828;">${stat.noLlegaron}</td>
+                        <td class="${pendienteClass}">${stat.pendientes}</td>
+                        <td>${stat.porcentajeEfectividad}%</td>
+                        <td class="${pendienteClass}">${stat.porcentajePendientes}%</td>
+                    </tr>
+                `;
+            });
+            
+            const totalGeneral = reporteArray.reduce((sum, s) => sum + s.total, 0);
+            const totalLlegaron = reporteArray.reduce((sum, s) => sum + s.llegaron, 0);
+            const totalNoLlegaron = reporteArray.reduce((sum, s) => sum + s.noLlegaron, 0);
+            const totalPendientes = reporteArray.reduce((sum, s) => sum + s.pendientes, 0);
+            
+            html += `
+                        <tr style="background: #e8f0fe; font-weight: bold;">
+                            <td><strong>TOTALES</strong></td>
+                            <td><strong>${totalGeneral}</strong></td>
+                            <td style="color:#2e7d32;"><strong>${totalLlegaron}</strong></td>
+                            <td style="color:#c62828;"><strong>${totalNoLlegaron}</strong></td>
+                            <td style="color:#e65100;"><strong>${totalPendientes}</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalPendientes / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px;">
+                    <p><strong>📌 Resumen del mes:</strong></p>
+                    <p>• <strong>Total citas:</strong> ${totalGeneral}</p>
+                    <p>• <strong>✅ Llegaron:</strong> ${totalLlegaron} (${totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) : 0}%)</p>
+                    <p>• <strong>❌ No llegaron:</strong> ${totalNoLlegaron} (${totalGeneral > 0 ? ((totalNoLlegaron / totalGeneral) * 100).toFixed(1) : 0}%)</p>
+                    <p>• <strong>⚪ Pendientes:</strong> ${totalPendientes} (${totalGeneral > 0 ? ((totalPendientes / totalGeneral) * 100).toFixed(1) : 0}%)</p>
+                </div>
+            `;
+            
+            document.getElementById('contenidoReporteMensual').innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('contenidoReporteMensual').innerHTML = '<p style="color:red;">Error al cargar el reporte mensual</p>';
+        }
+    }
+
+    function descargarReporteMensualExcel() {
+        if (!datosReporteMensual || Object.keys(datosReporteMensual).length === 0) {
+            alert("Primero carga el reporte mensual");
+            return;
+        }
+
+        const mesSeleccionado = document.getElementById('selectorMes').value;
+        const [year, month] = mesSeleccionado.split('-');
+        const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        const nombreMes = meses[parseInt(month) - 1];
+
+        const datosExcel = [];
+        datosExcel.push({ "REPORTE MENSUAL": `${nombreMes} ${year}` });
+        datosExcel.push({ "REPORTE MENSUAL": " " });
+        datosExcel.push({ "Supervisor": "Total", "Llegaron": "No Llegaron", "Pendientes": "% Efectividad" });
+        
+        let totalGeneral = 0, totalLlegaron = 0, totalNoLlegaron = 0, totalPendientes = 0;
+        
+        Object.entries(datosReporteMensual).forEach(([supervisor, stats]) => {
+            datosExcel.push({
+                "Supervisor": supervisor,
+                "Total": stats.total,
+                "Llegaron": stats.llegaron,
+                "No Llegaron": stats.noLlegaron,
+                "Pendientes": stats.pendientes,
+                "% Efectividad": stats.total > 0 ? ((stats.llegaron / stats.total) * 100).toFixed(1) + '%' : '0%'
+            });
+            
+            totalGeneral += stats.total;
+            totalLlegaron += stats.llegaron;
+            totalNoLlegaron += stats.noLlegaron;
+            totalPendientes += stats.pendientes;
+        });
+        
+        datosExcel.push({ "Supervisor": "---", "Total": "---", "Llegaron": "---", "No Llegaron": "---", "Pendientes": "---", "% Efectividad": "---" });
+        datosExcel.push({
+            "Supervisor": "TOTALES",
+            "Total": totalGeneral,
+            "Llegaron": totalLlegaron,
+            "No Llegaron": totalNoLlegaron,
+            "Pendientes": totalPendientes,
+            "% Efectividad": totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) + '%' : '0%'
+        });
+
+        const ws = XLSX.utils.json_to_sheet(datosExcel);
+        ws['!cols'] = [{ wch: 25 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 15 }];
+        
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Reporte_Mensual");
+        
+        const nombreArchivo = `Reporte_Mensual_${nombreMes}_${year}.xlsx`;
+        XLSX.writeFile(wb, nombreArchivo);
+        mostrarNotificacion(`📥 Excel descargado: ${nombreArchivo}`);
+    }
+
     function verificarYMostrarEstadisticas() {
         const password = document.getElementById('passwordEstadisticas').value;
         if (password === PASSWORD_ESTADISTICAS) {
@@ -755,30 +1281,33 @@
         }
     }
 
-    // Excel profesional mejorado
+    // Excel profesional mejorado (con separación de cliente/acompañante)
     function descargarExcelProfesional() {
         if (!citasFiltradasActuales.length) {
             alert("No hay citas para exportar");
             return;
         }
 
-        const datos = citasFiltradasActuales.map(c => ({
-            "N° Cita": c.citaPorDia || c.cita || '-',
-            "Cliente": c.nombre || '',
-            "Teléfono": c.telefono || '',
-            "Hora": c.hora || '',
-            "Hotel": c.hotel || '',
-            "Supervisor": c.supervisora || '',
-            "Operador": c.operador || '',
-            "Asistencia Física": c.asistencia || 'Sin registrar',
-            "Estado Llamada": c.estadoLlamada || 'Pendiente',
-            "Comentarios": c.comentarios || '',
-            "Base Datos": c.baseDatos || '',
-            "Edad": c.edad || '',
-            "Fecha Registro": c.fechaRegistro || ''
-        }));
+        const datos = citasFiltradasActuales.map(c => {
+            const { cliente, acompanante } = separarClienteYAcompanante(c.nombre);
+            return {
+                "N° Cita": c.citaPorDia || c.cita || '-',
+                "Cliente": cliente || '',
+                "Acompañante": acompanante || '',
+                "Teléfono": c.telefono || '',
+                "Hora": c.hora || '',
+                "Hotel": c.hotel || '',
+                "Supervisor": c.supervisora || '',
+                "Operador": c.operador || '',
+                "Asistencia Física": c.asistencia || 'Sin registrar',
+                "Estado Llamada": c.estadoLlamada || 'Pendiente',
+                "Comentarios": c.comentarios || '',
+                "Base Datos": c.baseDatos || '',
+                "Edad": c.edad || '',
+                "Fecha Registro": c.fechaRegistro || ''
+            };
+        });
 
-        // Contadores para resumen
         const llegaron = citasFiltradasActuales.filter(c => c.asistencia === 'Llegó').length;
         const noLlegaron = citasFiltradasActuales.filter(c => c.asistencia === 'No llegó').length;
         const citasAgendadas = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Cita').length;
@@ -806,7 +1335,7 @@
         const wsData = [...resumen, ...datos];
         const ws = XLSX.utils.json_to_sheet(wsData, { skipHeader: false });
         
-        ws['!cols'] = [{ wch: 15 }, { wch: 40 }, { wch: 15 }, { wch: 12 }, { wch: 25 }, { wch: 22 }, { wch: 22 }, { wch: 18 }, { wch: 20 }, { wch: 45 }, { wch: 22 }, { wch: 12 }, { wch: 15 }];
+        ws['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 15 }, { wch: 12 }, { wch: 25 }, { wch: 22 }, { wch: 22 }, { wch: 18 }, { wch: 20 }, { wch: 45 }, { wch: 22 }, { wch: 12 }, { wch: 15 }];
         
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Seguimiento_Citas");
@@ -833,13 +1362,21 @@
         setTimeout(() => div.remove(), 2500);
     }
 
-    // Modal de estadísticas
+    // =============== MODALES ===============
     const modalEstadisticas = document.getElementById('modalEstadisticas');
-    const btnEstadisticasSup = document.getElementById('btnEstadisticasSup');
-    const cerrarModal = document.querySelector('.cerrar-modal-estadisticas');
+    const modalInactivos = document.getElementById('modalInactivos');
+    const modalReporteMensual = document.getElementById('modalReporteMensual');
     
+    const btnEstadisticasSup = document.getElementById('btnEstadisticasSup');
+    const btnInactivosSup = document.getElementById('btnInactivosSup');
+    const btnReporteMensual = document.getElementById('btnReporteMensual');
+    
+    const cerrarEstadisticas = document.querySelector('.cerrar-estadisticas');
+    const cerrarInactivos = document.querySelector('.cerrar-inactivos');
+    const cerrarReporteMensual = document.querySelector('.cerrar-reporte-mensual');
+    
+    // Abrir modal de estadísticas
     btnEstadisticasSup.addEventListener('click', () => {
-        // Resetear contenido a formulario de contraseña
         document.getElementById('contenidoEstadisticas').innerHTML = `
             <div style="text-align: center; padding: 20px;">
                 <label>🔐 Ingrese la contraseña para acceder:</label>
@@ -855,17 +1392,38 @@
         modalEstadisticas.style.display = 'block';
     });
     
-    cerrarModal.addEventListener('click', () => {
-        modalEstadisticas.style.display = 'none';
+    // Abrir modal de inactivos
+    btnInactivosSup.addEventListener('click', () => {
+        document.getElementById('contenidoInactivos').innerHTML = '<p style="text-align:center;">Cargando lista de supervisores inactivos...</p>';
+        modalInactivos.style.display = 'block';
+        mostrarSupervisoresInactivos();
     });
     
+    // Abrir modal de reporte mensual
+    btnReporteMensual.addEventListener('click', () => {
+        const hoy = new Date();
+        const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+        document.getElementById('selectorMes').value = mesActual;
+        document.getElementById('contenidoReporteMensual').innerHTML = '<p style="text-align:center; color:#64748b;">Selecciona un mes y presiona "Cargar Reporte"</p>';
+        modalReporteMensual.style.display = 'block';
+    });
+    
+    // Cerrar modales
+    cerrarEstadisticas.addEventListener('click', () => { modalEstadisticas.style.display = 'none'; });
+    cerrarInactivos.addEventListener('click', () => { modalInactivos.style.display = 'none'; });
+    cerrarReporteMensual.addEventListener('click', () => { modalReporteMensual.style.display = 'none'; });
+    
     window.addEventListener('click', (e) => {
-        if (e.target === modalEstadisticas) {
-            modalEstadisticas.style.display = 'none';
-        }
+        if (e.target === modalEstadisticas) modalEstadisticas.style.display = 'none';
+        if (e.target === modalInactivos) modalInactivos.style.display = 'none';
+        if (e.target === modalReporteMensual) modalReporteMensual.style.display = 'none';
     });
 
-    // Event listeners
+    // Eventos del reporte mensual
+    document.getElementById('btnCargarReporteMes').addEventListener('click', cargarReporteMensual);
+    document.getElementById('btnDescargarReporteMes').addEventListener('click', descargarReporteMensualExcel);
+
+    // Event listeners principales
     document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasPorFecha);
     document.getElementById('recargarBtn').addEventListener('click', () => { if(document.getElementById('fechaEvento').value) cargarCitasPorFecha(); else alert("Elige fecha"); });
     document.getElementById('descargarExcelBtn').addEventListener('click', descargarExcelProfesional);
