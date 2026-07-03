@@ -128,6 +128,13 @@
             background: #0f766e;
             color: white;
         }
+        .btn-ventas {
+            background: #7c3aed;
+        }
+        .btn-ventas:hover {
+            background: #6d28d9;
+            color: white;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -262,7 +269,7 @@
             padding: 25px;
             border-radius: 25px;
             width: 90%;
-            max-width: 1000px;
+            max-width: 1200px;
             max-height: 85vh;
             overflow-y: auto;
             box-shadow: 0 20px 35px rgba(0,0,0,0.3);
@@ -375,94 +382,155 @@
             color: #0a2540;
         }
 
-        /* Estilos para gráficas */
-        .grafica-barras {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 20px 0;
-            padding: 20px;
-            background: #f8fafc;
-            border-radius: 12px;
+        /* Estilos para gráficas de ventas */
+        .ventas-resumen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
         }
-        .barra-item {
+        .ventas-resumen-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #0a2540;
+        }
+        .ventas-resumen-card .icono { font-size: 2rem; margin-bottom: 8px; }
+        .ventas-resumen-card .valor { font-size: 2rem; font-weight: 700; color: #0a2540; }
+        .ventas-resumen-card .etiqueta { color: #64748b; font-size: 0.85rem; }
+        .ventas-resumen-card.q-card { border-left-color: #2e7d32; }
+        .ventas-resumen-card.q-card .valor { color: #2e7d32; }
+        .ventas-resumen-card.nq-card { border-left-color: #c62828; }
+        .ventas-resumen-card.nq-card .valor { color: #c62828; }
+        .ventas-resumen-card.ct-card { border-left-color: #e65100; }
+        .ventas-resumen-card.ct-card .valor { color: #e65100; }
+        .ventas-resumen-card.total-card { border-left-color: #0a2540; }
+
+        .grafica-ventas-barras {
+            margin-top: 20px;
+        }
+        .barra-venta {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            margin-bottom: 10px;
         }
-        .barra-label {
-            min-width: 200px;
-            font-weight: bold;
+        .barra-venta-label {
+            min-width: 180px;
+            font-weight: 600;
             font-size: 0.85rem;
             color: #0a2540;
         }
-        .barra-container {
+        .barra-venta-container {
             flex: 1;
-            height: 30px;
+            height: 28px;
             background: #e2e8f0;
-            border-radius: 15px;
+            border-radius: 14px;
             overflow: hidden;
             position: relative;
         }
-        .barra-fill {
+        .barra-venta-fill {
             height: 100%;
-            background: linear-gradient(90deg, #0a2540, #d4af37);
-            border-radius: 15px;
-            transition: width 1s ease;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: flex-end;
             padding-right: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
             color: white;
-            font-weight: bold;
-            font-size: 0.75rem;
-            min-width: 40px;
+            transition: width 0.8s ease;
+            min-width: 35px;
         }
-        .barra-fill.venta {
-            background: linear-gradient(90deg, #1b5e3a, #4caf50);
-        }
-        .barra-fill.q {
-            background: linear-gradient(90deg, #2e7d32, #66bb6a);
-        }
-        .barra-fill.nq {
-            background: linear-gradient(90deg, #c62828, #ef5350);
-        }
-        .barra-fill.ct {
-            background: linear-gradient(90deg, #e65100, #ff9800);
-        }
-        .barra-valor {
-            font-weight: bold;
-            font-size: 0.85rem;
-            min-width: 60px;
+        .barra-venta-fill.venta { background: linear-gradient(90deg, #0d9488, #14b8a6); }
+        .barra-venta-fill.q { background: linear-gradient(90deg, #059669, #34d399); }
+        .barra-venta-fill.nq { background: linear-gradient(90deg, #dc2626, #f87171); }
+        .barra-venta-fill.ct { background: linear-gradient(90deg, #d97706, #fbbf24); }
+        .barra-venta-valor {
+            min-width: 80px;
             text-align: right;
+            font-weight: 600;
+            font-size: 0.85rem;
             color: #0a2540;
         }
 
-        .ventas-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        .leyenda-ventas {
+            display: flex;
             gap: 20px;
-            margin: 20px 0;
-        }
-        .ventas-card {
-            background: white;
-            border-radius: 12px;
+            flex-wrap: wrap;
+            margin-top: 15px;
             padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-left: 4px solid #0a2540;
+            background: #f8fafc;
+            border-radius: 10px;
         }
-        .ventas-card h4 {
-            margin: 0 0 10px 0;
-            color: #0a2540;
-        }
-        .ventas-card .numero {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #d4af37;
-        }
-        .ventas-card .detalle {
+        .leyenda-ventas-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 0.85rem;
-            color: #64748b;
+            color: #1e293b;
+        }
+        .leyenda-ventas-item .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        .color-box.q-color { background: #2e7d32; }
+        .color-box.nq-color { background: #c62828; }
+        .color-box.ct-color { background: #e65100; }
+
+        .tabla-ventas {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85rem;
+        }
+        .tabla-ventas th {
+            background: #0a2540;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+        }
+        .tabla-ventas td {
+            padding: 8px 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tabla-ventas tr:hover {
+            background: #f8fafc;
+        }
+        .tabla-ventas .total-row {
+            background: #e8f0fe !important;
+            font-weight: bold;
+        }
+
+        .pestanas-ventas {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .pestana-ventas {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #0a2540;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .pestana-ventas:hover {
+            border-color: #d4af37;
+        }
+        .pestana-ventas.active {
+            border-color: #0a2540;
+            background: #0a2540;
+            color: white;
         }
 
         @media (max-width: 1200px) {
@@ -471,6 +539,8 @@
         }
         @media (max-width: 800px) {
             .comentario-textarea { width: 140px; min-width: 120px; }
+            .barra-venta-label { min-width: 100px; font-size: 0.75rem; }
+            .barra-venta-valor { min-width: 60px; font-size: 0.75rem; }
         }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
@@ -511,8 +581,11 @@
         <button id="btnInactivosSup" class="btn-inactivos">🚫 Inactivos</button>
         <button id="btnReporteMensual" class="btn-reporte-mensual">📆 Reporte Mensual</button>
         <button id="btnCargarExcel" class="btn-cargar-excel">📥 Cargar Excel</button>
-        <button id="btnVentas" class="btn-estadisticas" style="background:#0d9488;">📊 Ventas por Base</button>
+        <button id="btnVentas" class="btn-ventas">📊 Ventas por Base</button>
     </div>
+
+    <!-- Input oculto para cargar Excel -->
+    <input type="file" id="inputExcel" accept=".xlsx,.xls" style="display:none;">
 
     <div id="resumenContainer" class="resumen" style="display: none;"></div>
 
@@ -594,7 +667,7 @@
     </div>
 </div>
 
-<!-- Modal de Ventas por Base de Datos -->
+<!-- Modal de Ventas por Base -->
 <div id="modalVentas" class="modal-ventas">
     <div class="modal-ventas-contenido">
         <div class="modal-header">
@@ -602,13 +675,10 @@
             <span class="cerrar-modal cerrar-ventas">&times;</span>
         </div>
         <div id="contenidoVentas">
-            <p style="text-align:center; color:#64748b;">Cargando estadísticas de ventas...</p>
+            <p style="text-align:center; color:#64748b;">Carga un archivo Excel con el botón "📥 Cargar Excel"</p>
         </div>
     </div>
 </div>
-
-<!-- Input oculto para cargar Excel -->
-<input type="file" id="inputExcel" accept=".xlsx,.xls" style="display:none;">
 
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -633,6 +703,8 @@
     let supervisorSeleccionado = '';
     let datosReporteMensual = [];
     let datosVentasExcel = [];
+    let datosVentasPorPestana = {};
+    let pestanaActual = 'Todas';
     
     const PASSWORD_ESTADISTICAS = "supervisor2024";
     const PASSWORD_DESBLOQUEO = "admin123";
@@ -1461,7 +1533,7 @@
         mostrarNotificacion(`📥 Excel descargado: ${nombreArchivo}`);
     }
 
-    // =============== CARGAR EXCEL CON MANIFIESTO ===============
+    // =============== CARGAR EXCEL CON MANIFIESTO (TODAS LAS PESTAÑAS) ===============
     function cargarExcelManifiesto() {
         document.getElementById('inputExcel').click();
     }
@@ -1475,95 +1547,119 @@
             try {
                 const data = new Uint8Array(event.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
-                const primeraHoja = workbook.Sheets[workbook.SheetNames[0]];
-                const datos = XLSX.utils.sheet_to_json(primeraHoja);
                 
-                datosVentasExcel = [];
+                datosVentasPorPestana = {};
+                let totalRegistros = 0;
                 
-                // Buscar las columnas que coinciden con los encabezados
-                const headers = Object.keys(datos[0] || {});
-                
-                // Mapear columnas
-                let colNumParejas = null;
-                let colFecha = null;
-                let colNombres = null;
-                let colEstadoCivil = null;
-                let colBaseDatos = null;
-                let colStatusVendor = null;
-                let colVolumenVenta = null;
-                let colTelefono = null;
-                
-                headers.forEach((h, index) => {
-                    const header = h.trim().toUpperCase();
-                    if (header.includes('N°') && header.includes('PAREJAS')) colNumParejas = index;
-                    else if (header.includes('FECHA')) colFecha = index;
-                    else if (header.includes('NOMBRES') || header.includes('FAMILIA') || header.includes('EDAD')) colNombres = index;
-                    else if (header.includes('ESTADO CIVIL') || header.includes('ESTADO') && header.includes('CIVIL')) colEstadoCivil = index;
-                    else if (header.includes('BASE DE DATOS') || header.includes('BASE') && header.includes('DATOS')) colBaseDatos = index;
-                    else if (header.includes('STATUS') && header.includes('VENDOR')) colStatusVendor = index;
-                    else if (header.includes('VOLUMEN') && header.includes('VENTA')) colVolumenVenta = index;
-                    else if (header.includes('TELEFONO') || header.includes('TELÉFONO') || header.includes('TEL')) colTelefono = index;
-                });
-
-                // Si no encuentra columnas por nombre exacto, intentar por posición (asumiendo orden)
-                if (colNumParejas === null && headers.length >= 0) colNumParejas = 0;
-                if (colFecha === null && headers.length >= 1) colFecha = 1;
-                if (colNombres === null && headers.length >= 2) colNombres = 2;
-                if (colEstadoCivil === null && headers.length >= 3) colEstadoCivil = 3;
-                if (colBaseDatos === null && headers.length >= 4) colBaseDatos = 4;
-                if (colStatusVendor === null && headers.length >= 5) colStatusVendor = 5;
-                if (colVolumenVenta === null && headers.length >= 6) colVolumenVenta = 6;
-                if (colTelefono === null && headers.length >= 7) colTelefono = 7;
-
-                datos.forEach(row => {
-                    const values = Object.values(row);
+                // Procesar cada pestaña
+                workbook.SheetNames.forEach(nombrePestana => {
+                    const hoja = workbook.Sheets[nombrePestana];
+                    const datos = XLSX.utils.sheet_to_json(hoja, { defval: '' });
                     
-                    const numParejas = values[colNumParejas] || '';
-                    const fecha = values[colFecha] || '';
-                    const nombres = values[colNombres] || '';
-                    const estadoCivil = values[colEstadoCivil] || '';
-                    const baseDatos = values[colBaseDatos] || '';
-                    const statusVendor = values[colStatusVendor] || '';
-                    let volumenVenta = parseFloat(String(values[colVolumenVenta] || '').replace(/,/g, '')) || 0;
-                    const telefono = values[colTelefono] || '';
-
-                    // Extraer edad del campo NOMBRES FAMILIA EDAD
-                    let edad = '';
-                    let nombreLimpio = nombres;
-                    const edadMatch = String(nombres).match(/\d+/);
-                    if (edadMatch) {
-                        edad = edadMatch[0];
-                        nombreLimpio = String(nombres).replace(/\d+/, '').trim();
-                    }
-
-                    // Determinar estado (Q, NQ, CT) basado en el estado civil o status vendor
-                    let estado = 'CT'; // Por defecto CT (Citado)
-                    const estadoUpper = String(estadoCivil).toUpperCase();
-                    const statusUpper = String(statusVendor).toUpperCase();
+                    if (datos.length === 0) return;
                     
-                    if (estadoUpper.includes('Q') || statusUpper.includes('Q')) {
-                        estado = 'Q';
-                    } else if (estadoUpper.includes('NQ') || statusUpper.includes('NQ')) {
-                        estado = 'NQ';
-                    } else if (estadoUpper.includes('CT') || statusUpper.includes('CT')) {
-                        estado = 'CT';
-                    }
-
-                    datosVentasExcel.push({
-                        numParejas: numParejas,
-                        fecha: fecha,
-                        nombres: nombreLimpio || nombres,
-                        edad: edad,
-                        estadoCivil: estadoCivil,
-                        baseDatos: baseDatos || 'Sin base',
-                        statusVendor: statusVendor,
-                        volumenVenta: volumenVenta,
-                        telefono: telefono,
-                        estado: estado
+                    const registrosPestana = [];
+                    const headers = Object.keys(datos[0] || {});
+                    
+                    // Buscar columnas relevantes
+                    let colNumParejas = null, colFecha = null, colNombres = null;
+                    let colEstadoCivil = null, colBaseDatos = null, colStatusVendor = null;
+                    let colVolumenVenta = null, colTelefono = null;
+                    
+                    headers.forEach((h, index) => {
+                        const header = h.trim().toUpperCase();
+                        if (header.includes('N°') && header.includes('PAREJAS')) colNumParejas = index;
+                        else if (header.includes('FECHA')) colFecha = index;
+                        else if (header.includes('NOMBRES') || header.includes('FAMILIA') || header.includes('EDAD')) colNombres = index;
+                        else if (header.includes('ESTADO CIVIL') || (header.includes('ESTADO') && header.includes('CIVIL'))) colEstadoCivil = index;
+                        else if (header.includes('BASE DE DATOS') || (header.includes('BASE') && header.includes('DATOS'))) colBaseDatos = index;
+                        else if (header.includes('STATUS') && header.includes('VENDOR')) colStatusVendor = index;
+                        else if (header.includes('VOLUMEN') && header.includes('VENTA')) colVolumenVenta = index;
+                        else if (header.includes('TELEFONO') || header.includes('TELÉFONO') || header.includes('TEL')) colTelefono = index;
                     });
+
+                    // Si no encuentra columnas por nombre, usar posición
+                    if (colNumParejas === null && headers.length >= 0) colNumParejas = 0;
+                    if (colFecha === null && headers.length >= 1) colFecha = 1;
+                    if (colNombres === null && headers.length >= 2) colNombres = 2;
+                    if (colEstadoCivil === null && headers.length >= 3) colEstadoCivil = 3;
+                    if (colBaseDatos === null && headers.length >= 4) colBaseDatos = 4;
+                    if (colStatusVendor === null && headers.length >= 5) colStatusVendor = 5;
+                    if (colVolumenVenta === null && headers.length >= 6) colVolumenVenta = 6;
+                    if (colTelefono === null && headers.length >= 7) colTelefono = 7;
+
+                    datos.forEach(row => {
+                        const values = Object.values(row);
+                        
+                        const numParejas = String(values[colNumParejas] || '').trim();
+                        const fecha = String(values[colFecha] || '').trim();
+                        const nombres = String(values[colNombres] || '').trim();
+                        const estadoCivil = String(values[colEstadoCivil] || '').trim();
+                        const baseDatos = String(values[colBaseDatos] || '').trim() || 'Sin base';
+                        const statusVendor = String(values[colStatusVendor] || '').trim();
+                        let volumenVenta = parseFloat(String(values[colVolumenVenta] || '0').replace(/,/g, '')) || 0;
+                        const telefono = String(values[colTelefono] || '').trim();
+
+                        // Extraer edad del campo NOMBRES
+                        let edad = '';
+                        let nombreLimpio = nombres;
+                        const edadMatch = String(nombres).match(/\d+/);
+                        if (edadMatch) {
+                            edad = edadMatch[0];
+                            nombreLimpio = String(nombres).replace(/\d+/, '').trim();
+                        }
+
+                        // Determinar estado (Q, NQ, CT) - BUSCAR EN TODOS LOS CAMPOS
+                        let estado = 'CT';
+                        const textoCompleto = (estadoCivil + ' ' + statusVendor + ' ' + nombres).toUpperCase();
+                        
+                        // Primero buscar NQ (NO CALIFICADO)
+                        if (textoCompleto.includes('NQ') || 
+                            textoCompleto.includes('NO CALIF') || 
+                            textoCompleto.includes('NO Q') ||
+                            textoCompleto.includes('N/Q')) {
+                            estado = 'NQ';
+                        }
+                        // Luego buscar Q (CALIFICADO)
+                        else if (textoCompleto.includes('Q') || 
+                                 textoCompleto.includes('CALIF') ||
+                                 textoCompleto.includes('Q -') ||
+                                 textoCompleto.includes('- Q')) {
+                            estado = 'Q';
+                        }
+                        // Si no, es CT (CITADO)
+                        else {
+                            estado = 'CT';
+                        }
+
+                        registrosPestana.push({
+                            numParejas: numParejas,
+                            fecha: fecha,
+                            nombres: nombreLimpio || nombres,
+                            edad: edad,
+                            estadoCivil: estadoCivil,
+                            baseDatos: baseDatos,
+                            statusVendor: statusVendor,
+                            volumenVenta: volumenVenta,
+                            telefono: telefono,
+                            estado: estado,
+                            pestana: nombrePestana
+                        });
+                    });
+                    
+                    datosVentasPorPestana[nombrePestana] = registrosPestana;
+                    totalRegistros += registrosPestana.length;
                 });
 
-                mostrarNotificacion(`📥 Excel cargado: ${datosVentasExcel.length} registros`);
+                // Combinar todos los registros para el total general
+                datosVentasExcel = [];
+                Object.values(datosVentasPorPestana).forEach(regs => {
+                    datosVentasExcel = datosVentasExcel.concat(regs);
+                });
+
+                mostrarNotificacion(`📥 Excel cargado: ${totalRegistros} registros en ${Object.keys(datosVentasPorPestana).length} pestañas`);
+                
+                // Mostrar estadísticas automáticamente
                 mostrarEstadisticasVentas();
                 
             } catch (error) {
@@ -1578,188 +1674,280 @@
 
     // =============== ESTADÍSTICAS DE VENTAS POR BASE DE DATOS ===============
     function mostrarEstadisticasVentas() {
-        if (!datosVentasExcel || datosVentasExcel.length === 0) {
-            document.getElementById('contenidoVentas').innerHTML = `
+        const container = document.getElementById('contenidoVentas');
+        
+        // Verificar si hay datos
+        const totalRegistros = datosVentasExcel.length;
+        if (totalRegistros === 0) {
+            container.innerHTML = `
                 <p style="text-align:center; color:#64748b; padding: 40px;">
                     📭 No hay datos cargados. Usa el botón "📥 Cargar Excel" para subir un manifiesto.
                 </p>
             `;
+            document.getElementById('modalVentas').style.display = 'block';
             return;
         }
 
-        // Agrupar por base de datos
-        const grupos = {};
-        datosVentasExcel.forEach(item => {
-            const base = item.baseDatos || 'Sin base';
-            if (!grupos[base]) {
-                grupos[base] = {
-                    totalVentas: 0,
-                    Q: 0,
-                    NQ: 0,
-                    CT: 0,
-                    totalRegistros: 0
-                };
+        // Obtener lista de pestañas disponibles
+        const pestanas = Object.keys(datosVentasPorPestana);
+        const esSemanaEnCurso = pestanas.some(p => p.toLowerCase().includes('semana') || p.toLowerCase().includes('curso'));
+        
+        // Generar pestañas de navegación
+        let pestanasHtml = `
+            <div class="pestanas-ventas">
+                <button class="pestana-ventas active" data-pestana="Todas">📊 Todas (${totalRegistros})</button>
+        `;
+        
+        // Ordenar pestañas: primero las que son meses, luego semana en curso
+        const mesesOrden = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        const pestanasOrdenadas = pestanas.sort((a, b) => {
+            const aLower = a.toLowerCase();
+            const bLower = b.toLowerCase();
+            const aIndex = mesesOrden.findIndex(m => aLower.includes(m));
+            const bIndex = mesesOrden.findIndex(m => bLower.includes(m));
+            if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+            if (aIndex !== -1) return -1;
+            if (bIndex !== -1) return 1;
+            if (aLower.includes('semana') || aLower.includes('curso')) return 1;
+            if (bLower.includes('semana') || bLower.includes('curso')) return -1;
+            return a.localeCompare(b);
+        });
+        
+        pestanasOrdenadas.forEach(p => {
+            const count = datosVentasPorPestana[p].length;
+            const icono = p.toLowerCase().includes('semana') || p.toLowerCase().includes('curso') ? '📅' : '📊';
+            pestanasHtml += `
+                <button class="pestana-ventas" data-pestana="${p}">${icono} ${p} (${count})</button>
+            `;
+        });
+        
+        pestanasHtml += `</div>`;
+        
+        // Función para renderizar estadísticas de una pestaña específica
+        function renderizarEstadisticas(pestana) {
+            const datos = pestana === 'Todas' ? datosVentasExcel : datosVentasPorPestana[pestana] || [];
+            if (datos.length === 0) {
+                return `<p style="text-align:center; color:#64748b;">No hay datos en esta pestaña</p>`;
             }
-            grupos[base].totalVentas += item.volumenVenta || 0;
-            grupos[base].totalRegistros++;
-            if (item.estado === 'Q') grupos[base].Q++;
-            else if (item.estado === 'NQ') grupos[base].NQ++;
-            else grupos[base].CT++;
-        });
-
-        const maxVentas = Math.max(...Object.values(grupos).map(g => g.totalVentas), 1);
-        const maxRegistros = Math.max(...Object.values(grupos).map(g => g.totalRegistros), 1);
-
-        let html = `
-            <div style="margin-bottom: 20px; padding: 15px; background: #e8f0fe; border-radius: 12px; border-left: 4px solid #0a2540;">
-                <p style="margin: 0;"><strong>📊 Resumen de Ventas por Base de Datos</strong></p>
-                <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #64748b;">
-                    Total de registros: <strong>${datosVentasExcel.length}</strong> | 
-                    Total de bases: <strong>${Object.keys(grupos).length}</strong>
-                </p>
-            </div>
-
-            <div style="overflow-x: auto;">
-                <table class="tabla-estadisticas">
-                    <thead>
-                        <tr>
-                            <th>Base de Datos</th>
-                            <th>Registros</th>
-                            <th>💵 Volumen Venta</th>
-                            <th>✅ Q</th>
-                            <th>❌ NQ</th>
-                            <th>🔄 CT</th>
-                            <th>% Q</th>
-                            <th>% NQ</th>
-                            <th>% CT</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-        `;
-
-        const sortedBases = Object.entries(grupos).sort((a, b) => b[1].totalVentas - a[1].totalVentas);
-
-        let totalVentasGlobal = 0;
-        let totalQ = 0, totalNQ = 0, totalCT = 0;
-
-        sortedBases.forEach(([base, stats]) => {
-            const pctQ = stats.totalRegistros > 0 ? ((stats.Q / stats.totalRegistros) * 100).toFixed(1) : 0;
-            const pctNQ = stats.totalRegistros > 0 ? ((stats.NQ / stats.totalRegistros) * 100).toFixed(1) : 0;
-            const pctCT = stats.totalRegistros > 0 ? ((stats.CT / stats.totalRegistros) * 100).toFixed(1) : 0;
             
-            totalVentasGlobal += stats.totalVentas;
-            totalQ += stats.Q;
-            totalNQ += stats.NQ;
-            totalCT += stats.CT;
-
-            html += `
-                <tr>
-                    <td style="text-align:left; font-weight:bold;">${base}</td>
-                    <td>${stats.totalRegistros}</td>
-                    <td style="color:#1b5e3a; font-weight:bold;">$${stats.totalVentas.toLocaleString()}</td>
-                    <td style="color:#2e7d32;">${stats.Q}</td>
-                    <td style="color:#c62828;">${stats.NQ}</td>
-                    <td style="color:#e65100;">${stats.CT}</td>
-                    <td style="color:#2e7d32; font-weight:bold;">${pctQ}%</td>
-                    <td style="color:#c62828;">${pctNQ}%</td>
-                    <td style="color:#e65100;">${pctCT}%</td>
-                </tr>
+            // Agrupar por base de datos
+            const grupos = {};
+            let totalQ = 0, totalNQ = 0, totalCT = 0;
+            let totalVentasGlobal = 0;
+            
+            datos.forEach(item => {
+                const base = item.baseDatos || 'Sin base';
+                if (!grupos[base]) {
+                    grupos[base] = {
+                        totalVentas: 0,
+                        Q: 0,
+                        NQ: 0,
+                        CT: 0,
+                        totalRegistros: 0
+                    };
+                }
+                grupos[base].totalVentas += item.volumenVenta || 0;
+                grupos[base].totalRegistros++;
+                totalVentasGlobal += item.volumenVenta || 0;
+                
+                if (item.estado === 'Q') {
+                    grupos[base].Q++;
+                    totalQ++;
+                } else if (item.estado === 'NQ') {
+                    grupos[base].NQ++;
+                    totalNQ++;
+                } else {
+                    grupos[base].CT++;
+                    totalCT++;
+                }
+            });
+            
+            const maxVentas = Math.max(...Object.values(grupos).map(g => g.totalVentas), 1);
+            const totalRegistrosBase = datos.length;
+            
+            // Resumen general
+            let html = `
+                <div class="ventas-resumen-grid">
+                    <div class="ventas-resumen-card q-card">
+                        <div class="icono">✅</div>
+                        <div class="valor">${totalQ}</div>
+                        <div class="etiqueta">Calificados (Q) - ${totalRegistrosBase > 0 ? ((totalQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                    </div>
+                    <div class="ventas-resumen-card nq-card">
+                        <div class="icono">❌</div>
+                        <div class="valor">${totalNQ}</div>
+                        <div class="etiqueta">No Calificados (NQ) - ${totalRegistrosBase > 0 ? ((totalNQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                    </div>
+                    <div class="ventas-resumen-card ct-card">
+                        <div class="icono">🔄</div>
+                        <div class="valor">${totalCT}</div>
+                        <div class="etiqueta">Citados (CT) - ${totalRegistrosBase > 0 ? ((totalCT/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                    </div>
+                    <div class="ventas-resumen-card total-card">
+                        <div class="icono">💰</div>
+                        <div class="valor">$${totalVentasGlobal.toLocaleString()}</div>
+                        <div class="etiqueta">Volumen Total de Ventas</div>
+                    </div>
+                </div>
             `;
-        });
-
-        // Totales
-        const totalRegistrosGlobal = datosVentasExcel.length;
-        const pctQGlobal = totalRegistrosGlobal > 0 ? ((totalQ / totalRegistrosGlobal) * 100).toFixed(1) : 0;
-        const pctNQGlobal = totalRegistrosGlobal > 0 ? ((totalNQ / totalRegistrosGlobal) * 100).toFixed(1) : 0;
-        const pctCTGlobal = totalRegistrosGlobal > 0 ? ((totalCT / totalRegistrosGlobal) * 100).toFixed(1) : 0;
-
-        html += `
-                    <tr style="background: #e8f0fe; font-weight: bold;">
-                        <td><strong>TOTALES</strong></td>
-                        <td><strong>${totalRegistrosGlobal}</strong></td>
-                        <td style="color:#1b5e3a;"><strong>$${totalVentasGlobal.toLocaleString()}</strong></td>
-                        <td style="color:#2e7d32;"><strong>${totalQ}</strong></td>
-                        <td style="color:#c62828;"><strong>${totalNQ}</strong></td>
-                        <td style="color:#e65100;"><strong>${totalCT}</strong></td>
-                        <td style="color:#2e7d32;"><strong>${pctQGlobal}%</strong></td>
-                        <td style="color:#c62828;"><strong>${pctNQGlobal}%</strong></td>
-                        <td style="color:#e65100;"><strong>${pctCTGlobal}%</strong></td>
+            
+            // Tabla por base
+            html += `
+                <h4 style="color:#0a2540; margin-top:20px;">📋 Detalle por Base de Datos</h4>
+                <div style="overflow-x: auto;">
+                    <table class="tabla-ventas">
+                        <thead>
+                            <tr>
+                                <th>Base de Datos</th>
+                                <th>Registros</th>
+                                <th>💵 Volumen Venta</th>
+                                <th>✅ Q</th>
+                                <th>❌ NQ</th>
+                                <th>🔄 CT</th>
+                                <th>% Q</th>
+                                <th>% NQ</th>
+                                <th>% CT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            const sortedBases = Object.entries(grupos).sort((a, b) => b[1].totalVentas - a[1].totalVentas);
+            
+            sortedBases.forEach(([base, stats]) => {
+                const pctQ = stats.totalRegistros > 0 ? ((stats.Q / stats.totalRegistros) * 100).toFixed(1) : 0;
+                const pctNQ = stats.totalRegistros > 0 ? ((stats.NQ / stats.totalRegistros) * 100).toFixed(1) : 0;
+                const pctCT = stats.totalRegistros > 0 ? ((stats.CT / stats.totalRegistros) * 100).toFixed(1) : 0;
+                
+                html += `
+                    <tr>
+                        <td style="text-align:left; font-weight:bold;">${base}</td>
+                        <td>${stats.totalRegistros}</td>
+                        <td style="color:#0d9488; font-weight:bold;">$${stats.totalVentas.toLocaleString()}</td>
+                        <td style="color:#2e7d32;">${stats.Q}</td>
+                        <td style="color:#c62828;">${stats.NQ}</td>
+                        <td style="color:#e65100;">${stats.CT}</td>
+                        <td style="color:#2e7d32; font-weight:bold;">${pctQ}%</td>
+                        <td style="color:#c62828;">${pctNQ}%</td>
+                        <td style="color:#e65100;">${pctCT}%</td>
                     </tr>
-                </tbody>
-            </table>
-            </div>
-        `;
-
-        // Gráfica de barras - Volumen de ventas
-        html += `
-            <div style="margin-top: 30px;">
-                <h4 style="color:#0a2540;">📊 Volumen de Ventas por Base de Datos</h4>
-                <div class="grafica-barras">
-        `;
-
-        sortedBases.forEach(([base, stats]) => {
-            const pct = maxVentas > 0 ? (stats.totalVentas / maxVentas) * 100 : 0;
-            html += `
-                <div class="barra-item">
-                    <span class="barra-label">${base}</span>
-                    <div class="barra-container">
-                        <div class="barra-fill venta" style="width: ${Math.max(pct, 5)}%;">
-                            $${stats.totalVentas.toLocaleString()}
-                        </div>
-                    </div>
-                    <span class="barra-valor">$${stats.totalVentas.toLocaleString()}</span>
-                </div>
-            `;
-        });
-
-        html += `
-                </div>
-            </div>
-        `;
-
-        // Gráfica de barras - Porcentajes Q, NQ, CT
-        html += `
-            <div style="margin-top: 30px;">
-                <h4 style="color:#0a2540;">📊 Porcentajes de Q / NQ / CT por Base de Datos</h4>
-                <div class="grafica-barras">
-        `;
-
-        sortedBases.forEach(([base, stats]) => {
-            const pctQ = stats.totalRegistros > 0 ? (stats.Q / stats.totalRegistros) * 100 : 0;
-            const pctNQ = stats.totalRegistros > 0 ? (stats.NQ / stats.totalRegistros) * 100 : 0;
-            const pctCT = stats.totalRegistros > 0 ? (stats.CT / stats.totalRegistros) * 100 : 0;
+                `;
+            });
             
-            // Barra apilada horizontal
+            // Totales
+            const pctQTotal = totalRegistrosBase > 0 ? ((totalQ / totalRegistrosBase) * 100).toFixed(1) : 0;
+            const pctNQTotal = totalRegistrosBase > 0 ? ((totalNQ / totalRegistrosBase) * 100).toFixed(1) : 0;
+            const pctCTTotal = totalRegistrosBase > 0 ? ((totalCT / totalRegistrosBase) * 100).toFixed(1) : 0;
+            
             html += `
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-                    <span style="min-width: 180px; font-size: 0.8rem; font-weight: bold; color:#0a2540;">${base}</span>
-                    <div style="flex: 1; height: 28px; display: flex; border-radius: 14px; overflow: hidden; background: #e2e8f0;">
-                        <div style="width: ${pctQ}%; background: linear-gradient(90deg, #2e7d32, #66bb6a); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: bold; min-width: ${pctQ > 0 ? '30px' : '0'};">
-                            ${pctQ > 0 ? `${pctQ.toFixed(0)}% Q` : ''}
+                        <tr class="total-row">
+                            <td><strong>TOTALES</strong></td>
+                            <td><strong>${totalRegistrosBase}</strong></td>
+                            <td style="color:#0d9488;"><strong>$${totalVentasGlobal.toLocaleString()}</strong></td>
+                            <td style="color:#2e7d32;"><strong>${totalQ}</strong></td>
+                            <td style="color:#c62828;"><strong>${totalNQ}</strong></td>
+                            <td style="color:#e65100;"><strong>${totalCT}</strong></td>
+                            <td style="color:#2e7d32;"><strong>${pctQTotal}%</strong></td>
+                            <td style="color:#c62828;"><strong>${pctNQTotal}%</strong></td>
+                            <td style="color:#e65100;"><strong>${pctCTTotal}%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            `;
+            
+            // Gráfica de barras - Volumen de ventas
+            html += `
+                <h4 style="color:#0a2540; margin-top:25px;">📊 Volumen de Ventas por Base</h4>
+                <div class="grafica-ventas-barras">
+            `;
+            
+            sortedBases.forEach(([base, stats]) => {
+                const pct = maxVentas > 0 ? (stats.totalVentas / maxVentas) * 100 : 0;
+                html += `
+                    <div class="barra-venta">
+                        <span class="barra-venta-label">${base}</span>
+                        <div class="barra-venta-container">
+                            <div class="barra-venta-fill venta" style="width: ${Math.max(pct, 5)}%;">
+                                $${stats.totalVentas.toLocaleString()}
+                            </div>
                         </div>
-                        <div style="width: ${pctNQ}%; background: linear-gradient(90deg, #c62828, #ef5350); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: bold; min-width: ${pctNQ > 0 ? '30px' : '0'};">
-                            ${pctNQ > 0 ? `${pctNQ.toFixed(0)}% NQ` : ''}
+                        <span class="barra-venta-valor">$${stats.totalVentas.toLocaleString()}</span>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            // Gráfica de barras apiladas - Q, NQ, CT
+            html += `
+                <h4 style="color:#0a2540; margin-top:25px;">📊 Porcentaje de Q / NQ / CT por Base</h4>
+                <div class="grafica-ventas-barras">
+            `;
+            
+            sortedBases.forEach(([base, stats]) => {
+                const pctQ = stats.totalRegistros > 0 ? (stats.Q / stats.totalRegistros) * 100 : 0;
+                const pctNQ = stats.totalRegistros > 0 ? (stats.NQ / stats.totalRegistros) * 100 : 0;
+                const pctCT = stats.totalRegistros > 0 ? (stats.CT / stats.totalRegistros) * 100 : 0;
+                
+                html += `
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
+                        <span style="min-width:150px; font-size:0.8rem; font-weight:600; color:#0a2540;">${base}</span>
+                        <div style="flex:1; height:28px; display:flex; border-radius:14px; overflow:hidden; background:#e2e8f0;">
+                            <div style="width:${pctQ}%; background:linear-gradient(90deg, #2e7d32, #66bb6a); display:flex; align-items:center; justify-content:center; color:white; font-size:0.65rem; font-weight:bold; min-width:${pctQ > 0 ? '30px' : '0'};">
+                                ${pctQ > 0 ? `${pctQ.toFixed(0)}% Q` : ''}
+                            </div>
+                            <div style="width:${pctNQ}%; background:linear-gradient(90deg, #c62828, #ef5350); display:flex; align-items:center; justify-content:center; color:white; font-size:0.65rem; font-weight:bold; min-width:${pctNQ > 0 ? '30px' : '0'};">
+                                ${pctNQ > 0 ? `${pctNQ.toFixed(0)}% NQ` : ''}
+                            </div>
+                            <div style="width:${pctCT}%; background:linear-gradient(90deg, #e65100, #ff9800); display:flex; align-items:center; justify-content:center; color:white; font-size:0.65rem; font-weight:bold; min-width:${pctCT > 0 ? '30px' : '0'};">
+                                ${pctCT > 0 ? `${pctCT.toFixed(0)}% CT` : ''}
+                            </div>
                         </div>
-                        <div style="width: ${pctCT}%; background: linear-gradient(90deg, #e65100, #ff9800); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; font-weight: bold; min-width: ${pctCT > 0 ? '30px' : '0'};">
-                            ${pctCT > 0 ? `${pctCT.toFixed(0)}% CT` : ''}
-                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            // Leyenda
+            html += `
+                <div class="leyenda-ventas">
+                    <div class="leyenda-ventas-item">
+                        <span class="color-box q-color"></span> <strong>Q</strong> = Calificados (Llegaron)
+                    </div>
+                    <div class="leyenda-ventas-item">
+                        <span class="color-box nq-color"></span> <strong>NQ</strong> = No Calificados (No llegaron)
+                    </div>
+                    <div class="leyenda-ventas-item">
+                        <span class="color-box ct-color"></span> <strong>CT</strong> = Citados (Pendientes)
                     </div>
                 </div>
             `;
+            
+            return html;
+        }
+        
+        // Renderizar todas las pestañas
+        let contenidoCompleto = pestanasHtml;
+        
+        // Contenido para "Todas"
+        contenidoCompleto += `<div id="contenidoPestana" class="contenido-pestana">${renderizarEstadisticas('Todas')}</div>`;
+        
+        container.innerHTML = contenidoCompleto;
+        
+        // Eventos para las pestañas
+        document.querySelectorAll('.pestana-ventas').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.pestana-ventas').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const pestana = this.dataset.pestana;
+                const contenido = document.getElementById('contenidoPestana');
+                contenido.innerHTML = renderizarEstadisticas(pestana);
+            });
         });
-
-        html += `
-                </div>
-            </div>
-
-            <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px; display: flex; gap: 30px; flex-wrap: wrap;">
-                <div><span style="display:inline-block; width:12px; height:12px; background:#2e7d32; border-radius:3px;"></span> <strong>Q</strong> = Calificados (Llegaron)</div>
-                <div><span style="display:inline-block; width:12px; height:12px; background:#c62828; border-radius:3px;"></span> <strong>NQ</strong> = No Calificados (No llegaron)</div>
-                <div><span style="display:inline-block; width:12px; height:12px; background:#e65100; border-radius:3px;"></span> <strong>CT</strong> = Citados (Pendientes)</div>
-            </div>
-        `;
-
-        document.getElementById('contenidoVentas').innerHTML = html;
+        
         document.getElementById('modalVentas').style.display = 'block';
     }
 
