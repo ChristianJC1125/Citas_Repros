@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -382,7 +382,98 @@
             color: #0a2540;
         }
 
-        /* Estilos para gráficas de ventas */
+        /* Estilos para tablas de conversión */
+        .tabla-conversion {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tabla-conversion thead th {
+            background: #0a2540;
+            color: white;
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .tabla-conversion tbody td {
+            padding: 12px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+
+        .tabla-conversion tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .tabla-conversion tbody tr.total-row {
+            background: #e8f0fe;
+            border-top: 2px solid #0a2540;
+            font-weight: bold;
+        }
+
+        .tabla-conversion tbody tr.total-row td {
+            color: #0a2540;
+            font-weight: 700;
+        }
+
+        .tabla-conversion .base-nombre {
+            font-weight: 600;
+            color: #0a2540;
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .tabla-conversion .volumen {
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        .tabla-conversion .conversion-alta {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .tabla-conversion .conversion-media {
+            color: #e65100;
+            font-weight: 600;
+        }
+
+        .tabla-conversion .conversion-baja {
+            color: #c62828;
+            font-weight: 600;
+        }
+
+        .tabla-conversion .q-badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .tabla-conversion .nq-badge {
+            display: inline-block;
+            background: #ffebee;
+            color: #c62828;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
         .ventas-resumen-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -444,9 +535,6 @@
             min-width: 35px;
         }
         .barra-venta-fill.venta { background: linear-gradient(90deg, #0d9488, #14b8a6); }
-        .barra-venta-fill.q { background: linear-gradient(90deg, #059669, #34d399); }
-        .barra-venta-fill.nq { background: linear-gradient(90deg, #dc2626, #f87171); }
-        .barra-venta-fill.ct { background: linear-gradient(90deg, #d97706, #fbbf24); }
         .barra-venta-valor {
             min-width: 80px;
             text-align: right;
@@ -480,33 +568,6 @@
         .color-box.nq-color { background: #c62828; }
         .color-box.ct-color { background: #e65100; }
 
-        .tabla-ventas {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.85rem;
-        }
-        .tabla-ventas th {
-            background: #0a2540;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            position: sticky;
-            top: 0;
-        }
-        .tabla-ventas td {
-            padding: 8px 10px;
-            text-align: center;
-            border-bottom: 1px solid #e2e8f0;
-        }
-        .tabla-ventas tr:hover {
-            background: #f8fafc;
-        }
-        .tabla-ventas .total-row {
-            background: #e8f0fe !important;
-            font-weight: bold;
-        }
-
         .pestanas-ventas {
             display: flex;
             gap: 10px;
@@ -533,6 +594,15 @@
             color: white;
         }
 
+        .titulo-seccion-ventas {
+            color: #0a2540;
+            font-size: 1.1rem;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
         @media (max-width: 1200px) {
             .comentario-textarea { width: 180px; min-width: 150px; }
             th, td { font-size: 0.7rem; padding: 6px; }
@@ -541,6 +611,8 @@
             .comentario-textarea { width: 140px; min-width: 120px; }
             .barra-venta-label { min-width: 100px; font-size: 0.75rem; }
             .barra-venta-valor { min-width: 60px; font-size: 0.75rem; }
+            .tabla-conversion { font-size: 0.75rem; }
+            .tabla-conversion thead th, .tabla-conversion tbody td { padding: 8px 6px; }
         }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
@@ -704,7 +776,6 @@
     let datosReporteMensual = [];
     let datosVentasExcel = [];
     let datosVentasPorPestana = {};
-    let pestanaActual = 'Todas';
     
     const PASSWORD_ESTADISTICAS = "supervisor2024";
     const PASSWORD_DESBLOQUEO = "admin123";
@@ -1533,7 +1604,7 @@
         mostrarNotificacion(`📥 Excel descargado: ${nombreArchivo}`);
     }
 
-    // =============== CARGAR EXCEL CON MANIFIESTO (TODAS LAS PESTAÑAS) ===============
+    // =============== CARGAR EXCEL CON MANIFIESTO ===============
     function cargarExcelManifiesto() {
         document.getElementById('inputExcel').click();
     }
@@ -1609,25 +1680,22 @@
                             nombreLimpio = String(nombres).replace(/\d+/, '').trim();
                         }
 
-                        // Determinar estado (Q, NQ, CT) - BUSCAR EN TODOS LOS CAMPOS
+                        // Determinar estado (Q, NQ, CT)
                         let estado = 'CT';
                         const textoCompleto = (estadoCivil + ' ' + statusVendor + ' ' + nombres).toUpperCase();
                         
-                        // Primero buscar NQ (NO CALIFICADO)
                         if (textoCompleto.includes('NQ') || 
                             textoCompleto.includes('NO CALIF') || 
                             textoCompleto.includes('NO Q') ||
                             textoCompleto.includes('N/Q')) {
                             estado = 'NQ';
                         }
-                        // Luego buscar Q (CALIFICADO)
                         else if (textoCompleto.includes('Q') || 
                                  textoCompleto.includes('CALIF') ||
                                  textoCompleto.includes('Q -') ||
                                  textoCompleto.includes('- Q')) {
                             estado = 'Q';
                         }
-                        // Si no, es CT (CITADO)
                         else {
                             estado = 'CT';
                         }
@@ -1690,7 +1758,6 @@
 
         // Obtener lista de pestañas disponibles
         const pestanas = Object.keys(datosVentasPorPestana);
-        const esSemanaEnCurso = pestanas.some(p => p.toLowerCase().includes('semana') || p.toLowerCase().includes('curso'));
         
         // Generar pestañas de navegación
         let pestanasHtml = `
@@ -1698,7 +1765,7 @@
                 <button class="pestana-ventas active" data-pestana="Todas">📊 Todas (${totalRegistros})</button>
         `;
         
-        // Ordenar pestañas: primero las que son meses, luego semana en curso
+        // Ordenar pestañas
         const mesesOrden = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
         const pestanasOrdenadas = pestanas.sort((a, b) => {
             const aLower = a.toLowerCase();
@@ -1723,7 +1790,7 @@
         
         pestanasHtml += `</div>`;
         
-        // Función para renderizar estadísticas de una pestaña específica
+        // Función para renderizar estadísticas
         function renderizarEstadisticas(pestana) {
             const datos = pestana === 'Todas' ? datosVentasExcel : datosVentasPorPestana[pestana] || [];
             if (datos.length === 0) {
@@ -1791,65 +1858,64 @@
                 </div>
             `;
             
-            // Tabla por base
+            // Tabla de Conversión
             html += `
-                <h4 style="color:#0a2540; margin-top:20px;">📋 Detalle por Base de Datos</h4>
+                <h4 class="titulo-seccion-ventas">📋 TABLA DE CONVERSIÓN POR BASE</h4>
                 <div style="overflow-x: auto;">
-                    <table class="tabla-ventas">
+                    <table class="tabla-conversion">
                         <thead>
                             <tr>
-                                <th>Base de Datos</th>
-                                <th>Registros</th>
-                                <th>💵 Volumen Venta</th>
-                                <th>✅ Q</th>
-                                <th>❌ NQ</th>
-                                <th>🔄 CT</th>
-                                <th>% Q</th>
-                                <th>% NQ</th>
-                                <th>% CT</th>
+                                <th style="text-align:left; padding-left:20px;">Base de Datos</th>
+                                <th>Volumen Total ($)</th>
+                                <th># Ventas (Q)</th>
+                                <th># No Ventas (NQ)</th>
+                                <th># Total Registros</th>
+                                <th>Tasa de Conversión (%)</th>
                             </tr>
                         </thead>
                         <tbody>
             `;
             
+            // Ordenar por volumen de venta (mayor a menor)
             const sortedBases = Object.entries(grupos).sort((a, b) => b[1].totalVentas - a[1].totalVentas);
             
             sortedBases.forEach(([base, stats]) => {
-                const pctQ = stats.totalRegistros > 0 ? ((stats.Q / stats.totalRegistros) * 100).toFixed(1) : 0;
-                const pctNQ = stats.totalRegistros > 0 ? ((stats.NQ / stats.totalRegistros) * 100).toFixed(1) : 0;
-                const pctCT = stats.totalRegistros > 0 ? ((stats.CT / stats.totalRegistros) * 100).toFixed(1) : 0;
+                const totalBase = stats.totalRegistros;
+                const ventasQ = stats.Q;
+                const noVentasNQ = stats.NQ;
+                const volumen = stats.totalVentas;
+                const tasaConversion = totalBase > 0 ? (ventasQ / totalBase) * 100 : 0;
+                
+                let conversionClass = 'conversion-baja';
+                if (tasaConversion >= 80) conversionClass = 'conversion-alta';
+                else if (tasaConversion >= 50) conversionClass = 'conversion-media';
                 
                 html += `
                     <tr>
-                        <td style="text-align:left; font-weight:bold;">${base}</td>
-                        <td>${stats.totalRegistros}</td>
-                        <td style="color:#0d9488; font-weight:bold;">$${stats.totalVentas.toLocaleString()}</td>
-                        <td style="color:#2e7d32;">${stats.Q}</td>
-                        <td style="color:#c62828;">${stats.NQ}</td>
-                        <td style="color:#e65100;">${stats.CT}</td>
-                        <td style="color:#2e7d32; font-weight:bold;">${pctQ}%</td>
-                        <td style="color:#c62828;">${pctNQ}%</td>
-                        <td style="color:#e65100;">${pctCT}%</td>
+                        <td class="base-nombre">${base}</td>
+                        <td class="volumen">$${volumen.toLocaleString()}</td>
+                        <td><span class="q-badge">${ventasQ}</span></td>
+                        <td><span class="nq-badge">${noVentasNQ}</span></td>
+                        <td>${totalBase}</td>
+                        <td class="${conversionClass}">${tasaConversion.toFixed(2)}%</td>
                     </tr>
                 `;
             });
             
-            // Totales
-            const pctQTotal = totalRegistrosBase > 0 ? ((totalQ / totalRegistrosBase) * 100).toFixed(1) : 0;
-            const pctNQTotal = totalRegistrosBase > 0 ? ((totalNQ / totalRegistrosBase) * 100).toFixed(1) : 0;
-            const pctCTTotal = totalRegistrosBase > 0 ? ((totalCT / totalRegistrosBase) * 100).toFixed(1) : 0;
+            // Fila de totales
+            const totalConversion = totalRegistrosBase > 0 ? (totalQ / totalRegistrosBase) * 100 : 0;
+            let totalConversionClass = 'conversion-baja';
+            if (totalConversion >= 80) totalConversionClass = 'conversion-alta';
+            else if (totalConversion >= 50) totalConversionClass = 'conversion-media';
             
             html += `
                         <tr class="total-row">
                             <td><strong>TOTALES</strong></td>
+                            <td><strong>$${totalVentasGlobal.toLocaleString()}</strong></td>
+                            <td><strong>${totalQ}</strong></td>
+                            <td><strong>${totalNQ}</strong></td>
                             <td><strong>${totalRegistrosBase}</strong></td>
-                            <td style="color:#0d9488;"><strong>$${totalVentasGlobal.toLocaleString()}</strong></td>
-                            <td style="color:#2e7d32;"><strong>${totalQ}</strong></td>
-                            <td style="color:#c62828;"><strong>${totalNQ}</strong></td>
-                            <td style="color:#e65100;"><strong>${totalCT}</strong></td>
-                            <td style="color:#2e7d32;"><strong>${pctQTotal}%</strong></td>
-                            <td style="color:#c62828;"><strong>${pctNQTotal}%</strong></td>
-                            <td style="color:#e65100;"><strong>${pctCTTotal}%</strong></td>
+                            <td class="${totalConversionClass}"><strong>${totalConversion.toFixed(2)}%</strong></td>
                         </tr>
                     </tbody>
                 </table>
@@ -1858,52 +1924,22 @@
             
             // Gráfica de barras - Volumen de ventas
             html += `
-                <h4 style="color:#0a2540; margin-top:25px;">📊 Volumen de Ventas por Base</h4>
+                <h4 class="titulo-seccion-ventas">📊 VOLUMEN TOTAL POR BASE DE DATOS</h4>
                 <div class="grafica-ventas-barras">
             `;
             
             sortedBases.forEach(([base, stats]) => {
                 const pct = maxVentas > 0 ? (stats.totalVentas / maxVentas) * 100 : 0;
+                const mostrar = stats.totalVentas > 0;
                 html += `
                     <div class="barra-venta">
                         <span class="barra-venta-label">${base}</span>
                         <div class="barra-venta-container">
-                            <div class="barra-venta-fill venta" style="width: ${Math.max(pct, 5)}%;">
-                                $${stats.totalVentas.toLocaleString()}
+                            <div class="barra-venta-fill venta" style="width: ${mostrar ? Math.max(pct, 5) : 5}%; background: ${mostrar ? 'linear-gradient(90deg, #0d9488, #14b8a6)' : 'linear-gradient(90deg, #94a3b8, #cbd5e1)'};">
+                                ${mostrar ? `$${stats.totalVentas.toLocaleString()}` : '$0'}
                             </div>
                         </div>
-                        <span class="barra-venta-valor">$${stats.totalVentas.toLocaleString()}</span>
-                    </div>
-                `;
-            });
-            
-            html += `</div>`;
-            
-            // Gráfica de barras apiladas - Q, NQ, CT
-            html += `
-                <h4 style="color:#0a2540; margin-top:25px;">📊 Porcentaje de Q / NQ / CT por Base</h4>
-                <div class="grafica-ventas-barras">
-            `;
-            
-            sortedBases.forEach(([base, stats]) => {
-                const pctQ = stats.totalRegistros > 0 ? (stats.Q / stats.totalRegistros) * 100 : 0;
-                const pctNQ = stats.totalRegistros > 0 ? (stats.NQ / stats.totalRegistros) * 100 : 0;
-                const pctCT = stats.totalRegistros > 0 ? (stats.CT / stats.totalRegistros) * 100 : 0;
-                
-                html += `
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:5px;">
-                        <span style="min-width:150px; font-size:0.8rem; font-weight:600; color:#0a2540;">${base}</span>
-                        <div style="flex:1; height:28px; display:flex; border-radius:14px; overflow:hidden; background:#e2e8f0;">
-                            <div style="width:${pctQ}%; background:linear-gradient(90deg, #2e7d32, #66bb6a); display:flex; align-items:center; justify-content:center; color:white; font-size:0.65rem; font-weight:bold; min-width:${pctQ > 0 ? '30px' : '0'};">
-                                ${pctQ > 0 ? `${pctQ.toFixed(0)}% Q` : ''}
-                            </div>
-                            <div style="width:${pctNQ}%; background:linear-gradient(90deg, #c62828, #ef5350); display:flex; align-items:center; justify-content:center; color:white; font-size:0.65rem; font-weight:bold; min-width:${pctNQ > 0 ? '30px' : '0'};">
-                                ${pctNQ > 0 ? `${pctNQ.toFixed(0)}% NQ` : ''}
-                            </div>
-                            <div style="width:${pctCT}%; background:linear-gradient(90deg, #e65100, #ff9800); display:flex; align-items:center; justify-content:center; color:white; font-size:0.65rem; font-weight:bold; min-width:${pctCT > 0 ? '30px' : '0'};">
-                                ${pctCT > 0 ? `${pctCT.toFixed(0)}% CT` : ''}
-                            </div>
-                        </div>
+                        <span class="barra-venta-valor">${mostrar ? `$${stats.totalVentas.toLocaleString()}` : '$0'}</span>
                     </div>
                 `;
             });
@@ -1914,13 +1950,17 @@
             html += `
                 <div class="leyenda-ventas">
                     <div class="leyenda-ventas-item">
-                        <span class="color-box q-color"></span> <strong>Q</strong> = Calificados (Llegaron)
+                        <span class="color-box q-color"></span> <strong>Q</strong> = Calificados (Ventas concretadas)
                     </div>
                     <div class="leyenda-ventas-item">
-                        <span class="color-box nq-color"></span> <strong>NQ</strong> = No Calificados (No llegaron)
+                        <span class="color-box nq-color"></span> <strong>NQ</strong> = No Calificados (No ventas)
                     </div>
                     <div class="leyenda-ventas-item">
-                        <span class="color-box ct-color"></span> <strong>CT</strong> = Citados (Pendientes)
+                        <span class="color-box ct-color"></span> <strong>CT</strong> = Citados (Pendientes de calificar)
+                    </div>
+                    <div class="leyenda-ventas-item">
+                        <span style="width:16px; height:16px; border-radius:4px; background: linear-gradient(90deg, #0d9488, #14b8a6);"></span>
+                        <strong>Volumen de Venta</strong>
                     </div>
                 </div>
             `;
@@ -1930,8 +1970,6 @@
         
         // Renderizar todas las pestañas
         let contenidoCompleto = pestanasHtml;
-        
-        // Contenido para "Todas"
         contenidoCompleto += `<div id="contenidoPestana" class="contenido-pestana">${renderizarEstadisticas('Todas')}</div>`;
         
         container.innerHTML = contenidoCompleto;
