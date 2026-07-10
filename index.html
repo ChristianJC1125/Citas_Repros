@@ -20,7 +20,24 @@
             padding: 20px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        /* ========== MENÚ DE NAVEGACIÓN ========== */
+        h1 {
+            margin-top: 0;
+            color: #0a2540;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #d4af37;
+            color: #0a2540;
+            padding: 5px 12px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* ========== MENÚ PRINCIPAL ========== */
         .menu-principal {
             display: flex;
             gap: 10px;
@@ -57,6 +74,7 @@
             font-size: 0.7rem;
             margin-left: 6px;
         }
+
         /* ========== PESTAÑAS ========== */
         .pestana {
             display: none;
@@ -65,7 +83,523 @@
             display: block;
         }
 
-        /* ========== FORMULARIO DE PAPELETA ========== */
+        /* ========== FILTROS CRM ========== */
+        .filtros {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+            align-items: flex-end;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 16px;
+        }
+        .filtros label {
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+        .filtros input, .filtros select {
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+        .grupo-busqueda {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .grupo-busqueda input {
+            min-width: 200px;
+        }
+        button {
+            background: #0a2540;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover {
+            background: #d4af37;
+            color: #0a2540;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .btn-excel { background: #1b5e3a; }
+        .btn-excel:hover { background: #0f4a2d; color: white; }
+        .btn-estadisticas { background: #8b5cf6; }
+        .btn-estadisticas:hover { background: #7c3aed; }
+        .btn-inactivos { background: #dc2626; }
+        .btn-inactivos:hover { background: #b91c1c; color: white; }
+        .btn-reporte-mensual { background: #059669; }
+        .btn-reporte-mensual:hover { background: #047857; color: white; }
+        .btn-buscar { background: #2563eb; }
+        .btn-limpiar-busqueda { background: #64748b; }
+        .btn-desbloquear { background: #f59e0b; font-size: 0.7rem; padding: 3px 8px; }
+        .btn-cargar-excel { background: #0d9488; }
+        .btn-cargar-excel:hover { background: #0f766e; color: white; }
+        .btn-ventas { background: #7c3aed; }
+        .btn-ventas:hover { background: #6d28d9; color: white; }
+
+        /* ========== TABLA CRM ========== */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            display: block;
+        }
+        th, td {
+            border: 1px solid #e2e8f0;
+            padding: 10px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: #0a2540;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .asistencia-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+        }
+        .btn-llego { background: #2e7d32; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-no-llego { background: #c62828; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-cita { background: #f59e0b; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-cita-nuevo { background: #8b5cf6; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-contesto { background: #06b6d4; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-no-contesto { background: #7f8c8d; font-size: 0.75rem; padding: 5px 10px; }
+        .asistencia-estado {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.75rem;
+        }
+        .estado-llego { background: #c8e6c9; color: #1b5e20; }
+        .estado-no-llego { background: #ffcdd2; color: #b71c1c; }
+        .estado-cita { background: #fff3e0; color: #e65100; }
+        .estado-cita-nuevo { background: #ede9fe; color: #5b21b6; }
+        .estado-contesto { background: #cffafe; color: #0e7490; }
+        .estado-no-contesto { background: #e0e0e0; color: #424242; }
+        .sin-registro { color: #64748b; font-style: italic; }
+        .comentario-textarea {
+            width: 250px;
+            min-width: 200px;
+            font-size: 0.8rem;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            resize: vertical;
+            font-family: inherit;
+            background: #fefce8;
+        }
+        .comentario-textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: white;
+        }
+        .comentario-textarea:disabled {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: #64748b;
+            text-align: center;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 15px;
+        }
+        .resumen {
+            background: linear-gradient(135deg, #e8f0fe 0%, #f1f5f9 100%);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: bold;
+            border-left: 4px solid #d4af37;
+        }
+        .resumen span {
+            margin-right: 20px;
+        }
+        .fila-bloqueada {
+            background: #f1f5f9 !important;
+            opacity: 0.85;
+        }
+        .fila-bloqueada td {
+            border-color: #cbd5e1;
+        }
+        .badge-bloqueado {
+            background: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        .cliente-acompanante {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .cliente-principal {
+            font-weight: bold;
+            color: #0a2540;
+        }
+        .acompanante {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        /* ========== MODALES CRM ========== */
+        .modal-estadisticas, .modal-inactivos, .modal-reporte-mensual, .modal-ventas {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+        }
+        .modal-estadisticas-contenido, .modal-inactivos-contenido, .modal-reporte-contenido, .modal-ventas-contenido {
+            background: white;
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            color: #0a2540;
+        }
+        .cerrar-modal {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .cerrar-modal:hover {
+            color: #c62828;
+        }
+        .password-input {
+            padding: 12px;
+            width: 100%;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin: 15px 0;
+        }
+        .tabla-estadisticas {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabla-estadisticas th {
+            background: #0a2540;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        .tabla-estadisticas td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tabla-estadisticas tr:hover {
+            background: #f8fafc;
+        }
+        .reprobo {
+            background: #ffebee;
+            color: #c62828;
+            font-weight: bold;
+        }
+        .sin-marcar {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .btn-cerrar-modal {
+            background: #475569;
+            margin-top: 20px;
+        }
+        .inactivo-tag {
+            background: #dc2626;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+        .tabla-inactivos {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabla-inactivos th {
+            background: #dc2626;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+        .tabla-inactivos td {
+            padding: 10px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .tabla-inactivos tr:hover {
+            background: #fef2f2;
+        }
+        .mes-selector {
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            font-size: 0.9rem;
+        }
+        .btn-mes {
+            background: #0a2540;
+            padding: 8px 16px;
+            border-radius: 30px;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .btn-mes:hover {
+            background: #d4af37;
+            color: #0a2540;
+        }
+
+        /* ========== TABLAS DE CONVERSIÓN ========== */
+        .tabla-conversion {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .tabla-conversion thead th {
+            background: #0a2540;
+            color: white;
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        .tabla-conversion tbody td {
+            padding: 12px 12px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+        .tabla-conversion tbody tr:hover {
+            background: #f8fafc;
+        }
+        .tabla-conversion tbody tr.total-row {
+            background: #e8f0fe;
+            border-top: 2px solid #0a2540;
+            font-weight: bold;
+        }
+        .tabla-conversion tbody tr.total-row td {
+            color: #0a2540;
+            font-weight: 700;
+        }
+        .tabla-conversion .base-nombre {
+            font-weight: 600;
+            color: #0a2540;
+            text-align: left;
+            padding-left: 20px;
+        }
+        .tabla-conversion .volumen {
+            color: #0d9488;
+            font-weight: 600;
+        }
+        .tabla-conversion .conversion-alta {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+        .tabla-conversion .conversion-media {
+            color: #e65100;
+            font-weight: 600;
+        }
+        .tabla-conversion .conversion-baja {
+            color: #c62828;
+            font-weight: 600;
+        }
+        .tabla-conversion .q-badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .tabla-conversion .nq-badge {
+            display: inline-block;
+            background: #ffebee;
+            color: #c62828;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .ventas-resumen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .ventas-resumen-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #0a2540;
+        }
+        .ventas-resumen-card .icono { font-size: 2rem; margin-bottom: 8px; }
+        .ventas-resumen-card .valor { font-size: 2rem; font-weight: 700; color: #0a2540; }
+        .ventas-resumen-card .etiqueta { color: #64748b; font-size: 0.85rem; }
+        .ventas-resumen-card.q-card { border-left-color: #2e7d32; }
+        .ventas-resumen-card.q-card .valor { color: #2e7d32; }
+        .ventas-resumen-card.nq-card { border-left-color: #c62828; }
+        .ventas-resumen-card.nq-card .valor { color: #c62828; }
+        .ventas-resumen-card.ct-card { border-left-color: #e65100; }
+        .ventas-resumen-card.ct-card .valor { color: #e65100; }
+        .ventas-resumen-card.total-card { border-left-color: #0a2540; }
+        .grafica-ventas-barras {
+            margin-top: 20px;
+        }
+        .barra-venta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .barra-venta-label {
+            min-width: 180px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #0a2540;
+        }
+        .barra-venta-container {
+            flex: 1;
+            height: 28px;
+            background: #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            position: relative;
+        }
+        .barra-venta-fill {
+            height: 100%;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            transition: width 0.8s ease;
+            min-width: 35px;
+        }
+        .barra-venta-fill.venta { background: linear-gradient(90deg, #0d9488, #14b8a6); }
+        .barra-venta-valor {
+            min-width: 80px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: #0a2540;
+        }
+        .leyenda-ventas {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+        .leyenda-ventas-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: #1e293b;
+        }
+        .leyenda-ventas-item .color-box {
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+        }
+        .color-box.q-color { background: #2e7d32; }
+        .color-box.nq-color { background: #c62828; }
+        .color-box.ct-color { background: #e65100; }
+        .pestanas-ventas {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        .pestana-ventas {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #0a2540;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+        .pestana-ventas:hover {
+            border-color: #d4af37;
+        }
+        .pestana-ventas.active {
+            border-color: #0a2540;
+            background: #0a2540;
+            color: white;
+        }
+        .titulo-seccion-ventas {
+            color: #0a2540;
+            font-size: 1.1rem;
+            margin: 25px 0 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* ========== FORMULARIO PAPELETAS ========== */
         .form-papeleta {
             background: #f8fafc;
             padding: 25px 30px;
@@ -189,7 +723,7 @@
             background: #475569;
         }
 
-        /* ========== LISTADO DE PAPELETAS ========== */
+        /* ========== TABLA PAPELETAS ========== */
         .tabla-papeletas {
             width: 100%;
             border-collapse: collapse;
@@ -211,14 +745,6 @@
         }
         .tabla-papeletas tr:hover {
             background: #f8fafc;
-        }
-        .badge-papeleta {
-            background: #d4af37;
-            color: #0a2540;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
         }
         .btn-ver-papeleta {
             background: #2563eb;
@@ -269,8 +795,80 @@
             font-size: 0.9rem;
         }
 
+        /* ========== ESTADÍSTICAS PAPELETAS ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stats-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #0a2540;
+        }
+        .stats-card .numero {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0a2540;
+        }
+        .stats-card .etiqueta {
+            color: #64748b;
+            font-size: 0.85rem;
+        }
+        .stats-card.verde { border-left-color: #2e7d32; }
+        .stats-card.naranja { border-left-color: #e65100; }
+        .stats-card.azul { border-left-color: #2563eb; }
+
+        .tabla-estadisticas-papeletas {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .tabla-estadisticas-papeletas th {
+            background: #0a2540;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        .tabla-estadisticas-papeletas td {
+            padding: 8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        /* ========== TOAST ========== */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            color: white;
+            font-weight: bold;
+            z-index: 9999;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+        .toast.success { background: #2e7d32; }
+        .toast.error { background: #c62828; }
+        .toast.info { background: #2563eb; }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
         /* ========== RESPONSIVE ========== */
+        @media (max-width: 1200px) {
+            .comentario-textarea { width: 180px; min-width: 150px; }
+            th, td { font-size: 0.7rem; padding: 6px; }
+        }
         @media (max-width: 800px) {
+            .comentario-textarea { width: 140px; min-width: 120px; }
+            .barra-venta-label { min-width: 100px; font-size: 0.75rem; }
+            .barra-venta-valor { min-width: 60px; font-size: 0.75rem; }
+            .tabla-conversion { font-size: 0.75rem; }
+            .tabla-conversion thead th, .tabla-conversion tbody td { padding: 8px 6px; }
             .form-papeleta .grid-2 {
                 grid-template-columns: 1fr;
             }
@@ -297,36 +895,16 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        /* Notificación flotante */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            border-radius: 30px;
-            color: white;
-            font-weight: bold;
-            z-index: 9999;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            animation: slideUp 0.3s ease;
-        }
-        .toast.success { background: #2e7d32; }
-        .toast.error { background: #c62828; }
-        .toast.info { background: #2563eb; }
-        @keyframes slideUp {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
     </style>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 </head>
 <body>
 <div class="container">
-    <h1 style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; color:#0a2540;">
-        📋 CRM - Destination Connect
-        <span class="badge" style="background:#d4af37; padding:5px 14px; border-radius:30px; font-size:0.8rem;">Sistema de Papeletas</span>
+    <h1>
+        📋 CRM de Citas - Seguimiento por Supervisor
+        <span class="badge">Conectado a Premanifiesto</span>
     </h1>
 
     <!-- ===== MENÚ PRINCIPAL ===== -->
@@ -334,72 +912,88 @@
         <button class="active" data-pestana="panel">📊 Panel Principal</button>
         <button data-pestana="nueva-papeleta">📝 Nueva Papeleta <span class="badge-menu">+</span></button>
         <button data-pestana="mis-papeletas">📂 Mis Papeletas</button>
-        <button data-pestana="estadisticas">📈 Estadísticas</button>
+        <button data-pestana="estadisticas-papeletas">📈 Estadísticas Papeletas</button>
     </div>
 
-    <!-- ===== PESTAÑA: PANEL PRINCIPAL (CRM original) ===== -->
+    <!-- ============================================================ -->
+    <!-- ===== PESTAÑA: PANEL PRINCIPAL (CRM ORIGINAL) ===== -->
+    <!-- ============================================================ -->
     <div id="pestana-panel" class="pestana active">
-        <!-- Aquí va todo el CRM original -->
-        <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px; background:#f8fafc; padding:15px; border-radius:16px; align-items:flex-end;">
+        <div class="filtros">
             <div>
                 <label>📅 Fecha del evento:</label>
-                <input type="date" id="fechaEvento" style="padding:8px 12px; border-radius:12px; border:1px solid #cbd5e1;">
+                <input type="date" id="fechaEvento" required>
             </div>
             <div>
                 <label>👩‍💼 Supervisor:</label>
-                <select id="filtroSupervisor" style="padding:8px 12px; border-radius:12px; border:1px solid #cbd5e1;">
+                <select id="filtroSupervisor">
                     <option value="">Todos</option>
                 </select>
             </div>
             <div>
-                <label>🔍 Buscar:</label>
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="buscarInput" placeholder="Nombre o teléfono" style="padding:8px 12px; border-radius:12px; border:1px solid #cbd5e1;">
-                    <button id="buscarBtn" style="background:#2563eb; color:white; border:none; padding:8px 16px; border-radius:30px; cursor:pointer;">Buscar</button>
-                    <button id="limpiarBusquedaBtn" style="background:#64748b; color:white; border:none; padding:8px 16px; border-radius:30px; cursor:pointer;">Limpiar</button>
+                <label>🔍 Buscar por nombre o teléfono:</label>
+                <div class="grupo-busqueda">
+                    <input type="text" id="buscarInput" placeholder="Ej: Juan o 5512345678">
+                    <button id="buscarBtn" class="btn-buscar">🔍 Buscar</button>
+                    <button id="limpiarBusquedaBtn" class="btn-limpiar-busqueda">✖️ Limpiar</button>
                 </div>
             </div>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
-            <button id="cargarCitasBtn" style="background:#0a2540; color:white; border:none; padding:8px 20px; border-radius:30px; cursor:pointer;">🔍 Cargar citas</button>
-            <button id="recargarBtn" style="background:#475569; color:white; border:none; padding:8px 20px; border-radius:30px; cursor:pointer;">🔄 Recargar</button>
-            <button id="descargarExcelBtn" style="background:#1b5e3a; color:white; border:none; padding:8px 20px; border-radius:30px; cursor:pointer;">📊 Descargar Excel</button>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:-10px; margin-bottom:15px;">
+            <button id="cargarCitasBtn">🔍 Cargar citas</button>
+            <button id="recargarBtn" style="background:#475569;">🔄 Recargar</button>
+            <button id="descargarExcelBtn" class="btn-excel">📊 Descargar Excel</button>
+            <button id="btnEstadisticasSup" class="btn-estadisticas">📈 Estadísticas</button>
+            <button id="btnInactivosSup" class="btn-inactivos">🚫 Inactivos</button>
+            <button id="btnReporteMensual" class="btn-reporte-mensual">📆 Reporte Mensual</button>
+            <button id="btnCargarExcel" class="btn-cargar-excel">📥 Cargar Excel</button>
+            <button id="btnVentas" class="btn-ventas">📊 Ventas por Base</button>
         </div>
-        <div id="resumenContainer" class="resumen" style="display:none; background:linear-gradient(135deg,#e8f0fe,#f1f5f9); padding:12px 18px; border-radius:12px; margin:15px 0; border-left:4px solid #d4af37;"></div>
-        <div style="overflow-x:auto;">
-            <table id="tablaCitas" style="width:100%; border-collapse:collapse; font-size:0.85rem;">
+
+        <input type="file" id="inputExcel" accept=".xlsx,.xls" style="display:none;">
+
+        <div id="resumenContainer" class="resumen" style="display: none;"></div>
+
+        <div style="overflow-x: auto;">
+            <table id="tablaCitas">
                 <thead>
                     <tr>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">N° Cita</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Cliente</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Teléfono</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Hora</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Hotel</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Supervisor</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Asistencia</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Estado</th>
-                        <th style="background:#0a2540; color:white; padding:10px 8px;">Comentarios</th>
+                        <th style="min-width: 60px;">N° Cita</th>
+                        <th style="min-width: 200px;">Cliente / Acompañante</th>
+                        <th style="min-width: 100px;">Teléfono</th>
+                        <th style="min-width: 70px;">Hora</th>
+                        <th style="min-width: 140px;">Hotel</th>
+                        <th style="min-width: 120px;">Supervisor</th>
+                        <th style="min-width: 120px;">Operador</th>
+                        <th style="min-width: 100px;">Asistencia</th>
+                        <th style="min-width: 130px;">Estado Llamada</th>
+                        <th style="min-width: 260px;">Comentarios</th>
+                        <th style="min-width: 380px;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="citasBody">
-                    <tr><td colspan="9" style="text-align:center;">Selecciona fecha y presiona "Cargar citas"</td></tr>
+                    <tr><td colspan="11" style="text-align:center;">Selecciona una fecha y presiona "Cargar citas"</td></tr>
                 </tbody>
             </table>
         </div>
-        <div style="margin-top:15px; font-size:0.75rem; color:#64748b; text-align:center; border-top:1px solid #e2e8f0; padding-top:15px;">
-            ✅ Registro en tiempo real | 🔒 Citas bloqueadas al marcar "Llegó"
+        <div class="footer">
+            ✅ Registro en tiempo real | Los cambios se guardan automáticamente en Firebase<br>
+            🎯 <strong>Leyenda:</strong> 📅 Cita (agendó) | 🔄 Cita de nuevo (reagendó) | 📞 Contestó | 📵 No contestó<br>
+            🔒 <strong>Citas bloqueadas:</strong> Las citas marcadas como "Llegó" quedan bloqueadas para evitar cambios accidentales
         </div>
     </div>
 
+    <!-- ============================================================ -->
     <!-- ===== PESTAÑA: NUEVA PAPELETA ===== -->
+    <!-- ============================================================ -->
     <div id="pestana-nueva-papeleta" class="pestana">
         <div class="form-papeleta">
             <h2>📝 Nueva Papeleta de Registro</h2>
             <form id="formPapeleta">
-                <!-- Fila 1: Nombre, Lugar, Fecha/Hora -->
                 <div class="grid-2">
                     <div class="field">
-                        <label>Nombre</label>
+                        <label>Nombre *</label>
                         <input type="text" id="p_nombre" placeholder="Nombre completo" required>
                     </div>
                     <div class="field">
@@ -414,10 +1008,9 @@
 
                 <hr class="divider">
 
-                <!-- Fila 2: Supervisor, Clave, Hora -->
                 <div class="grid-2">
                     <div class="field">
-                        <label>Supervisor</label>
+                        <label>Supervisor *</label>
                         <select id="p_supervisor" required>
                             <option value="">Seleccionar supervisor...</option>
                         </select>
@@ -434,7 +1027,6 @@
 
                 <hr class="divider">
 
-                <!-- Fila 3: Sr. y Sra. -->
                 <div class="inline-group">
                     <div class="field">
                         <label>Sr.</label>
@@ -467,7 +1059,6 @@
 
                 <hr class="divider">
 
-                <!-- Fila 4: Estado Civil + Personas -->
                 <div class="grid-2">
                     <div class="field">
                         <label>Estado Civil</label>
@@ -497,7 +1088,6 @@
 
                 <hr class="divider">
 
-                <!-- Fila 5: Teléfonos -->
                 <div class="field full-width">
                     <label>Teléfonos</label>
                     <div class="phone-group">
@@ -526,7 +1116,6 @@
 
                 <hr class="divider">
 
-                <!-- Fila 6: Ingresos, Tarjetas, Fecha llamada, email, Base -->
                 <div class="grid-2">
                     <div class="field">
                         <label>Ingresos</label>
@@ -552,20 +1141,20 @@
 
                 <hr class="divider">
 
-                <!-- DISCOVERY / NOTAS -->
                 <div class="field full-width">
                     <label>🔍 DISCOVERY / NOTAS</label>
                     <textarea id="p_notas" rows="4" placeholder="Escribe aquí observaciones, descubrimientos, notas importantes..." style="width:100%; padding:12px; border-radius:12px; border:1.5px solid #dce1e8; font-family:inherit; resize:vertical;"></textarea>
                 </div>
 
-                <!-- Botones -->
                 <button type="submit" class="btn-guardar">💾 Guardar Papeleta</button>
                 <button type="button" class="btn-limpiar" onclick="limpiarFormulario()">🗑️ Limpiar formulario</button>
             </form>
         </div>
     </div>
 
+    <!-- ============================================================ -->
     <!-- ===== PESTAÑA: MIS PAPELETAS ===== -->
+    <!-- ============================================================ -->
     <div id="pestana-mis-papeletas" class="pestana">
         <h2 style="display:flex; align-items:center; gap:10px; color:#0a2540;">
             📂 Mis Papeletas Guardadas
@@ -608,13 +1197,82 @@
         </div>
     </div>
 
-    <!-- ===== PESTAÑA: ESTADÍSTICAS ===== -->
-    <div id="pestana-estadisticas" class="pestana">
+    <!-- ============================================================ -->
+    <!-- ===== PESTAÑA: ESTADÍSTICAS PAPELETAS ===== -->
+    <!-- ============================================================ -->
+    <div id="pestana-estadisticas-papeletas" class="pestana">
         <h2 style="color:#0a2540;">📈 Estadísticas de Papeletas</h2>
         <div id="contenidoEstadisticasPapeletas">
             <p style="color:#64748b;">Cargando estadísticas...</p>
         </div>
     </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== MODALES CRM ===== -->
+    <!-- ============================================================ -->
+
+    <!-- Modal Estadísticas -->
+    <div id="modalEstadisticas" class="modal-estadisticas">
+        <div class="modal-estadisticas-contenido">
+            <div class="modal-header">
+                <h2>📊 Estadísticas de Supervisores</h2>
+                <span class="cerrar-modal cerrar-estadisticas">&times;</span>
+            </div>
+            <div id="contenidoEstadisticas">
+                <div style="text-align: center; padding: 20px;">
+                    <label>🔐 Ingrese la contraseña para acceder:</label>
+                    <input type="password" id="passwordEstadisticas" class="password-input" placeholder="Contraseña">
+                    <button id="verificarPasswordEstadisticas" style="background: #0a2540;">Verificar Acceso</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Inactivos -->
+    <div id="modalInactivos" class="modal-inactivos">
+        <div class="modal-inactivos-contenido">
+            <div class="modal-header">
+                <h2>🚫 Supervisores Inactivos</h2>
+                <span class="cerrar-modal cerrar-inactivos">&times;</span>
+            </div>
+            <div id="contenidoInactivos">
+                <p style="text-align:center; color:#64748b;">Cargando lista de supervisores inactivos...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Reporte Mensual -->
+    <div id="modalReporteMensual" class="modal-reporte-mensual">
+        <div class="modal-reporte-contenido">
+            <div class="modal-header">
+                <h2>📆 Reporte Mensual por Supervisor</h2>
+                <span class="cerrar-modal cerrar-reporte-mensual">&times;</span>
+            </div>
+            <div style="margin-bottom: 20px; display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <label><strong>Seleccionar mes:</strong></label>
+                <input type="month" id="selectorMes" class="mes-selector">
+                <button id="btnCargarReporteMes" class="btn-mes">📊 Cargar Reporte</button>
+                <button id="btnDescargarReporteMes" class="btn-excel" style="margin-left: auto;">📥 Descargar Excel</button>
+            </div>
+            <div id="contenidoReporteMensual">
+                <p style="text-align:center; color:#64748b;">Selecciona un mes y presiona "Cargar Reporte"</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ventas -->
+    <div id="modalVentas" class="modal-ventas">
+        <div class="modal-ventas-contenido">
+            <div class="modal-header">
+                <h2>📊 Estadísticas de Ventas por Base de Datos</h2>
+                <span class="cerrar-modal cerrar-ventas">&times;</span>
+            </div>
+            <div id="contenidoVentas">
+                <p style="text-align:center; color:#64748b;">Carga un archivo Excel con el botón "📥 Cargar Excel"</p>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
@@ -634,10 +1292,27 @@
 
     // ========== VARIABLES GLOBALES ==========
     let citasOriginales = [];
+    let citasFiltradasActuales = [];
+    let fechaSeleccionada = '';
+    let supervisorSeleccionado = '';
+    let datosReporteMensual = [];
+    let datosVentasExcel = [];
+    let datosVentasPorPestana = {};
     let papeletasCache = [];
     let supervisoresList = [];
 
-    // ========== TOAST / NOTIFICACIONES ==========
+    const PASSWORD_ESTADISTICAS = "supervisor2024";
+    const PASSWORD_DESBLOQUEO = "admin123";
+
+    const SUPERVISORES_INACTIVOS = [
+        'YARET NAJERA',
+        'ABRAHAM ROLDAN',
+        'MACARENA ZAMORA',
+        'MISAEL NAVARRO',
+        'ARACELI TORRES'
+    ];
+
+    // ========== TOAST ==========
     function mostrarToast(mensaje, tipo = 'success') {
         const existing = document.querySelector('.toast');
         if (existing) existing.remove();
@@ -648,13 +1323,31 @@
         setTimeout(() => div.remove(), 3000);
     }
 
+    // ========== MENÚ - CAMBIO DE PESTAÑA ==========
+    document.querySelectorAll('.menu-principal button').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.menu-principal button').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const pestana = this.dataset.pestana;
+            document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
+            document.getElementById(`pestana-${pestana}`).classList.add('active');
+            
+            if (pestana === 'mis-papeletas') {
+                cargarPapeletas();
+            }
+            if (pestana === 'estadisticas-papeletas') {
+                mostrarEstadisticasPapeletas();
+            }
+        });
+    });
+
     // ========== CARGAR SUPERVISORES ==========
     function cargarSupervisores() {
         database.ref('supervisoras').once('value').then(snapshot => {
             const data = snapshot.val();
             supervisoresList = data && Array.isArray(data) ? data : ['ABRAHAM ROLDAN','LUIS COLULA','MACARENA ZAMORA','THALIA PINEDA','YARET NAJERA','MISAEL NAVARRO'];
             
-            // Poblar selects
             const selects = ['filtroSupervisor', 'p_supervisor', 'filtroPapeletasSupervisor'];
             selects.forEach(id => {
                 const select = document.getElementById(id);
@@ -672,26 +1365,1220 @@
         }).catch(err => console.error('Error cargando supervisores:', err));
     }
 
-    // ========== MENÚ - CAMBIO DE PESTAÑA ==========
-    document.querySelectorAll('.menu-principal button').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.menu-principal button').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-            
-            const pestana = this.dataset.pestana;
-            document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
-            document.getElementById(`pestana-${pestana}`).classList.add('active');
-            
-            if (pestana === 'mis-papeletas') {
-                cargarPapeletas();
+    // ================================================================
+    // ========== CRM ORIGINAL - FUNCIONES ==========
+    // ================================================================
+
+    function separarClienteYAcompanante(nombreCompleto) {
+        if (!nombreCompleto) return { cliente: '', acompanante: '' };
+        let cliente = nombreCompleto;
+        let acompanante = '';
+        if (nombreCompleto.includes('/')) {
+            const partes = nombreCompleto.split('/').map(p => p.trim());
+            cliente = partes[0] || '';
+            acompanante = partes.slice(1).join(' / ') || '';
+        } else if (nombreCompleto.includes(' Y ') || nombreCompleto.includes(' y ')) {
+            const sep = nombreCompleto.includes(' Y ') ? ' Y ' : ' y ';
+            const partes = nombreCompleto.split(sep).map(p => p.trim());
+            cliente = partes[0] || '';
+            acompanante = partes.slice(1).join(sep) || '';
+        } else if (nombreCompleto.includes(',')) {
+            const partes = nombreCompleto.split(',').map(p => p.trim());
+            cliente = partes[0] || '';
+            acompanante = partes.slice(1).join(', ') || '';
+        }
+        if (cliente.startsWith('[REAGENDADO] ')) {
+            cliente = cliente.replace('[REAGENDADO] ', '');
+        }
+        return { cliente, acompanante };
+    }
+
+    function estaBloqueada(cita) {
+        return cita.asistencia === 'Llegó';
+    }
+
+    async function desbloquearCita(id) {
+        const password = prompt("🔐 Ingresa la contraseña para desbloquear esta cita:");
+        if (password === PASSWORD_DESBLOQUEO) {
+            try {
+                await database.ref(`registrosPremanifiesto/${id}`).update({
+                    asistencia: null,
+                    fechaRegistroAsistencia: null
+                });
+                mostrarToast('🔓 Cita desbloqueada correctamente');
+                cargarCitasPorFecha();
+            } catch (error) {
+                mostrarToast('Error al desbloquear', 'error');
             }
-            if (pestana === 'estadisticas') {
-                mostrarEstadisticasPapeletas();
+        } else if (password !== null) {
+            alert('❌ Contraseña incorrecta');
+        }
+    }
+
+    function crearCelda(texto, maxLength = null) {
+        const td = document.createElement('td');
+        let contenido = texto || '';
+        if (maxLength && contenido.length > maxLength) {
+            td.textContent = contenido.substring(0, maxLength) + '...';
+            td.title = contenido;
+        } else {
+            td.textContent = contenido;
+        }
+        return td;
+    }
+
+    function crearBoton(texto, clase, onClick) {
+        const btn = document.createElement('button');
+        btn.textContent = texto;
+        btn.className = clase;
+        btn.onclick = onClick;
+        return btn;
+    }
+
+    async function registrarAsistencia(id, estado) {
+        try {
+            await database.ref(`registrosPremanifiesto/${id}`).update({
+                asistencia: estado,
+                fechaRegistroAsistencia: new Date().toISOString()
+            });
+            mostrarToast(`✅ Asistencia: ${estado}`);
+            cargarCitasPorFecha();
+        } catch (error) {
+            mostrarToast('Error al guardar', 'error');
+        }
+    }
+
+    async function registrarEstadoLlamada(id, estado) {
+        try {
+            await database.ref(`registrosPremanifiesto/${id}`).update({
+                estadoLlamada: estado,
+                fechaEstadoLlamada: new Date().toISOString()
+            });
+            mostrarToast(`📞 Estado llamada: ${estado}`);
+            cargarCitasPorFecha();
+        } catch (error) {
+            mostrarToast('Error al guardar', 'error');
+        }
+    }
+
+    async function guardarComentario(id, comentario) {
+        try {
+            await database.ref(`registrosPremanifiesto/${id}`).update({
+                comentarios: comentario,
+                fechaComentario: new Date().toISOString()
+            });
+            mostrarToast('💬 Comentario guardado', 'success');
+        } catch (error) {
+            mostrarToast('Error al guardar comentario', 'error');
+        }
+    }
+
+    function mostrarCitas(citas) {
+        const tbody = document.getElementById('citasBody');
+        if (!citas.length) {
+            tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">📭 No hay citas para mostrar</td></tr>';
+            document.getElementById('resumenContainer').style.display = 'none';
+            return;
+        }
+
+        tbody.innerHTML = '';
+        let llegaron = 0, noLlegaron = 0, citasAgendadas = 0, citasDeNuevo = 0, contestaron = 0, noContesto = 0;
+
+        citas.forEach(cita => {
+            const tr = document.createElement('tr');
+            const bloqueada = estaBloqueada(cita);
+            if (bloqueada) tr.className = 'fila-bloqueada';
+            
+            tr.appendChild(crearCelda(cita.citaPorDia || cita.cita || '-'));
+            
+            const tdCliente = document.createElement('td');
+            const { cliente, acompanante } = separarClienteYAcompanante(cita.nombre);
+            tdCliente.innerHTML = `
+                <div class="cliente-acompanante">
+                    <span class="cliente-principal">${cliente || 'Sin nombre'}</span>
+                    ${acompanante ? `<span class="acompanante">👤 ${acompanante}</span>` : ''}
+                    ${bloqueada ? '<span class="badge-bloqueado">🔒 BLOQUEADO</span>' : ''}
+                </div>
+            `;
+            tr.appendChild(tdCliente);
+            
+            tr.appendChild(crearCelda(cita.telefono || '-'));
+            tr.appendChild(crearCelda(cita.hora || '-'));
+            tr.appendChild(crearCelda(cita.hotel || '-', 25));
+            tr.appendChild(crearCelda(cita.supervisora || '-', 20));
+            tr.appendChild(crearCelda(cita.operador || '-', 20));
+
+            const tdAsistencia = document.createElement('td');
+            const asistencia = cita.asistencia;
+            let asistenciaHtml = '';
+            if (asistencia === 'Llegó') {
+                asistenciaHtml = '<span class="asistencia-estado estado-llego">✅ Llegó</span>';
+                llegaron++;
+            } else if (asistencia === 'No llegó') {
+                asistenciaHtml = '<span class="asistencia-estado estado-no-llego">❌ No llegó</span>';
+                noLlegaron++;
+            } else {
+                asistenciaHtml = '<span class="sin-registro">⚪ Sin registrar</span>';
             }
+            tdAsistencia.innerHTML = asistenciaHtml;
+            tr.appendChild(tdAsistencia);
+
+            const tdEstadoLlamada = document.createElement('td');
+            const estadoLlamada = cita.estadoLlamada || '';
+            let estadoHtml = '';
+            if (estadoLlamada === 'Cita') {
+                estadoHtml = '<span class="asistencia-estado estado-cita">📅 Cita agendada</span>';
+                citasAgendadas++;
+            } else if (estadoLlamada === 'Cita de nuevo') {
+                estadoHtml = '<span class="asistencia-estado estado-cita-nuevo">🔄 Cita de nuevo</span>';
+                citasDeNuevo++;
+            } else if (estadoLlamada === 'Contestó') {
+                estadoHtml = '<span class="asistencia-estado estado-contesto">📞 Contestó</span>';
+                contestaron++;
+            } else if (estadoLlamada === 'No contestó') {
+                estadoHtml = '<span class="asistencia-estado estado-no-contesto">📵 No contestó</span>';
+                noContesto++;
+            } else {
+                estadoHtml = '<span class="sin-registro">⚪ Pendiente</span>';
+            }
+            tdEstadoLlamada.innerHTML = estadoHtml;
+            tr.appendChild(tdEstadoLlamada);
+
+            const tdComentarios = document.createElement('td');
+            const textarea = document.createElement('textarea');
+            textarea.value = cita.comentarios || '';
+            textarea.placeholder = 'Escribe observaciones...';
+            textarea.className = 'comentario-textarea';
+            textarea.rows = 2;
+            if (bloqueada) {
+                textarea.disabled = true;
+                textarea.placeholder = '🔒 Bloqueado - No se pueden editar comentarios';
+            } else {
+                textarea.onblur = () => guardarComentario(cita.id, textarea.value);
+            }
+            tdComentarios.appendChild(textarea);
+            tr.appendChild(tdComentarios);
+
+            const tdAcciones = document.createElement('td');
+            tdAcciones.className = 'asistencia-btns';
+            
+            if (bloqueada) {
+                const btnDesbloquear = crearBoton('🔓 Desbloquear', 'btn-desbloquear', () => desbloquearCita(cita.id));
+                tdAcciones.appendChild(btnDesbloquear);
+            } else {
+                const btnLlego = crearBoton('✅ Llegó', 'btn-llego', () => registrarAsistencia(cita.id, 'Llegó'));
+                const btnNoLlego = crearBoton('❌ No llegó', 'btn-no-llego', () => registrarAsistencia(cita.id, 'No llegó'));
+                const btnCita = crearBoton('📅 Cita', 'btn-cita', () => registrarEstadoLlamada(cita.id, 'Cita'));
+                const btnCitaNuevo = crearBoton('🔄 Cita de nuevo', 'btn-cita-nuevo', () => registrarEstadoLlamada(cita.id, 'Cita de nuevo'));
+                const btnContesto = crearBoton('📞 Contestó', 'btn-contesto', () => registrarEstadoLlamada(cita.id, 'Contestó'));
+                const btnNoContesto = crearBoton('📵 No contestó', 'btn-no-contesto', () => registrarEstadoLlamada(cita.id, 'No contestó'));
+                
+                tdAcciones.appendChild(btnLlego);
+                tdAcciones.appendChild(btnNoLlego);
+                tdAcciones.appendChild(btnCita);
+                tdAcciones.appendChild(btnCitaNuevo);
+                tdAcciones.appendChild(btnContesto);
+                tdAcciones.appendChild(btnNoContesto);
+            }
+            tr.appendChild(tdAcciones);
+            
+            tbody.appendChild(tr);
         });
+
+        document.getElementById('resumenContainer').style.display = 'block';
+        document.getElementById('resumenContainer').innerHTML = `
+            📊 <strong>RESUMEN DE SEGUIMIENTO</strong><br>
+            <span>📋 Total citas: ${citas.length}</span>
+            <span>✅ Llegaron: ${llegaron}</span>
+            <span>❌ No llegaron: ${noLlegaron}</span>
+            <span>📅 Cita agendada: ${citasAgendadas}</span>
+            <span>🔄 Cita de nuevo: ${citasDeNuevo}</span>
+            <span>📞 Contestó: ${contestaron}</span>
+            <span>📵 No contestó: ${noContesto}</span>
+            <span>🔒 Bloqueadas: ${llegaron}</span>
+        `;
+    }
+
+    async function cargarCitasPorFecha() {
+        const fechaEvento = document.getElementById('fechaEvento').value;
+        if (!fechaEvento) { alert("Selecciona una fecha"); return; }
+        
+        fechaSeleccionada = fechaEvento;
+        supervisorSeleccionado = document.getElementById('filtroSupervisor').value;
+
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) { citasOriginales = []; mostrarCitas([]); return; }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            const fechaNormalizada = new Date(fechaEvento).toISOString().split('T')[0];
+
+            let filtradas = todasCitas.filter(cita => {
+                if (!cita.diaEvento) return false;
+                let fechaCita = cita.diaEvento;
+                try { fechaCita = new Date(cita.diaEvento).toISOString().split('T')[0]; } catch(e) {}
+                return fechaCita === fechaNormalizada;
+            });
+
+            if (supervisorSeleccionado) {
+                filtradas = filtradas.filter(c => c.supervisora === supervisorSeleccionado);
+            }
+
+            filtradas.sort((a,b) => (a.hora || '').localeCompare(b.hora || '') || (a.citaPorDia || 0) - (b.citaPorDia || 0));
+            
+            citasOriginales = filtradas;
+            citasFiltradasActuales = [...citasOriginales];
+            mostrarCitas(citasFiltradasActuales);
+            mostrarToast(`📋 ${filtradas.length} cita(s) cargadas`);
+        } catch (error) {
+            mostrarToast('Error de conexión', 'error');
+        }
+    }
+
+    function buscarPorNombreOTelefono() {
+        const termino = document.getElementById('buscarInput').value.trim().toLowerCase();
+        if (!termino) {
+            citasFiltradasActuales = [...citasOriginales];
+            mostrarCitas(citasFiltradasActuales);
+            mostrarToast('Búsqueda limpiada');
+            return;
+        }
+
+        const resultados = citasOriginales.filter(cita => {
+            const nombre = (cita.nombre || '').toLowerCase();
+            const telefono = (cita.telefono || '');
+            return nombre.includes(termino) || telefono.includes(termino);
+        });
+
+        citasFiltradasActuales = resultados;
+        mostrarCitas(resultados);
+        mostrarToast(`🔍 ${resultados.length} coincidencia(s) encontradas`);
+    }
+
+    function limpiarBusqueda() {
+        document.getElementById('buscarInput').value = '';
+        citasFiltradasActuales = [...citasOriginales];
+        mostrarCitas(citasFiltradasActuales);
+        mostrarToast('Búsqueda limpiada');
+    }
+
+    // ===== ESTADÍSTICAS DE SUPERVISORES =====
+    async function mostrarEstadisticasSupervisores() {
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) {
+                document.getElementById('contenidoEstadisticas').innerHTML = '<p style="text-align:center;">No hay datos registrados</p>';
+                return;
+            }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            
+            const estadisticas = {};
+            
+            todasCitas.forEach(cita => {
+                const supervisor = cita.supervisora || 'Sin supervisor';
+                if (!estadisticas[supervisor]) {
+                    estadisticas[supervisor] = {
+                        total: 0,
+                        llegaron: 0,
+                        noLlegaron: 0,
+                        sinMarcar: 0,
+                        reprobados: 0
+                    };
+                }
+                
+                estadisticas[supervisor].total++;
+                
+                if (cita.asistencia === 'Llegó') {
+                    estadisticas[supervisor].llegaron++;
+                } else if (cita.asistencia === 'No llegó') {
+                    estadisticas[supervisor].noLlegaron++;
+                    estadisticas[supervisor].reprobados++;
+                } else {
+                    estadisticas[supervisor].sinMarcar++;
+                }
+            });
+            
+            const estadisticasArray = Object.entries(estadisticas).map(([supervisor, stats]) => ({
+                supervisor,
+                ...stats,
+                porcentajeLlegaron: stats.total > 0 ? ((stats.llegaron / stats.total) * 100).toFixed(1) : 0,
+                porcentajeReprobados: stats.total > 0 ? ((stats.reprobados / stats.total) * 100).toFixed(1) : 0
+            })).sort((a, b) => b.total - a.total);
+            
+            let html = `
+                <div style="overflow-x: auto;">
+                    <table class="tabla-estadisticas">
+                        <thead>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Total Citas</th>
+                                <th>✅ Llegaron</th>
+                                <th>❌ No llegaron</th>
+                                <th>⚪ Sin marcar</th>
+                                <th>% Efectividad</th>
+                                <th>% Reprobados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            estadisticasArray.forEach(stat => {
+                const reprobadoClass = stat.reprobados > stat.llegaron ? 'reprobo' : '';
+                const sinMarcarClass = stat.sinMarcar > 0 ? 'sin-marcar' : '';
+                
+                html += `
+                    <tr>
+                        <td style="text-align:left; font-weight:bold;">${stat.supervisor}</td>
+                        <td>${stat.total}</td>
+                        <td style="color:#2e7d32; font-weight:bold;">${stat.llegaron}</td>
+                        <td class="${reprobadoClass}">${stat.noLlegaron}</td>
+                        <td class="${sinMarcarClass}">${stat.sinMarcar}</td>
+                        <td>${stat.porcentajeLlegaron}%</td>
+                        <td class="${reprobadoClass}">${stat.porcentajeReprobados}%</td>
+                    </tr>
+                `;
+            });
+            
+            const totalGeneral = estadisticasArray.reduce((sum, s) => sum + s.total, 0);
+            const totalLlegaron = estadisticasArray.reduce((sum, s) => sum + s.llegaron, 0);
+            const totalNoLlegaron = estadisticasArray.reduce((sum, s) => sum + s.noLlegaron, 0);
+            const totalSinMarcar = estadisticasArray.reduce((sum, s) => sum + s.sinMarcar, 0);
+            
+            html += `
+                        <tr style="background: #e8f0fe; font-weight: bold;">
+                            <td><strong>TOTALES</strong></td>
+                            <td><strong>${totalGeneral}</strong></td>
+                            <td style="color:#2e7d32;"><strong>${totalLlegaron}</strong></td>
+                            <td style="color:#c62828;"><strong>${totalNoLlegaron}</strong></td>
+                            <td style="color:#e65100;"><strong>${totalSinMarcar}</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalNoLlegaron / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px;">
+                    <p><strong>📌 Nota:</strong></p>
+                    <p>• <strong class="reprobo">Celdas rojas</strong> = Supervisor con más reprobados que asistentes</p>
+                    <p>• <strong class="sin-marcar">Celdas naranja</strong> = Citas que aún no han sido marcadas</p>
+                </div>
+            `;
+            
+            document.getElementById('contenidoEstadisticas').innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('contenidoEstadisticas').innerHTML = '<p style="color:red;">Error al cargar las estadísticas</p>';
+        }
+    }
+
+    // ===== SUPERVISORES INACTIVOS =====
+    async function mostrarSupervisoresInactivos() {
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) {
+                document.getElementById('contenidoInactivos').innerHTML = '<p style="text-align:center;">No hay datos registrados</p>';
+                return;
+            }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            
+            const estadisticasInactivos = {};
+            let totalCitasInactivos = 0;
+            
+            SUPERVISORES_INACTIVOS.forEach(supervisor => {
+                estadisticasInactivos[supervisor] = {
+                    total: 0,
+                    llegaron: 0,
+                    noLlegaron: 0,
+                    sinMarcar: 0
+                };
+            });
+            
+            todasCitas.forEach(cita => {
+                const supervisor = cita.supervisora || '';
+                if (SUPERVISORES_INACTIVOS.includes(supervisor)) {
+                    estadisticasInactivos[supervisor].total++;
+                    totalCitasInactivos++;
+                    
+                    if (cita.asistencia === 'Llegó') {
+                        estadisticasInactivos[supervisor].llegaron++;
+                    } else if (cita.asistencia === 'No llegó') {
+                        estadisticasInactivos[supervisor].noLlegaron++;
+                    } else {
+                        estadisticasInactivos[supervisor].sinMarcar++;
+                    }
+                }
+            });
+            
+            const inactivosArray = Object.entries(estadisticasInactivos).map(([supervisor, stats]) => ({
+                supervisor,
+                ...stats
+            })).sort((a, b) => b.total - a.total);
+            
+            let html = `
+                <div style="margin-bottom: 20px; padding: 15px; background: #fef2f2; border-radius: 12px; border-left: 4px solid #dc2626;">
+                    <p style="margin: 0;"><strong>🚫 Supervisores que ya no están activos</strong></p>
+                    <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #64748b;">
+                        Total de citas asignadas: <strong style="color: #dc2626;">${totalCitasInactivos}</strong>
+                    </p>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="tabla-inactivos">
+                        <thead>
+                            <tr>
+                                <th>Supervisor Inactivo</th>
+                                <th>Total Citas</th>
+                                <th>✅ Llegaron</th>
+                                <th>❌ No llegaron</th>
+                                <th>⚪ Sin marcar</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            if (inactivosArray.every(s => s.total === 0)) {
+                html += `
+                    <tr>
+                        <td colspan="6" style="text-align:center; padding: 30px; color: #64748b;">
+                            ✅ No hay citas asignadas a supervisores inactivos
+                        </td>
+                    </tr>
+                `;
+            } else {
+                inactivosArray.forEach(stat => {
+                    const sinMarcarClass = stat.sinMarcar > 0 ? 'sin-marcar' : '';
+                    
+                    html += `
+                        <tr>
+                            <td style="text-align:left; font-weight:bold;">${stat.supervisor}</td>
+                            <td><strong>${stat.total}</strong></td>
+                            <td style="color:#2e7d32;">${stat.llegaron}</td>
+                            <td style="color:#c62828;">${stat.noLlegaron}</td>
+                            <td class="${sinMarcarClass}">${stat.sinMarcar}</td>
+                            <td>
+                                <span class="inactivo-tag">INACTIVO</span>
+                                ${stat.total > 0 ? ` <span style="font-size:0.75rem; color:#dc2626;">⚠️ ${stat.total} cita(s)</span>` : ''}
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            html += `
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            document.getElementById('contenidoInactivos').innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('contenidoInactivos').innerHTML = '<p style="color:red;">Error al cargar los supervisores inactivos</p>';
+        }
+    }
+
+    // ===== REPORTE MENSUAL =====
+    async function cargarReporteMensual() {
+        const mesSeleccionado = document.getElementById('selectorMes').value;
+        if (!mesSeleccionado) {
+            alert("Selecciona un mes primero");
+            return;
+        }
+
+        try {
+            const snapshot = await database.ref('registrosPremanifiesto').once('value');
+            const data = snapshot.val();
+            if (!data) {
+                document.getElementById('contenidoReporteMensual').innerHTML = '<p style="text-align:center;">No hay datos registrados</p>';
+                return;
+            }
+
+            let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+            
+            const [year, month] = mesSeleccionado.split('-');
+            const citasDelMes = todasCitas.filter(cita => {
+                if (!cita.diaEvento) return false;
+                try {
+                    const fechaCita = new Date(cita.diaEvento);
+                    return fechaCita.getFullYear() === parseInt(year) && 
+                           (fechaCita.getMonth() + 1) === parseInt(month);
+                } catch(e) { return false; }
+            });
+
+            const reportePorSupervisor = {};
+            citasDelMes.forEach(cita => {
+                const supervisor = cita.supervisora || 'Sin supervisor';
+                if (!reportePorSupervisor[supervisor]) {
+                    reportePorSupervisor[supervisor] = {
+                        total: 0,
+                        llegaron: 0,
+                        noLlegaron: 0,
+                        pendientes: 0,
+                        citas: []
+                    };
+                }
+                
+                reportePorSupervisor[supervisor].total++;
+                
+                if (cita.asistencia === 'Llegó') {
+                    reportePorSupervisor[supervisor].llegaron++;
+                } else if (cita.asistencia === 'No llegó') {
+                    reportePorSupervisor[supervisor].noLlegaron++;
+                } else {
+                    reportePorSupervisor[supervisor].pendientes++;
+                }
+                
+                reportePorSupervisor[supervisor].citas.push(cita);
+            });
+
+            datosReporteMensual = reportePorSupervisor;
+            
+            const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+            const nombreMes = meses[parseInt(month) - 1];
+            
+            let html = `
+                <h3 style="color:#0a2540;">📆 ${nombreMes} ${year}</h3>
+                <p style="color:#64748b; margin-bottom: 15px;">Total de citas en el mes: <strong>${citasDelMes.length}</strong></p>
+                <div style="overflow-x: auto;">
+                    <table class="tabla-estadisticas">
+                        <thead>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th>Total Citas</th>
+                                <th>✅ Llegaron</th>
+                                <th>❌ No llegaron</th>
+                                <th>⚪ Pendientes</th>
+                                <th>% Efectividad</th>
+                                <th>% Pendientes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            const reporteArray = Object.entries(reportePorSupervisor).map(([supervisor, stats]) => ({
+                supervisor,
+                ...stats,
+                porcentajeEfectividad: stats.total > 0 ? ((stats.llegaron / stats.total) * 100).toFixed(1) : 0,
+                porcentajePendientes: stats.total > 0 ? ((stats.pendientes / stats.total) * 100).toFixed(1) : 0
+            })).sort((a, b) => b.total - a.total);
+            
+            reporteArray.forEach(stat => {
+                const pendienteClass = stat.pendientes > stat.total * 0.3 ? 'sin-marcar' : '';
+                
+                html += `
+                    <tr>
+                        <td style="text-align:left; font-weight:bold;">${stat.supervisor}</td>
+                        <td><strong>${stat.total}</strong></td>
+                        <td style="color:#2e7d32; font-weight:bold;">${stat.llegaron}</td>
+                        <td style="color:#c62828;">${stat.noLlegaron}</td>
+                        <td class="${pendienteClass}">${stat.pendientes}</td>
+                        <td>${stat.porcentajeEfectividad}%</td>
+                        <td class="${pendienteClass}">${stat.porcentajePendientes}%</td>
+                    </tr>
+                `;
+            });
+            
+            const totalGeneral = reporteArray.reduce((sum, s) => sum + s.total, 0);
+            const totalLlegaron = reporteArray.reduce((sum, s) => sum + s.llegaron, 0);
+            const totalNoLlegaron = reporteArray.reduce((sum, s) => sum + s.noLlegaron, 0);
+            const totalPendientes = reporteArray.reduce((sum, s) => sum + s.pendientes, 0);
+            
+            html += `
+                        <tr style="background: #e8f0fe; font-weight: bold;">
+                            <td><strong>TOTALES</strong></td>
+                            <td><strong>${totalGeneral}</strong></td>
+                            <td style="color:#2e7d32;"><strong>${totalLlegaron}</strong></td>
+                            <td style="color:#c62828;"><strong>${totalNoLlegaron}</strong></td>
+                            <td style="color:#e65100;"><strong>${totalPendientes}</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                            <td><strong>${totalGeneral > 0 ? ((totalPendientes / totalGeneral) * 100).toFixed(1) : 0}%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div style="margin-top: 20px; padding: 15px; background: #f8fafc; border-radius: 12px;">
+                    <p><strong>📌 Resumen del mes:</strong></p>
+                    <p>• <strong>Total citas:</strong> ${totalGeneral}</p>
+                    <p>• <strong>✅ Llegaron:</strong> ${totalLlegaron} (${totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) : 0}%)</p>
+                    <p>• <strong>❌ No llegaron:</strong> ${totalNoLlegaron} (${totalGeneral > 0 ? ((totalNoLlegaron / totalGeneral) * 100).toFixed(1) : 0}%)</p>
+                    <p>• <strong>⚪ Pendientes:</strong> ${totalPendientes} (${totalGeneral > 0 ? ((totalPendientes / totalGeneral) * 100).toFixed(1) : 0}%)</p>
+                </div>
+            `;
+            
+            document.getElementById('contenidoReporteMensual').innerHTML = html;
+            
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('contenidoReporteMensual').innerHTML = '<p style="color:red;">Error al cargar el reporte mensual</p>';
+        }
+    }
+
+    function descargarReporteMensualExcel() {
+        if (!datosReporteMensual || Object.keys(datosReporteMensual).length === 0) {
+            alert("Primero carga el reporte mensual");
+            return;
+        }
+
+        const mesSeleccionado = document.getElementById('selectorMes').value;
+        const [year, month] = mesSeleccionado.split('-');
+        const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        const nombreMes = meses[parseInt(month) - 1];
+
+        const datosExcel = [];
+        datosExcel.push({ "REPORTE MENSUAL": `${nombreMes} ${year}` });
+        datosExcel.push({ "REPORTE MENSUAL": " " });
+        datosExcel.push({ "Supervisor": "Total", "Llegaron": "No Llegaron", "Pendientes": "% Efectividad" });
+        
+        let totalGeneral = 0, totalLlegaron = 0, totalNoLlegaron = 0, totalPendientes = 0;
+        
+        Object.entries(datosReporteMensual).forEach(([supervisor, stats]) => {
+            datosExcel.push({
+                "Supervisor": supervisor,
+                "Total": stats.total,
+                "Llegaron": stats.llegaron,
+                "No Llegaron": stats.noLlegaron,
+                "Pendientes": stats.pendientes,
+                "% Efectividad": stats.total > 0 ? ((stats.llegaron / stats.total) * 100).toFixed(1) + '%' : '0%'
+            });
+            
+            totalGeneral += stats.total;
+            totalLlegaron += stats.llegaron;
+            totalNoLlegaron += stats.noLlegaron;
+            totalPendientes += stats.pendientes;
+        });
+        
+        datosExcel.push({ "Supervisor": "---", "Total": "---", "Llegaron": "---", "No Llegaron": "---", "Pendientes": "---", "% Efectividad": "---" });
+        datosExcel.push({
+            "Supervisor": "TOTALES",
+            "Total": totalGeneral,
+            "Llegaron": totalLlegaron,
+            "No Llegaron": totalNoLlegaron,
+            "Pendientes": totalPendientes,
+            "% Efectividad": totalGeneral > 0 ? ((totalLlegaron / totalGeneral) * 100).toFixed(1) + '%' : '0%'
+        });
+
+        const ws = XLSX.utils.json_to_sheet(datosExcel);
+        ws['!cols'] = [{ wch: 25 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 15 }];
+        
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Reporte_Mensual");
+        
+        const nombreArchivo = `Reporte_Mensual_${nombreMes}_${year}.xlsx`;
+        XLSX.writeFile(wb, nombreArchivo);
+        mostrarToast(`📥 Excel descargado: ${nombreArchivo}`);
+    }
+
+    // ===== EXCEL PROFESIONAL =====
+    function descargarExcelProfesional() {
+        if (!citasFiltradasActuales.length) {
+            alert("No hay citas para exportar");
+            return;
+        }
+
+        const datos = citasFiltradasActuales.map(c => {
+            const { cliente, acompanante } = separarClienteYAcompanante(c.nombre);
+            return {
+                "N° Cita": c.citaPorDia || c.cita || '-',
+                "Cliente": cliente || '',
+                "Acompañante": acompanante || '',
+                "Teléfono": c.telefono || '',
+                "Hora": c.hora || '',
+                "Hotel": c.hotel || '',
+                "Supervisor": c.supervisora || '',
+                "Operador": c.operador || '',
+                "Asistencia Física": c.asistencia || 'Sin registrar',
+                "Estado Llamada": c.estadoLlamada || 'Pendiente',
+                "Comentarios": c.comentarios || '',
+                "Base Datos": c.baseDatos || '',
+                "Edad": c.edad || '',
+                "Fecha Registro": c.fechaRegistro || ''
+            };
+        });
+
+        const llegaron = citasFiltradasActuales.filter(c => c.asistencia === 'Llegó').length;
+        const noLlegaron = citasFiltradasActuales.filter(c => c.asistencia === 'No llegó').length;
+        const citasAgendadas = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Cita').length;
+        const citasDeNuevo = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Cita de nuevo').length;
+        const contestaron = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Contestó').length;
+        const noContesto = citasFiltradasActuales.filter(c => c.estadoLlamada === 'No contestó').length;
+
+        const resumen = [
+            { "REPORTE DE SEGUIMIENTO - DESTINATION CONNECT": "" },
+            { "Fecha del evento": fechaSeleccionada },
+            { "Supervisor": supervisorSeleccionado || 'Todos' },
+            { "Fecha de generación": new Date().toLocaleString() },
+            { "--- RESUMEN DE ESTADÍSTICAS ---": "" },
+            { "Total citas": citasFiltradasActuales.length },
+            { "Llegaron": llegaron },
+            { "No llegaron": noLlegaron },
+            { "Citas agendadas (por llamada)": citasAgendadas },
+            { "Citas de nuevo (reagendadas)": citasDeNuevo },
+            { "Contestaron (sin cita aún)": contestaron },
+            { "No contestaron": noContesto },
+            {},
+            { "--- DETALLE DE CITAS ---": "" }
+        ];
+
+        const wsData = [...resumen, ...datos];
+        const ws = XLSX.utils.json_to_sheet(wsData, { skipHeader: false });
+        
+        ws['!cols'] = [{ wch: 12 }, { wch: 30 }, { wch: 30 }, { wch: 15 }, { wch: 12 }, { wch: 25 }, { wch: 22 }, { wch: 22 }, { wch: 18 }, { wch: 20 }, { wch: 45 }, { wch: 22 }, { wch: 12 }, { wch: 15 }];
+        
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Seguimiento_Citas");
+        
+        const nombreArchivo = `Reporte_Seguimiento_${fechaSeleccionada}_${supervisorSeleccionado || 'Todos'}.xlsx`;
+        XLSX.writeFile(wb, nombreArchivo);
+        mostrarToast(`📥 Excel descargado: ${nombreArchivo}`);
+    }
+
+    // ===== CARGAR EXCEL MANIFIESTO =====
+    function cargarExcelManifiesto() {
+        document.getElementById('inputExcel').click();
+    }
+
+    function procesarExcelManifiesto(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                const data = new Uint8Array(event.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                datosVentasPorPestana = {};
+                let totalRegistros = 0;
+                
+                workbook.SheetNames.forEach(nombrePestana => {
+                    const hoja = workbook.Sheets[nombrePestana];
+                    const datos = XLSX.utils.sheet_to_json(hoja, { defval: '' });
+                    
+                    if (datos.length === 0) return;
+                    
+                    const registrosPestana = [];
+                    const headers = Object.keys(datos[0] || {});
+                    
+                    let colNumParejas = null, colFecha = null, colNombres = null;
+                    let colEstadoCivil = null, colBaseDatos = null, colStatusVendor = null;
+                    let colVolumenVenta = null, colTelefono = null;
+                    
+                    headers.forEach((h, index) => {
+                        const header = h.trim().toUpperCase();
+                        if (header.includes('N°') && header.includes('PAREJAS')) colNumParejas = index;
+                        else if (header.includes('FECHA')) colFecha = index;
+                        else if (header.includes('NOMBRES') || header.includes('FAMILIA') || header.includes('EDAD')) colNombres = index;
+                        else if (header.includes('ESTADO CIVIL') || (header.includes('ESTADO') && header.includes('CIVIL'))) colEstadoCivil = index;
+                        else if (header.includes('BASE DE DATOS') || (header.includes('BASE') && header.includes('DATOS'))) colBaseDatos = index;
+                        else if (header.includes('STATUS') && header.includes('VENDOR')) colStatusVendor = index;
+                        else if (header.includes('VOLUMEN') && header.includes('VENTA')) colVolumenVenta = index;
+                        else if (header.includes('TELEFONO') || header.includes('TELÉFONO') || header.includes('TEL')) colTelefono = index;
+                    });
+
+                    if (colNumParejas === null && headers.length >= 0) colNumParejas = 0;
+                    if (colFecha === null && headers.length >= 1) colFecha = 1;
+                    if (colNombres === null && headers.length >= 2) colNombres = 2;
+                    if (colEstadoCivil === null && headers.length >= 3) colEstadoCivil = 3;
+                    if (colBaseDatos === null && headers.length >= 4) colBaseDatos = 4;
+                    if (colStatusVendor === null && headers.length >= 5) colStatusVendor = 5;
+                    if (colVolumenVenta === null && headers.length >= 6) colVolumenVenta = 6;
+                    if (colTelefono === null && headers.length >= 7) colTelefono = 7;
+
+                    datos.forEach(row => {
+                        const values = Object.values(row);
+                        
+                        const numParejas = String(values[colNumParejas] || '').trim();
+                        const fecha = String(values[colFecha] || '').trim();
+                        const nombres = String(values[colNombres] || '').trim();
+                        const estadoCivil = String(values[colEstadoCivil] || '').trim();
+                        const baseDatos = String(values[colBaseDatos] || '').trim() || 'Sin base';
+                        const statusVendor = String(values[colStatusVendor] || '').trim();
+                        let volumenVenta = parseFloat(String(values[colVolumenVenta] || '0').replace(/,/g, '')) || 0;
+                        const telefono = String(values[colTelefono] || '').trim();
+
+                        let edad = '';
+                        let nombreLimpio = nombres;
+                        const edadMatch = String(nombres).match(/\d+/);
+                        if (edadMatch) {
+                            edad = edadMatch[0];
+                            nombreLimpio = String(nombres).replace(/\d+/, '').trim();
+                        }
+
+                        let estado = 'CT';
+                        const textoCompleto = (estadoCivil + ' ' + statusVendor + ' ' + nombres).toUpperCase();
+                        
+                        if (textoCompleto.includes('NQ') || textoCompleto.includes('NO CALIF') || textoCompleto.includes('NO Q') || textoCompleto.includes('N/Q')) {
+                            estado = 'NQ';
+                        } else if (textoCompleto.includes('Q') || textoCompleto.includes('CALIF') || textoCompleto.includes('Q -') || textoCompleto.includes('- Q')) {
+                            estado = 'Q';
+                        } else {
+                            estado = 'CT';
+                        }
+
+                        registrosPestana.push({
+                            numParejas: numParejas,
+                            fecha: fecha,
+                            nombres: nombreLimpio || nombres,
+                            edad: edad,
+                            estadoCivil: estadoCivil,
+                            baseDatos: baseDatos,
+                            statusVendor: statusVendor,
+                            volumenVenta: volumenVenta,
+                            telefono: telefono,
+                            estado: estado,
+                            pestana: nombrePestana
+                        });
+                    });
+                    
+                    datosVentasPorPestana[nombrePestana] = registrosPestana;
+                    totalRegistros += registrosPestana.length;
+                });
+
+                datosVentasExcel = [];
+                Object.values(datosVentasPorPestana).forEach(regs => {
+                    datosVentasExcel = datosVentasExcel.concat(regs);
+                });
+
+                mostrarToast(`📥 Excel cargado: ${totalRegistros} registros en ${Object.keys(datosVentasPorPestana).length} pestañas`);
+                mostrarEstadisticasVentas();
+                
+            } catch (error) {
+                console.error('Error al leer Excel:', error);
+                alert('Error al leer el archivo Excel. Asegúrate de que el formato sea correcto.');
+            }
+        };
+        
+        reader.readAsArrayBuffer(file);
+        e.target.value = '';
+    }
+
+    // ===== ESTADÍSTICAS DE VENTAS =====
+    function mostrarEstadisticasVentas() {
+        const container = document.getElementById('contenidoVentas');
+        
+        const totalRegistros = datosVentasExcel.length;
+        if (totalRegistros === 0) {
+            container.innerHTML = `
+                <p style="text-align:center; color:#64748b; padding: 40px;">
+                    📭 No hay datos cargados. Usa el botón "📥 Cargar Excel" para subir un manifiesto.
+                </p>
+            `;
+            document.getElementById('modalVentas').style.display = 'block';
+            return;
+        }
+
+        const pestanas = Object.keys(datosVentasPorPestana);
+        
+        let pestanasHtml = `
+            <div class="pestanas-ventas">
+                <button class="pestana-ventas active" data-pestana="Todas">📊 Todas (${totalRegistros})</button>
+        `;
+        
+        const mesesOrden = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+        const pestanasOrdenadas = pestanas.sort((a, b) => {
+            const aLower = a.toLowerCase();
+            const bLower = b.toLowerCase();
+            const aIndex = mesesOrden.findIndex(m => aLower.includes(m));
+            const bIndex = mesesOrden.findIndex(m => bLower.includes(m));
+            if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+            if (aIndex !== -1) return -1;
+            if (bIndex !== -1) return 1;
+            if (aLower.includes('semana') || aLower.includes('curso')) return 1;
+            if (bLower.includes('semana') || bLower.includes('curso')) return -1;
+            return a.localeCompare(b);
+        });
+        
+        pestanasOrdenadas.forEach(p => {
+            const count = datosVentasPorPestana[p].length;
+            const icono = p.toLowerCase().includes('semana') || p.toLowerCase().includes('curso') ? '📅' : '📊';
+            pestanasHtml += `
+                <button class="pestana-ventas" data-pestana="${p}">${icono} ${p} (${count})</button>
+            `;
+        });
+        
+        pestanasHtml += `</div>`;
+        
+        function renderizarEstadisticas(pestana) {
+            const datos = pestana === 'Todas' ? datosVentasExcel : datosVentasPorPestana[pestana] || [];
+            if (datos.length === 0) {
+                return `<p style="text-align:center; color:#64748b;">No hay datos en esta pestaña</p>`;
+            }
+            
+            const grupos = {};
+            let totalQ = 0, totalNQ = 0, totalCT = 0;
+            let totalVentasGlobal = 0;
+            
+            datos.forEach(item => {
+                const base = item.baseDatos || 'Sin base';
+                if (!grupos[base]) {
+                    grupos[base] = {
+                        totalVentas: 0,
+                        Q: 0,
+                        NQ: 0,
+                        CT: 0,
+                        totalRegistros: 0
+                    };
+                }
+                grupos[base].totalVentas += item.volumenVenta || 0;
+                grupos[base].totalRegistros++;
+                totalVentasGlobal += item.volumenVenta || 0;
+                
+                if (item.estado === 'Q') {
+                    grupos[base].Q++;
+                    totalQ++;
+                } else if (item.estado === 'NQ') {
+                    grupos[base].NQ++;
+                    totalNQ++;
+                } else {
+                    grupos[base].CT++;
+                    totalCT++;
+                }
+            });
+            
+            const maxVentas = Math.max(...Object.values(grupos).map(g => g.totalVentas), 1);
+            const totalRegistrosBase = datos.length;
+            
+            let html = `
+                <div class="ventas-resumen-grid">
+                    <div class="ventas-resumen-card q-card">
+                        <div class="icono">✅</div>
+                        <div class="valor">${totalQ}</div>
+                        <div class="etiqueta">Calificados (Q) - ${totalRegistrosBase > 0 ? ((totalQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                    </div>
+                    <div class="ventas-resumen-card nq-card">
+                        <div class="icono">❌</div>
+                        <div class="valor">${totalNQ}</div>
+                        <div class="etiqueta">No Calificados (NQ) - ${totalRegistrosBase > 0 ? ((totalNQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                    </div>
+                    <div class="ventas-resumen-card ct-card">
+                        <div class="icono">🔄</div>
+                        <div class="valor">${totalCT}</div>
+                        <div class="etiqueta">Citados (CT) - ${totalRegistrosBase > 0 ? ((totalCT/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                    </div>
+                    <div class="ventas-resumen-card total-card">
+                        <div class="icono">💰</div>
+                        <div class="valor">$${totalVentasGlobal.toLocaleString()}</div>
+                        <div class="etiqueta">Volumen Total de Ventas</div>
+                    </div>
+                </div>
+            `;
+            
+            html += `
+                <h4 class="titulo-seccion-ventas">📋 TABLA DE CONVERSIÓN POR BASE</h4>
+                <div style="overflow-x: auto;">
+                    <table class="tabla-conversion">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left; padding-left:20px;">Base de Datos</th>
+                                <th>Volumen Total ($)</th>
+                                <th># Ventas (Q)</th>
+                                <th># No Ventas (NQ)</th>
+                                <th># Total Registros</th>
+                                <th>Tasa de Conversión (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+            
+            const sortedBases = Object.entries(grupos).sort((a, b) => b[1].totalVentas - a[1].totalVentas);
+            
+            sortedBases.forEach(([base, stats]) => {
+                const totalBase = stats.totalRegistros;
+                const ventasQ = stats.Q;
+                const noVentasNQ = stats.NQ;
+                const volumen = stats.totalVentas;
+                const tasaConversion = totalBase > 0 ? (ventasQ / totalBase) * 100 : 0;
+                
+                let conversionClass = 'conversion-baja';
+                if (tasaConversion >= 80) conversionClass = 'conversion-alta';
+                else if (tasaConversion >= 50) conversionClass = 'conversion-media';
+                
+                html += `
+                    <tr>
+                        <td class="base-nombre">${base}</td>
+                        <td class="volumen">$${volumen.toLocaleString()}</td>
+                        <td><span class="q-badge">${ventasQ}</span></td>
+                        <td><span class="nq-badge">${noVentasNQ}</span></td>
+                        <td>${totalBase}</td>
+                        <td class="${conversionClass}">${tasaConversion.toFixed(2)}%</td>
+                    </tr>
+                `;
+            });
+            
+            const totalConversion = totalRegistrosBase > 0 ? (totalQ / totalRegistrosBase) * 100 : 0;
+            let totalConversionClass = 'conversion-baja';
+            if (totalConversion >= 80) totalConversionClass = 'conversion-alta';
+            else if (totalConversion >= 50) totalConversionClass = 'conversion-media';
+            
+            html += `
+                        <tr class="total-row">
+                            <td><strong>TOTALES</strong></td>
+                            <td><strong>$${totalVentasGlobal.toLocaleString()}</strong></td>
+                            <td><strong>${totalQ}</strong></td>
+                            <td><strong>${totalNQ}</strong></td>
+                            <td><strong>${totalRegistrosBase}</strong></td>
+                            <td class="${totalConversionClass}"><strong>${totalConversion.toFixed(2)}%</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+            `;
+            
+            html += `
+                <h4 class="titulo-seccion-ventas">📊 VOLUMEN TOTAL POR BASE DE DATOS</h4>
+                <div class="grafica-ventas-barras">
+            `;
+            
+            sortedBases.forEach(([base, stats]) => {
+                const pct = maxVentas > 0 ? (stats.totalVentas / maxVentas) * 100 : 0;
+                const mostrar = stats.totalVentas > 0;
+                html += `
+                    <div class="barra-venta">
+                        <span class="barra-venta-label">${base}</span>
+                        <div class="barra-venta-container">
+                            <div class="barra-venta-fill venta" style="width: ${mostrar ? Math.max(pct, 5) : 5}%; background: ${mostrar ? 'linear-gradient(90deg, #0d9488, #14b8a6)' : 'linear-gradient(90deg, #94a3b8, #cbd5e1)'};">
+                                ${mostrar ? `$${stats.totalVentas.toLocaleString()}` : '$0'}
+                            </div>
+                        </div>
+                        <span class="barra-venta-valor">${mostrar ? `$${stats.totalVentas.toLocaleString()}` : '$0'}</span>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            
+            html += `
+                <div class="leyenda-ventas">
+                    <div class="leyenda-ventas-item">
+                        <span class="color-box q-color"></span> <strong>Q</strong> = Calificados (Ventas concretadas)
+                    </div>
+                    <div class="leyenda-ventas-item">
+                        <span class="color-box nq-color"></span> <strong>NQ</strong> = No Calificados (No ventas)
+                    </div>
+                    <div class="leyenda-ventas-item">
+                        <span class="color-box ct-color"></span> <strong>CT</strong> = Citados (Pendientes de calificar)
+                    </div>
+                    <div class="leyenda-ventas-item">
+                        <span style="width:16px; height:16px; border-radius:4px; background: linear-gradient(90deg, #0d9488, #14b8a6);"></span>
+                        <strong>Volumen de Venta</strong>
+                    </div>
+                </div>
+            `;
+            
+            return html;
+        }
+        
+        let contenidoCompleto = pestanasHtml;
+        contenidoCompleto += `<div id="contenidoPestana" class="contenido-pestana">${renderizarEstadisticas('Todas')}</div>`;
+        
+        container.innerHTML = contenidoCompleto;
+        
+        document.querySelectorAll('.pestana-ventas').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.pestana-ventas').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const pestana = this.dataset.pestana;
+                const contenido = document.getElementById('contenidoPestana');
+                contenido.innerHTML = renderizarEstadisticas(pestana);
+            });
+        });
+        
+        document.getElementById('modalVentas').style.display = 'block';
+    }
+
+    // ===== MODALES CRM =====
+    const modalEstadisticas = document.getElementById('modalEstadisticas');
+    const modalInactivos = document.getElementById('modalInactivos');
+    const modalReporteMensual = document.getElementById('modalReporteMensual');
+    const modalVentas = document.getElementById('modalVentas');
+    
+    document.getElementById('btnEstadisticasSup').addEventListener('click', () => {
+        document.getElementById('contenidoEstadisticas').innerHTML = `
+            <div style="text-align: center; padding: 20px;">
+                <label>🔐 Ingrese la contraseña para acceder:</label>
+                <input type="password" id="passwordEstadisticas" class="password-input" placeholder="Contraseña">
+                <button id="verificarPasswordEstadisticas" style="background: #0a2540;">Verificar Acceso</button>
+            </div>
+        `;
+        document.getElementById('passwordEstadisticas').value = '';
+        const btnVerificar = document.getElementById('verificarPasswordEstadisticas');
+        if (btnVerificar) {
+            btnVerificar.addEventListener('click', () => {
+                const password = document.getElementById('passwordEstadisticas').value;
+                if (password === PASSWORD_ESTADISTICAS) {
+                    mostrarEstadisticasSupervisores();
+                } else {
+                    alert("❌ Contraseña incorrecta. Acceso denegado.");
+                    document.getElementById('passwordEstadisticas').value = '';
+                }
+            });
+        }
+        modalEstadisticas.style.display = 'block';
+    });
+    
+    document.getElementById('btnInactivosSup').addEventListener('click', () => {
+        document.getElementById('contenidoInactivos').innerHTML = '<p style="text-align:center;">Cargando lista de supervisores inactivos...</p>';
+        modalInactivos.style.display = 'block';
+        mostrarSupervisoresInactivos();
+    });
+    
+    document.getElementById('btnReporteMensual').addEventListener('click', () => {
+        const hoy = new Date();
+        const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
+        document.getElementById('selectorMes').value = mesActual;
+        document.getElementById('contenidoReporteMensual').innerHTML = '<p style="text-align:center; color:#64748b;">Selecciona un mes y presiona "Cargar Reporte"</p>';
+        modalReporteMensual.style.display = 'block';
+    });
+    
+    document.getElementById('btnVentas').addEventListener('click', () => {
+        if (datosVentasExcel && datosVentasExcel.length > 0) {
+            mostrarEstadisticasVentas();
+        } else {
+            document.getElementById('contenidoVentas').innerHTML = `
+                <p style="text-align:center; color:#64748b; padding: 40px;">
+                    📭 No hay datos cargados. Usa el botón "📥 Cargar Excel" para subir un manifiesto.
+                </p>
+            `;
+            modalVentas.style.display = 'block';
+        }
+    });
+    
+    document.getElementById('btnCargarExcel').addEventListener('click', cargarExcelManifiesto);
+    document.getElementById('inputExcel').addEventListener('change', procesarExcelManifiesto);
+    
+    document.querySelector('.cerrar-estadisticas').addEventListener('click', () => { modalEstadisticas.style.display = 'none'; });
+    document.querySelector('.cerrar-inactivos').addEventListener('click', () => { modalInactivos.style.display = 'none'; });
+    document.querySelector('.cerrar-reporte-mensual').addEventListener('click', () => { modalReporteMensual.style.display = 'none'; });
+    document.querySelector('.cerrar-ventas').addEventListener('click', () => { modalVentas.style.display = 'none'; });
+    
+    window.addEventListener('click', (e) => {
+        if (e.target === modalEstadisticas) modalEstadisticas.style.display = 'none';
+        if (e.target === modalInactivos) modalInactivos.style.display = 'none';
+        if (e.target === modalReporteMensual) modalReporteMensual.style.display = 'none';
+        if (e.target === modalVentas) modalVentas.style.display = 'none';
     });
 
-    // ========== FORMULARIO - GUARDAR PAPELETA ==========
+    document.getElementById('btnCargarReporteMes').addEventListener('click', cargarReporteMensual);
+    document.getElementById('btnDescargarReporteMes').addEventListener('click', descargarReporteMensualExcel);
+
+    // ================================================================
+    // ========== FUNCIONES DE PAPELETAS ==========
+    // ================================================================
+
+    function limpiarFormulario() {
+        document.getElementById('formPapeleta').reset();
+        document.getElementById('p_adultos').value = '0';
+        document.getElementById('p_menores').value = '0';
+    }
+
     document.getElementById('formPapeleta').addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -731,7 +2618,6 @@
             fechaCreacion: new Date().toISOString()
         };
 
-        // Validar campos obligatorios
         if (!datos.nombre) {
             mostrarToast('⚠️ El campo "Nombre" es obligatorio', 'error');
             return;
@@ -752,14 +2638,6 @@
         }
     });
 
-    // ========== LIMPIAR FORMULARIO ==========
-    function limpiarFormulario() {
-        document.getElementById('formPapeleta').reset();
-        document.getElementById('p_adultos').value = '0';
-        document.getElementById('p_menores').value = '0';
-    }
-
-    // ========== CARGAR PAPELETAS ==========
     async function cargarPapeletas() {
         try {
             const snapshot = await database.ref('papeletas').once('value');
@@ -778,7 +2656,6 @@
                 ...values
             }));
 
-            // Ordenar por fecha de creación (más reciente primero)
             papeletasCache.sort((a, b) => {
                 return new Date(b.fechaCreacion) - new Date(a.fechaCreacion);
             });
@@ -792,7 +2669,6 @@
         }
     }
 
-    // ========== RENDERIZAR PAPELETAS ==========
     function renderizarPapeletas(papeletas) {
         const tbody = document.getElementById('tablaPapeletasBody');
         
@@ -805,51 +2681,45 @@
         papeletas.forEach((p, index) => {
             const tr = document.createElement('tr');
             
-            // # 
-            tr.appendChild(crearCelda(index + 1));
+            const td1 = document.createElement('td');
+            td1.textContent = index + 1;
+            tr.appendChild(td1);
             
-            // Nombre
-            const tdNombre = document.createElement('td');
-            tdNombre.innerHTML = `<strong>${p.nombre || 'Sin nombre'}</strong>`;
-            tr.appendChild(tdNombre);
+            const td2 = document.createElement('td');
+            td2.innerHTML = `<strong>${p.nombre || 'Sin nombre'}</strong>`;
+            tr.appendChild(td2);
             
-            // Teléfono (mostrar celular si existe)
-            const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
-            tr.appendChild(crearCelda(telefono));
+            const td3 = document.createElement('td');
+            td3.textContent = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
+            tr.appendChild(td3);
             
-            // Supervisor
-            tr.appendChild(crearCelda(p.supervisor || '-'));
+            const td4 = document.createElement('td');
+            td4.textContent = p.supervisor || '-';
+            tr.appendChild(td4);
             
-            // Fecha
-            const fecha = p.fechaHora ? new Date(p.fechaHora).toLocaleString() : '-';
-            tr.appendChild(crearCelda(fecha));
+            const td5 = document.createElement('td');
+            td5.textContent = p.fechaHora ? new Date(p.fechaHora).toLocaleString() : '-';
+            tr.appendChild(td5);
             
-            // Estado Civil
-            tr.appendChild(crearCelda(p.estadoCivil || '-'));
+            const td6 = document.createElement('td');
+            td6.textContent = p.estadoCivil || '-';
+            tr.appendChild(td6);
             
-            // Personas
-            const personas = `👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores`;
-            tr.appendChild(crearCelda(personas));
+            const td7 = document.createElement('td');
+            td7.textContent = `👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores`;
+            tr.appendChild(td7);
             
-            // Acciones
-            const tdAcciones = document.createElement('td');
-            tdAcciones.innerHTML = `
+            const td8 = document.createElement('td');
+            td8.innerHTML = `
                 <button class="btn-ver-papeleta" onclick="verPapeleta('${p.id}')">👁️ Ver</button>
                 <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')">🗑️</button>
             `;
-            tr.appendChild(tdAcciones);
+            tr.appendChild(td8);
             
             tbody.appendChild(tr);
         });
     }
 
-    function crearCelda(texto) {
-        const td = document.createElement('td');
-        td.textContent = texto || '-';
-        return td;
-    }
-
-    // ========== VER PAPELETA ==========
     function verPapeleta(id) {
         const papeleta = papeletasCache.find(p => p.id === id);
         if (!papeleta) {
@@ -896,7 +2766,6 @@ ${papeleta.notas || 'Sin notas'}
         alert(texto);
     }
 
-    // ========== ELIMINAR PAPELETA ==========
     async function eliminarPapeleta(id) {
         if (!confirm('¿Estás seguro de eliminar esta papeleta?')) return;
         
@@ -910,7 +2779,6 @@ ${papeleta.notas || 'Sin notas'}
         }
     }
 
-    // ========== FILTRAR PAPELETAS ==========
     function filtrarPapeletas() {
         const supervisor = document.getElementById('filtroPapeletasSupervisor').value;
         const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
@@ -932,7 +2800,6 @@ ${papeleta.notas || 'Sin notas'}
         renderizarPapeletas(filtradas);
     }
 
-    // ========== ESTADÍSTICAS DE PAPELETAS ==========
     async function mostrarEstadisticasPapeletas() {
         try {
             const snapshot = await database.ref('papeletas').once('value');
@@ -946,7 +2813,6 @@ ${papeleta.notas || 'Sin notas'}
 
             const papeletas = Object.values(data);
             
-            // Estadísticas por supervisor
             const porSupervisor = {};
             papeletas.forEach(p => {
                 const sup = p.supervisor || 'Sin supervisor';
@@ -960,28 +2826,28 @@ ${papeleta.notas || 'Sin notas'}
             });
 
             let html = `
-                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap:15px; margin-bottom:20px;">
-                    <div style="background:#e8f0fe; padding:20px; border-radius:12px; text-align:center;">
-                        <div style="font-size:2rem; font-weight:700; color:#0a2540;">${papeletas.length}</div>
-                        <div style="color:#64748b;">Total Papeletas</div>
+                <div class="stats-grid">
+                    <div class="stats-card azul">
+                        <div class="numero">${papeletas.length}</div>
+                        <div class="etiqueta">Total Papeletas</div>
                     </div>
-                    <div style="background:#e8f5e9; padding:20px; border-radius:12px; text-align:center;">
-                        <div style="font-size:2rem; font-weight:700; color:#2e7d32;">${papeletas.filter(p => p.notas && p.notas.trim()).length}</div>
-                        <div style="color:#64748b;">Con Notas</div>
+                    <div class="stats-card verde">
+                        <div class="numero">${papeletas.filter(p => p.notas && p.notas.trim()).length}</div>
+                        <div class="etiqueta">Con Notas</div>
                     </div>
-                    <div style="background:#fff3e0; padding:20px; border-radius:12px; text-align:center;">
-                        <div style="font-size:2rem; font-weight:700; color:#e65100;">${Object.keys(porSupervisor).length}</div>
-                        <div style="color:#64748b;">Supervisores</div>
+                    <div class="stats-card naranja">
+                        <div class="numero">${Object.keys(porSupervisor).length}</div>
+                        <div class="etiqueta">Supervisores</div>
                     </div>
                 </div>
                 <h3 style="color:#0a2540;">📊 Por Supervisor</h3>
-                <table style="width:100%; border-collapse:collapse;">
+                <table class="tabla-estadisticas-papeletas">
                     <thead>
-                        <tr style="background:#0a2540; color:white;">
-                            <th style="padding:10px; text-align:left;">Supervisor</th>
-                            <th style="padding:10px; text-align:center;">Total</th>
-                            <th style="padding:10px; text-align:center;">Con Notas</th>
-                            <th style="padding:10px; text-align:center;">% Notas</th>
+                        <tr>
+                            <th>Supervisor</th>
+                            <th style="text-align:center;">Total</th>
+                            <th style="text-align:center;">Con Notas</th>
+                            <th style="text-align:center;">% Notas</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -992,11 +2858,11 @@ ${papeleta.notas || 'Sin notas'}
                 .forEach(([sup, stats]) => {
                     const pct = stats.total > 0 ? ((stats.conNotas / stats.total) * 100).toFixed(1) : 0;
                     html += `
-                        <tr style="border-bottom:1px solid #e2e8f0;">
-                            <td style="padding:8px; font-weight:600;">${sup}</td>
-                            <td style="padding:8px; text-align:center;">${stats.total}</td>
-                            <td style="padding:8px; text-align:center;">${stats.conNotas}</td>
-                            <td style="padding:8px; text-align:center;">${pct}%</td>
+                        <tr>
+                            <td style="font-weight:600;">${sup}</td>
+                            <td style="text-align:center;">${stats.total}</td>
+                            <td style="text-align:center;">${stats.conNotas}</td>
+                            <td style="text-align:center;">${pct}%</td>
                         </tr>
                     `;
                 });
@@ -1016,172 +2882,25 @@ ${papeleta.notas || 'Sin notas'}
     }
 
     // ========== EVENT LISTENERS ==========
+    document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasPorFecha);
+    document.getElementById('recargarBtn').addEventListener('click', () => { if(document.getElementById('fechaEvento').value) cargarCitasPorFecha(); else alert("Elige fecha"); });
+    document.getElementById('descargarExcelBtn').addEventListener('click', descargarExcelProfesional);
+    document.getElementById('buscarBtn').addEventListener('click', buscarPorNombreOTelefono);
+    document.getElementById('limpiarBusquedaBtn').addEventListener('click', limpiarBusqueda);
+    document.getElementById('buscarInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') buscarPorNombreOTelefono(); });
+
     document.getElementById('btnFiltrarPapeletas').addEventListener('click', filtrarPapeletas);
     document.getElementById('btnRecargarPapeletas').addEventListener('click', cargarPapeletas);
     document.getElementById('filtroPapeletasBuscar').addEventListener('keypress', (e) => {
         if (e.key === 'Enter') filtrarPapeletas();
     });
 
-    // ========== CRM ORIGINAL - FUNCIONES BÁSICAS ==========
-    // (Mantengo las funciones del CRM original pero simplificadas para no duplicar todo el código)
-
-    // Cargar citas
-    document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasCRM);
-    document.getElementById('recargarBtn').addEventListener('click', () => {
-        if (document.getElementById('fechaEvento').value) cargarCitasCRM();
-        else mostrarToast('Selecciona una fecha', 'error');
-    });
-
-    async function cargarCitasCRM() {
-        const fecha = document.getElementById('fechaEvento').value;
-        if (!fecha) { mostrarToast('Selecciona una fecha', 'error'); return; }
-
-        try {
-            const snapshot = await database.ref('registrosPremanifiesto').once('value');
-            const data = snapshot.val();
-            if (!data) {
-                document.getElementById('citasBody').innerHTML = 
-                    '<tr><td colspan="9" style="text-align:center;">No hay citas</td></tr>';
-                return;
-            }
-
-            const todas = Object.entries(data).map(([id, v]) => ({ id, ...v }));
-            const fechaNorm = new Date(fecha).toISOString().split('T')[0];
-            
-            const filtradas = todas.filter(c => {
-                if (!c.diaEvento) return false;
-                try {
-                    return new Date(c.diaEvento).toISOString().split('T')[0] === fechaNorm;
-                } catch { return false; }
-            });
-
-            const supervisor = document.getElementById('filtroSupervisor').value;
-            const final = supervisor ? filtradas.filter(c => c.supervisora === supervisor) : filtradas;
-
-            citasOriginales = final;
-            mostrarCitasCRM(final);
-
-        } catch (error) {
-            mostrarToast('Error al cargar citas', 'error');
-        }
-    }
-
-    function mostrarCitasCRM(citas) {
-        const tbody = document.getElementById('citasBody');
-        if (!citas.length) {
-            tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;">No hay citas</td></tr>';
-            document.getElementById('resumenContainer').style.display = 'none';
-            return;
-        }
-
-        tbody.innerHTML = '';
-        let llegaron = 0, noLlegaron = 0;
-
-        citas.forEach(c => {
-            const tr = document.createElement('tr');
-            
-            tr.appendChild(crearCeldaCRM(c.citaPorDia || c.cita || '-'));
-            tr.appendChild(crearCeldaCRM(c.nombre || '-'));
-            tr.appendChild(crearCeldaCRM(c.telefono || '-'));
-            tr.appendChild(crearCeldaCRM(c.hora || '-'));
-            tr.appendChild(crearCeldaCRM(c.hotel || '-', 20));
-            tr.appendChild(crearCeldaCRM(c.supervisora || '-', 20));
-            
-            // Asistencia
-            const tdAsist = document.createElement('td');
-            if (c.asistencia === 'Llegó') {
-                tdAsist.innerHTML = '✅ Llegó';
-                llegaron++;
-            } else if (c.asistencia === 'No llegó') {
-                tdAsist.innerHTML = '❌ No llegó';
-                noLlegaron++;
-            } else {
-                tdAsist.innerHTML = '⚪ Pendiente';
-            }
-            tr.appendChild(tdAsist);
-            
-            // Estado llamada
-            const tdEstado = document.createElement('td');
-            if (c.estadoLlamada === 'Cita') tdEstado.innerHTML = '📅 Cita';
-            else if (c.estadoLlamada === 'Cita de nuevo') tdEstado.innerHTML = '🔄 Cita nuevo';
-            else if (c.estadoLlamada === 'Contestó') tdEstado.innerHTML = '📞 Contestó';
-            else if (c.estadoLlamada === 'No contestó') tdEstado.innerHTML = '📵 No contestó';
-            else tdEstado.innerHTML = '⚪ Pendiente';
-            tr.appendChild(tdEstado);
-            
-            tr.appendChild(crearCeldaCRM(c.comentarios || '-', 30));
-            
-            tbody.appendChild(tr);
-        });
-
-        document.getElementById('resumenContainer').style.display = 'block';
-        document.getElementById('resumenContainer').innerHTML = `
-            📊 Total: ${citas.length} | ✅ Llegaron: ${llegaron} | ❌ No llegaron: ${noLlegaron}
-        `;
-    }
-
-    function crearCeldaCRM(texto, max = null) {
-        const td = document.createElement('td');
-        let t = texto || '-';
-        if (max && t.length > max) {
-            td.textContent = t.substring(0, max) + '...';
-            td.title = t;
-        } else {
-            td.textContent = t;
-        }
-        return td;
-    }
-
-    // Buscar
-    document.getElementById('buscarBtn').addEventListener('click', () => {
-        const termino = document.getElementById('buscarInput').value.trim().toLowerCase();
-        if (!termino) { mostrarCitasCRM(citasOriginales); return; }
-        const filtradas = citasOriginales.filter(c => 
-            (c.nombre || '').toLowerCase().includes(termino) || 
-            (c.telefono || '').includes(termino)
-        );
-        mostrarCitasCRM(filtradas);
-    });
-
-    document.getElementById('limpiarBusquedaBtn').addEventListener('click', () => {
-        document.getElementById('buscarInput').value = '';
-        mostrarCitasCRM(citasOriginales);
-    });
-
-    // Descargar Excel (simplificado)
-    document.getElementById('descargarExcelBtn').addEventListener('click', () => {
-        if (!citasOriginales.length) {
-            mostrarToast('No hay citas para exportar', 'error');
-            return;
-        }
-        const datos = citasOriginales.map(c => ({
-            'Cita': c.citaPorDia || c.cita || '-',
-            'Nombre': c.nombre || '-',
-            'Teléfono': c.telefono || '-',
-            'Hora': c.hora || '-',
-            'Hotel': c.hotel || '-',
-            'Supervisor': c.supervisora || '-',
-            'Asistencia': c.asistencia || 'Pendiente',
-            'Estado Llamada': c.estadoLlamada || 'Pendiente',
-            'Comentarios': c.comentarios || ''
-        }));
-        mostrarToast('📊 Excel descargado (simulado)');
-        console.log('Datos Excel:', datos);
-    });
-
     // ========== INICIALIZACIÓN ==========
     cargarSupervisores();
-    
-    // Fecha por defecto
     const hoy = new Date().toISOString().split('T')[0];
     document.getElementById('fechaEvento').value = hoy;
-    
-    // Cargar citas al inicio
-    setTimeout(() => {
-        if (document.getElementById('fechaEvento').value) cargarCitasCRM();
-    }, 500);
-
-    console.log('✅ CRM con Papeletas cargado correctamente');
+    setTimeout(() => { if(document.getElementById('fechaEvento').value) cargarCitasPorFecha(); }, 500);
+    console.log('✅ CRM completo con Papeletas cargado');
 </script>
 </body>
 </html>
