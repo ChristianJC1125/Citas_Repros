@@ -3,52 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Supervisor - CRM de Citas y Seguimiento</title>
+    <title>CRM - Destination Connect</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
             margin: 0;
             padding: 0;
             min-height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
         }
         
-        /* ===== FONDO DE PLAYA ===== */
-        .fondo-playa {
+        /* Overlay oscuro para legibilidad */
+        body::before {
+            content: '';
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: rgba(10, 37, 64, 0.5);
             z-index: 0;
-        }
-        .fondo-playa::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 37, 64, 0.6);
-        }
-        
-        .container {
-            max-width: 1600px;
-            margin: 20px auto;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 28px;
-            padding: 25px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 1;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            min-height: 85vh;
         }
         
         /* ===== BOTÓN HAMBURGUESA ===== */
@@ -57,23 +36,25 @@
             top: 20px;
             left: 20px;
             z-index: 1000;
-            background: #0a2540;
+            background: rgba(10, 37, 64, 0.9);
             color: white;
-            border: none;
+            border: 2px solid rgba(255,255,255,0.2);
             border-radius: 50%;
             width: 55px;
             height: 55px;
             font-size: 26px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(10px);
         }
         .menu-hamburguesa:hover {
             transform: scale(1.05);
-            background: #1d3a5c;
+            background: #0a2540;
+            border-color: #d4af37;
         }
         .menu-hamburguesa i {
             font-size: 28px;
@@ -86,10 +67,10 @@
             left: -320px;
             width: 300px;
             height: 100%;
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.98);
             z-index: 1001;
             transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 5px 0 30px rgba(0,0,0,0.15);
+            box-shadow: 5px 0 30px rgba(0,0,0,0.2);
             padding-top: 80px;
             display: flex;
             flex-direction: column;
@@ -97,6 +78,7 @@
             padding-left: 0;
             padding-right: 0;
             overflow-y: auto;
+            backdrop-filter: blur(20px);
         }
         .menu-lateral.abierto {
             left: 0;
@@ -109,7 +91,7 @@
         }
         .menu-lateral .menu-header h2 {
             color: #0a2540;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 700;
         }
         .menu-lateral .menu-header small {
@@ -161,6 +143,21 @@
             font-weight: 700;
             margin-left: auto;
         }
+        .menu-lateral .menu-item.locked {
+            color: #64748b;
+        }
+        .menu-lateral .menu-item.locked i {
+            color: #94a3b8;
+        }
+        .menu-lateral .menu-item.locked:hover {
+            background: #fef2f2;
+            border-left-color: #dc2626;
+        }
+        .menu-lateral .menu-item .lock-icon {
+            color: #dc2626;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
         
         /* ===== OVERLAY ===== */
         .overlay-menu {
@@ -178,6 +175,31 @@
             display: block;
         }
         
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .container {
+            max-width: 1600px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 28px;
+            padding: 25px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            min-height: 85vh;
+            display: none;
+        }
+        .container.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
         /* ===== PESTAÑAS ===== */
         .pestana {
             display: none;
@@ -187,12 +209,6 @@
             display: block;
         }
         
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* ===== TÍTULO PRINCIPAL ===== */
         .titulo-principal {
             text-align: center;
             padding: 10px 0 20px 0;
@@ -644,7 +660,7 @@
         }
         
         /* ===== MODALES ===== */
-        .modal-estadisticas, .modal-inactivos, .modal-reporte-mensual, .modal-ventas {
+        .modal-estadisticas, .modal-inactivos, .modal-reporte-mensual, .modal-ventas, .modal-password {
             display: none;
             position: fixed;
             z-index: 1000;
@@ -655,13 +671,13 @@
             background-color: rgba(0,0,0,0.5);
             backdrop-filter: blur(3px);
         }
-        .modal-estadisticas-contenido, .modal-inactivos-contenido, .modal-reporte-contenido, .modal-ventas-contenido {
+        .modal-estadisticas-contenido, .modal-inactivos-contenido, .modal-reporte-contenido, .modal-ventas-contenido, .modal-password-contenido {
             background: white;
             margin: 5% auto;
             padding: 25px;
             border-radius: 25px;
             width: 90%;
-            max-width: 1200px;
+            max-width: 500px;
             max-height: 85vh;
             overflow-y: auto;
             box-shadow: 0 20px 35px rgba(0,0,0,0.3);
@@ -851,8 +867,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- FONDO DE PLAYA -->
-    <div class="fondo-playa"></div>
+    <!-- FONDO DE PLAYA (visible siempre) -->
     
     <!-- BOTÓN HAMBURGUESA -->
     <button class="menu-hamburguesa" id="menuBtn">
@@ -868,8 +883,9 @@
             <h2>📋 CRM</h2>
             <small>Destination Connect Group</small>
         </div>
-        <button class="menu-item active" data-pestana="panel">
+        <button class="menu-item locked" data-pestana="panel" id="menuPanel">
             <i class="fas fa-chart-pie"></i> Panel Principal
+            <span class="lock-icon"><i class="fas fa-lock"></i></span>
         </button>
         <button class="menu-item" data-pestana="nueva-papeleta">
             <i class="fas fa-file-alt"></i> Nueva Papeleta
@@ -883,17 +899,33 @@
         </button>
     </div>
 
-    <div class="container">
+    <!-- ===== MODAL CONTRASEÑA ===== -->
+    <div id="modalPassword" class="modal-password">
+        <div class="modal-password-contenido">
+            <div class="modal-header">
+                <h2>🔐 Acceso al Panel Principal</h2>
+                <span class="cerrar-modal cerrar-password">&times;</span>
+            </div>
+            <p style="margin-bottom:15px; color:#64748b;">Ingresa la contraseña para acceder al panel de citas:</p>
+            <input type="password" id="passwordPanel" class="password-input" placeholder="Contraseña">
+            <button id="verificarPasswordPanel" style="width:100%; padding:12px; border-radius:14px;">Verificar Acceso</button>
+            <p id="mensajeErrorPassword" style="color: #dc2626; margin-top:10px; display:none; text-align:center;">❌ Contraseña incorrecta</p>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- ===== CONTENEDOR PRINCIPAL ===== -->
+    <!-- ============================================================ -->
+    <div class="container" id="mainContainer">
+
         <!-- TÍTULO -->
         <div class="titulo-principal">
             <h1>📋 CRM de Citas - Seguimiento por Supervisor</h1>
             <span class="badge">Conectado a Premanifiesto</span>
         </div>
 
-        <!-- ============================================================ -->
         <!-- ===== PESTAÑA: PANEL PRINCIPAL ===== -->
-        <!-- ============================================================ -->
-        <div id="pestana-panel" class="pestana active">
+        <div id="pestana-panel" class="pestana">
             <div class="filtros">
                 <div>
                     <label>📅 Fecha del evento:</label>
@@ -959,9 +991,7 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- ===== PESTAÑA: NUEVA PAPELETA ===== -->
-        <!-- ============================================================ -->
         <div id="pestana-nueva-papeleta" class="pestana">
             <div class="form-papeleta">
                 <h2>📝 Nueva Papeleta de Registro</h2>
@@ -1127,9 +1157,7 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- ===== PESTAÑA: MIS PAPELETAS ===== -->
-        <!-- ============================================================ -->
         <div id="pestana-mis-papeletas" class="pestana">
             <h2 style="display:flex; align-items:center; gap:10px; color:#0a2540; border-bottom:2px solid #e2e8f0; padding-bottom:12px; margin-bottom:15px;">
                 📂 Mis Papeletas Guardadas
@@ -1172,9 +1200,7 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- ===== PESTAÑA: ESTADÍSTICAS PAPELETAS ===== -->
-        <!-- ============================================================ -->
         <div id="pestana-estadisticas-papeletas" class="pestana">
             <h2 style="color:#0a2540; border-bottom:2px solid #e2e8f0; padding-bottom:12px; margin-bottom:15px;">📈 Estadísticas de Papeletas</h2>
             <div id="contenidoEstadisticasPapeletas">
@@ -1182,10 +1208,7 @@
             </div>
         </div>
 
-        <!-- ============================================================ -->
         <!-- ===== MODALES ===== -->
-        <!-- ============================================================ -->
-
         <!-- Modal Estadísticas -->
         <div id="modalEstadisticas" class="modal-estadisticas">
             <div class="modal-estadisticas-contenido">
@@ -1275,7 +1298,9 @@
         let datosVentasPorPestana = {};
         let papeletasCache = [];
         let supervisoresList = [];
+        let panelDesbloqueado = false;
 
+        const PASSWORD_PANEL = "admin123";
         const PASSWORD_ESTADISTICAS = "supervisor2024";
         const PASSWORD_DESBLOQUEO = "admin123";
 
@@ -1317,9 +1342,60 @@
         menuBtn.addEventListener('click', toggleMenu);
         overlayMenu.addEventListener('click', toggleMenu);
 
+        // ========== MODAL CONTRASEÑA ==========
+        const modalPassword = document.getElementById('modalPassword');
+        const cerrarPassword = document.querySelector('.cerrar-password');
+
+        function abrirModalPassword() {
+            modalPassword.style.display = 'block';
+            document.getElementById('passwordPanel').value = '';
+            document.getElementById('mensajeErrorPassword').style.display = 'none';
+        }
+
+        cerrarPassword.addEventListener('click', () => {
+            modalPassword.style.display = 'none';
+            // Desmarcar el item del menú
+            document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+        });
+
+        document.getElementById('verificarPasswordPanel').addEventListener('click', () => {
+            const pass = document.getElementById('passwordPanel').value;
+            if (pass === PASSWORD_PANEL) {
+                modalPassword.style.display = 'none';
+                panelDesbloqueado = true;
+                document.getElementById('menuPanel').classList.remove('locked');
+                document.getElementById('menuPanel').querySelector('.lock-icon').style.display = 'none';
+                document.getElementById('mainContainer').classList.add('visible');
+                // Activar pestaña panel
+                document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+                document.getElementById('menuPanel').classList.add('active');
+                document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
+                document.getElementById('pestana-panel').classList.add('active');
+                cargarCitasPorFecha();
+                mostrarToast('🔓 Panel desbloqueado correctamente');
+            } else {
+                document.getElementById('mensajeErrorPassword').style.display = 'block';
+            }
+        });
+
+        document.getElementById('passwordPanel').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('verificarPasswordPanel').click();
+            }
+        });
+
         // ========== MENÚ - CAMBIO DE PESTAÑA ==========
         document.querySelectorAll('.menu-item').forEach(btn => {
             btn.addEventListener('click', function() {
+                const pestana = this.dataset.pestana;
+                
+                // Si es Panel Principal y no está desbloqueado
+                if (pestana === 'panel' && !panelDesbloqueado) {
+                    toggleMenu();
+                    abrirModalPassword();
+                    return;
+                }
+
                 // Cerrar menú
                 toggleMenu();
                 
@@ -1327,8 +1403,12 @@
                 document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 
+                // Mostrar contenedor si no está visible
+                if (!document.getElementById('mainContainer').classList.contains('visible')) {
+                    document.getElementById('mainContainer').classList.add('visible');
+                }
+                
                 // Mostrar pestaña
-                const pestana = this.dataset.pestana;
                 document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
                 document.getElementById(`pestana-${pestana}`).classList.add('active');
                 
@@ -2632,23 +2712,30 @@
                 await newRef.set(datos);
                 mostrarToast('✅ Papeleta guardada correctamente');
                 limpiarFormularioPapeleta();
-                cargarPapeletas();
+                cargarPapeletas(); // Recargar listado en tiempo real
             } catch (error) {
                 console.error('Error al guardar:', error);
                 mostrarToast('❌ Error al guardar la papeleta', 'error');
             }
         });
 
-        async function cargarPapeletas() {
-            try {
-                const snapshot = await database.ref('papeletas').once('value');
+        // ===== ESCUCHAR CAMBIOS EN TIEMPO REAL PARA PAPELETAS =====
+        let papeletasListener = null;
+
+        function iniciarListenerPapeletas() {
+            if (papeletasListener) return;
+            
+            papeletasListener = database.ref('papeletas').on('value', (snapshot) => {
                 const data = snapshot.val();
                 
                 if (!data) {
                     papeletasCache = [];
-                    document.getElementById('tablaPapeletasBody').innerHTML = 
-                        '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
-                    document.getElementById('totalPapeletas').textContent = '(0)';
+                    // Solo actualizar si la pestaña está visible
+                    if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                        document.getElementById('tablaPapeletasBody').innerHTML = 
+                            '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
+                        document.getElementById('totalPapeletas').textContent = '(0)';
+                    }
                     return;
                 }
 
@@ -2662,24 +2749,42 @@
                 });
 
                 document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
-                renderizarPapeletas(papeletasCache);
-
-            } catch (error) {
-                console.error('Error cargando papeletas:', error);
-                mostrarToast('❌ Error al cargar papeletas', 'error');
-            }
+                
+                // Solo renderizar si la pestaña está visible
+                if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                    renderizarPapeletas(papeletasCache);
+                }
+            });
         }
 
         function renderizarPapeletas(papeletas) {
             const tbody = document.getElementById('tablaPapeletasBody');
             
-            if (!papeletas || papeletas.length === 0) {
+            // Aplicar filtros si existen
+            const supervisor = document.getElementById('filtroPapeletasSupervisor').value;
+            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
+
+            let filtradas = [...papeletas];
+
+            if (supervisor) {
+                filtradas = filtradas.filter(p => p.supervisor === supervisor);
+            }
+
+            if (busqueda) {
+                filtradas = filtradas.filter(p => {
+                    const nombre = (p.nombre || '').toLowerCase();
+                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
+                    return nombre.includes(busqueda) || telefono.includes(busqueda);
+                });
+            }
+            
+            if (!filtradas || filtradas.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas que coincidan con los filtros</td></tr>';
                 return;
             }
 
             tbody.innerHTML = '';
-            papeletas.forEach((p, index) => {
+            filtradas.forEach((p, index) => {
                 const tr = document.createElement('tr');
                 
                 const td1 = document.createElement('td');
@@ -2773,7 +2878,7 @@
             try {
                 await database.ref(`papeletas/${id}`).remove();
                 mostrarToast('🗑️ Papeleta eliminada');
-                cargarPapeletas();
+                // El listener actualizará automáticamente
             } catch (error) {
                 console.error('Error al eliminar:', error);
                 mostrarToast('❌ Error al eliminar', 'error');
@@ -2781,24 +2886,8 @@
         }
 
         function filtrarPapeletas() {
-            const supervisor = document.getElementById('filtroPapeletasSupervisor').value;
-            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
-
-            let filtradas = [...papeletasCache];
-
-            if (supervisor) {
-                filtradas = filtradas.filter(p => p.supervisor === supervisor);
-            }
-
-            if (busqueda) {
-                filtradas = filtradas.filter(p => {
-                    const nombre = (p.nombre || '').toLowerCase();
-                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
-                    return nombre.includes(busqueda) || telefono.includes(busqueda);
-                });
-            }
-
-            renderizarPapeletas(filtradas);
+            // Usar el listener para aplicar filtros
+            renderizarPapeletas(papeletasCache);
         }
 
         async function mostrarEstadisticasPapeletas() {
@@ -2891,17 +2980,34 @@
         document.getElementById('buscarInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') buscarPorNombreOTelefono(); });
 
         document.getElementById('btnFiltrarPapeletas').addEventListener('click', filtrarPapeletas);
-        document.getElementById('btnRecargarPapeletas').addEventListener('click', cargarPapeletas);
+        document.getElementById('btnRecargarPapeletas').addEventListener('click', () => {
+            // Forzar recarga de datos
+            database.ref('papeletas').once('value').then(snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    papeletasCache = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+                    papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
+                    document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
+                    renderizarPapeletas(papeletasCache);
+                }
+            });
+            mostrarToast('🔄 Papeletas recargadas');
+        });
         document.getElementById('filtroPapeletasBuscar').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') filtrarPapeletas();
         });
 
         // ========== INICIALIZACIÓN ==========
         cargarSupervisores();
+        iniciarListenerPapeletas(); // Iniciar escucha en tiempo real
+        
+        // Fecha por defecto para el panel
         const hoy = new Date().toISOString().split('T')[0];
         document.getElementById('fechaEvento').value = hoy;
-        setTimeout(() => { if(document.getElementById('fechaEvento').value) cargarCitasPorFecha(); }, 500);
-        console.log('✅ CRM completo con Papeletas cargado');
+        
+        console.log('✅ CRM con Papeletas en tiempo real cargado');
+        console.log('🔐 Contraseña para Panel Principal: admin123');
+        console.log('🔐 Contraseña para Estadísticas: supervisor2024');
     </script>
 </body>
 </html>
