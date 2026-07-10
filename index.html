@@ -1,25 +1,49 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Supervisor - CRM de Citas y Seguimiento</title>
     <style>
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
+            background: #0a2540;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            min-height: 100vh;
+            background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
         }
+        
+        /* Overlay oscuro para legibilidad */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 37, 64, 0.7);
+            z-index: 0;
+        }
+        
         .container {
             max-width: 1600px;
-            margin: auto;
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 28px;
+            padding: 25px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
         }
+        
         h1 {
             margin-top: 0;
             color: #0a2540;
@@ -37,25 +61,34 @@
             font-weight: bold;
         }
 
-        /* ========== MENÚ PRINCIPAL ========== */
+        /* ===== MENÚ PRINCIPAL - ESTILO PANEL BLANCO ===== */
         .menu-principal {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e2e8f0;
+            padding: 15px 20px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 10px;
+            z-index: 100;
         }
         .menu-principal button {
-            padding: 10px 24px;
+            padding: 10px 22px;
             border: none;
             border-radius: 30px;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.3s ease;
             background: #f1f5f9;
             color: #0a2540;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .menu-principal button:hover {
             background: #e2e8f0;
@@ -74,16 +107,25 @@
             font-size: 0.7rem;
             margin-left: 6px;
         }
+        .menu-principal .menu-icon {
+            font-size: 1.2rem;
+        }
 
-        /* ========== PESTAÑAS ========== */
+        /* ===== PESTAÑAS ===== */
         .pestana {
             display: none;
+            animation: fadeIn 0.4s ease;
         }
         .pestana.active {
             display: block;
         }
 
-        /* ========== FILTROS CRM ========== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== FILTROS CRM ===== */
         .filtros {
             display: flex;
             gap: 15px;
@@ -93,6 +135,7 @@
             background: #f8fafc;
             padding: 15px;
             border-radius: 16px;
+            border: 1px solid #e2e8f0;
         }
         .filtros label {
             font-weight: bold;
@@ -104,6 +147,7 @@
             border-radius: 12px;
             border: 1px solid #cbd5e1;
             font-size: 0.9rem;
+            background: white;
         }
         .grupo-busqueda {
             display: flex;
@@ -141,13 +185,8 @@
         .btn-reporte-mensual:hover { background: #047857; color: white; }
         .btn-buscar { background: #2563eb; }
         .btn-limpiar-busqueda { background: #64748b; }
-        .btn-desbloquear { background: #f59e0b; font-size: 0.7rem; padding: 3px 8px; }
-        .btn-cargar-excel { background: #0d9488; }
-        .btn-cargar-excel:hover { background: #0f766e; color: white; }
-        .btn-ventas { background: #7c3aed; }
-        .btn-ventas:hover { background: #6d28d9; color: white; }
 
-        /* ========== TABLA CRM ========== */
+        /* ===== TABLA CRM ===== */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -181,6 +220,8 @@
         .btn-cita-nuevo { background: #8b5cf6; font-size: 0.75rem; padding: 5px 10px; }
         .btn-contesto { background: #06b6d4; font-size: 0.75rem; padding: 5px 10px; }
         .btn-no-contesto { background: #7f8c8d; font-size: 0.75rem; padding: 5px 10px; }
+        .btn-desbloquear { background: #f59e0b; font-size: 0.7rem; padding: 3px 8px; }
+        .btn-desbloquear:hover { background: #d97706; color: white; }
         .asistencia-estado {
             font-weight: bold;
             padding: 4px 8px;
@@ -264,7 +305,7 @@
             color: #64748b;
         }
 
-        /* ========== MODALES CRM ========== */
+        /* ===== MODALES CRM ===== */
         .modal-estadisticas, .modal-inactivos, .modal-reporte-mensual, .modal-ventas {
             display: none;
             position: fixed;
@@ -344,10 +385,6 @@
             background: #fff3e0;
             color: #e65100;
         }
-        .btn-cerrar-modal {
-            background: #475569;
-            margin-top: 20px;
-        }
         .inactivo-tag {
             background: #dc2626;
             color: white;
@@ -395,216 +432,13 @@
             color: #0a2540;
         }
 
-        /* ========== TABLAS DE CONVERSIÓN ========== */
-        .tabla-conversion {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.9rem;
-            background: #ffffff;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
-        .tabla-conversion thead th {
-            background: #0a2540;
-            color: white;
-            padding: 14px 12px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 0.85rem;
-            letter-spacing: 0.5px;
-        }
-        .tabla-conversion tbody td {
-            padding: 12px 12px;
-            text-align: center;
-            border-bottom: 1px solid #e2e8f0;
-            color: #1e293b;
-            font-size: 0.9rem;
-        }
-        .tabla-conversion tbody tr:hover {
-            background: #f8fafc;
-        }
-        .tabla-conversion tbody tr.total-row {
-            background: #e8f0fe;
-            border-top: 2px solid #0a2540;
-            font-weight: bold;
-        }
-        .tabla-conversion tbody tr.total-row td {
-            color: #0a2540;
-            font-weight: 700;
-        }
-        .tabla-conversion .base-nombre {
-            font-weight: 600;
-            color: #0a2540;
-            text-align: left;
-            padding-left: 20px;
-        }
-        .tabla-conversion .volumen {
-            color: #0d9488;
-            font-weight: 600;
-        }
-        .tabla-conversion .conversion-alta {
-            color: #2e7d32;
-            font-weight: 700;
-        }
-        .tabla-conversion .conversion-media {
-            color: #e65100;
-            font-weight: 600;
-        }
-        .tabla-conversion .conversion-baja {
-            color: #c62828;
-            font-weight: 600;
-        }
-        .tabla-conversion .q-badge {
-            display: inline-block;
-            background: #e8f5e9;
-            color: #2e7d32;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-        .tabla-conversion .nq-badge {
-            display: inline-block;
-            background: #ffebee;
-            color: #c62828;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-        .ventas-resumen-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-        .ventas-resumen-card {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border-left: 4px solid #0a2540;
-        }
-        .ventas-resumen-card .icono { font-size: 2rem; margin-bottom: 8px; }
-        .ventas-resumen-card .valor { font-size: 2rem; font-weight: 700; color: #0a2540; }
-        .ventas-resumen-card .etiqueta { color: #64748b; font-size: 0.85rem; }
-        .ventas-resumen-card.q-card { border-left-color: #2e7d32; }
-        .ventas-resumen-card.q-card .valor { color: #2e7d32; }
-        .ventas-resumen-card.nq-card { border-left-color: #c62828; }
-        .ventas-resumen-card.nq-card .valor { color: #c62828; }
-        .ventas-resumen-card.ct-card { border-left-color: #e65100; }
-        .ventas-resumen-card.ct-card .valor { color: #e65100; }
-        .ventas-resumen-card.total-card { border-left-color: #0a2540; }
-        .grafica-ventas-barras {
-            margin-top: 20px;
-        }
-        .barra-venta {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-        }
-        .barra-venta-label {
-            min-width: 180px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #0a2540;
-        }
-        .barra-venta-container {
-            flex: 1;
-            height: 28px;
-            background: #e2e8f0;
-            border-radius: 14px;
-            overflow: hidden;
-            position: relative;
-        }
-        .barra-venta-fill {
-            height: 100%;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: white;
-            transition: width 0.8s ease;
-            min-width: 35px;
-        }
-        .barra-venta-fill.venta { background: linear-gradient(90deg, #0d9488, #14b8a6); }
-        .barra-venta-valor {
-            min-width: 80px;
-            text-align: right;
-            font-weight: 600;
-            font-size: 0.85rem;
-            color: #0a2540;
-        }
-        .leyenda-ventas {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-            padding: 15px;
-            background: #f8fafc;
-            border-radius: 10px;
-        }
-        .leyenda-ventas-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: #1e293b;
-        }
-        .leyenda-ventas-item .color-box {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-        }
-        .color-box.q-color { background: #2e7d32; }
-        .color-box.nq-color { background: #c62828; }
-        .color-box.ct-color { background: #e65100; }
-        .pestanas-ventas {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        .pestana-ventas {
-            padding: 8px 16px;
-            border-radius: 20px;
-            border: 2px solid #e2e8f0;
-            background: white;
-            color: #0a2540;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-        .pestana-ventas:hover {
-            border-color: #d4af37;
-        }
-        .pestana-ventas.active {
-            border-color: #0a2540;
-            background: #0a2540;
-            color: white;
-        }
-        .titulo-seccion-ventas {
-            color: #0a2540;
-            font-size: 1.1rem;
-            margin: 25px 0 15px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* ========== FORMULARIO PAPELETAS ========== */
+        /* ===== FORMULARIO PAPELETAS ===== */
         .form-papeleta {
             background: #f8fafc;
             padding: 25px 30px;
             border-radius: 16px;
             border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
         }
         .form-papeleta h2 {
             color: #0a2540;
@@ -723,11 +557,12 @@
             background: #475569;
         }
 
-        /* ========== TABLA PAPELETAS ========== */
+        /* ===== TABLA PAPELETAS ===== */
         .tabla-papeletas {
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
+            margin-top: 15px;
         }
         .tabla-papeletas th {
             background: #0a2540;
@@ -771,7 +606,7 @@
             background: #b91c1c;
         }
 
-        /* ========== FILTROS PAPELETAS ========== */
+        /* ===== FILTROS PAPELETAS ===== */
         .filtros-papeletas {
             display: flex;
             gap: 15px;
@@ -781,6 +616,7 @@
             background: #f8fafc;
             padding: 15px;
             border-radius: 16px;
+            border: 1px solid #e2e8f0;
         }
         .filtros-papeletas label {
             font-weight: bold;
@@ -793,9 +629,10 @@
             border-radius: 12px;
             border: 1px solid #cbd5e1;
             font-size: 0.9rem;
+            background: white;
         }
 
-        /* ========== ESTADÍSTICAS PAPELETAS ========== */
+        /* ===== ESTADÍSTICAS PAPELETAS ===== */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -808,6 +645,7 @@
             border-radius: 12px;
             text-align: center;
             border-left: 4px solid #0a2540;
+            border: 1px solid #e2e8f0;
         }
         .stats-card .numero {
             font-size: 2rem;
@@ -825,6 +663,7 @@
         .tabla-estadisticas-papeletas {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 15px;
         }
         .tabla-estadisticas-papeletas th {
             background: #0a2540;
@@ -837,7 +676,7 @@
             border-bottom: 1px solid #e2e8f0;
         }
 
-        /* ========== TOAST ========== */
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -858,17 +697,13 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        /* ========== RESPONSIVE ========== */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
             .comentario-textarea { width: 180px; min-width: 150px; }
             th, td { font-size: 0.7rem; padding: 6px; }
         }
         @media (max-width: 800px) {
             .comentario-textarea { width: 140px; min-width: 120px; }
-            .barra-venta-label { min-width: 100px; font-size: 0.75rem; }
-            .barra-venta-valor { min-width: 60px; font-size: 0.75rem; }
-            .tabla-conversion { font-size: 0.75rem; }
-            .tabla-conversion thead th, .tabla-conversion tbody td { padding: 8px 6px; }
             .form-papeleta .grid-2 {
                 grid-template-columns: 1fr;
             }
@@ -885,14 +720,27 @@
             .form-papeleta .person-group .subfield input {
                 width: 100%;
             }
+            .menu-principal {
+                padding: 10px;
+                gap: 5px;
+            }
             .menu-principal button {
-                padding: 8px 16px;
-                font-size: 0.8rem;
+                padding: 8px 14px;
+                font-size: 0.75rem;
+            }
+            .container {
+                margin: 10px;
+                padding: 15px;
+                border-radius: 20px;
             }
         }
         @media (max-width: 500px) {
             .form-papeleta .phone-group {
                 grid-template-columns: 1fr;
+            }
+            .menu-principal button {
+                font-size: 0.7rem;
+                padding: 6px 10px;
             }
         }
     </style>
@@ -907,12 +755,20 @@
         <span class="badge">Conectado a Premanifiesto</span>
     </h1>
 
-    <!-- ===== MENÚ PRINCIPAL ===== -->
+    <!-- ===== MENÚ PRINCIPAL - PANEL BLANCO EN SUPERIOR IZQUIERDA ===== -->
     <div class="menu-principal">
-        <button class="active" data-pestana="panel">📊 Panel Principal</button>
-        <button data-pestana="nueva-papeleta">📝 Nueva Papeleta <span class="badge-menu">+</span></button>
-        <button data-pestana="mis-papeletas">📂 Mis Papeletas</button>
-        <button data-pestana="estadisticas-papeletas">📈 Estadísticas Papeletas</button>
+        <button class="active" data-pestana="panel">
+            <span class="menu-icon">📊</span> Panel Principal
+        </button>
+        <button data-pestana="nueva-papeleta">
+            <span class="menu-icon">📝</span> Nueva Papeleta <span class="badge-menu">+</span>
+        </button>
+        <button data-pestana="mis-papeletas">
+            <span class="menu-icon">📂</span> Mis Papeletas
+        </button>
+        <button data-pestana="estadisticas-papeletas">
+            <span class="menu-icon">📈</span> Estadísticas Papeletas
+        </button>
     </div>
 
     <!-- ============================================================ -->
@@ -1147,7 +1003,7 @@
                 </div>
 
                 <button type="submit" class="btn-guardar">💾 Guardar Papeleta</button>
-                <button type="button" class="btn-limpiar" onclick="limpiarFormulario()">🗑️ Limpiar formulario</button>
+                <button type="button" class="btn-limpiar" onclick="limpiarFormularioPapeleta()">🗑️ Limpiar formulario</button>
             </form>
         </div>
     </div>
@@ -1156,7 +1012,7 @@
     <!-- ===== PESTAÑA: MIS PAPELETAS ===== -->
     <!-- ============================================================ -->
     <div id="pestana-mis-papeletas" class="pestana">
-        <h2 style="display:flex; align-items:center; gap:10px; color:#0a2540;">
+        <h2 style="display:flex; align-items:center; gap:10px; color:#0a2540; border-bottom:2px solid #e2e8f0; padding-bottom:12px;">
             📂 Mis Papeletas Guardadas
             <span id="totalPapeletas" style="font-size:0.9rem; color:#64748b; font-weight:normal;"></span>
         </h2>
@@ -1201,7 +1057,7 @@
     <!-- ===== PESTAÑA: ESTADÍSTICAS PAPELETAS ===== -->
     <!-- ============================================================ -->
     <div id="pestana-estadisticas-papeletas" class="pestana">
-        <h2 style="color:#0a2540;">📈 Estadísticas de Papeletas</h2>
+        <h2 style="color:#0a2540; border-bottom:2px solid #e2e8f0; padding-bottom:12px;">📈 Estadísticas de Papeletas</h2>
         <div id="contenidoEstadisticasPapeletas">
             <p style="color:#64748b;">Cargando estadísticas...</p>
         </div>
@@ -2573,7 +2429,7 @@
     // ========== FUNCIONES DE PAPELETAS ==========
     // ================================================================
 
-    function limpiarFormulario() {
+    function limpiarFormularioPapeleta() {
         document.getElementById('formPapeleta').reset();
         document.getElementById('p_adultos').value = '0';
         document.getElementById('p_menores').value = '0';
@@ -2631,7 +2487,8 @@
             const newRef = database.ref('papeletas').push();
             await newRef.set(datos);
             mostrarToast('✅ Papeleta guardada correctamente');
-            limpiarFormulario();
+            limpiarFormularioPapeleta();
+            cargarPapeletas(); // Recargar listado
         } catch (error) {
             console.error('Error al guardar:', error);
             mostrarToast('❌ Error al guardar la papeleta', 'error');
