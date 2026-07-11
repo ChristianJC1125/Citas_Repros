@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -209,26 +209,30 @@
             display: block;
         }
         
-        .titulo-principal {
+        /* ===== NUEVO: LOGO DE EMPRESA ===== */
+        .logo-empresa {
             text-align: center;
-            padding: 10px 0 20px 0;
+            padding: 15px 0 20px 0;
             border-bottom: 2px solid #e2e8f0;
             margin-bottom: 20px;
         }
-        .titulo-principal h1 {
-            color: #0a2540;
-            font-size: 1.8rem;
-            font-weight: 700;
+        .logo-empresa img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
         }
-        .titulo-principal .badge {
-            background: #d4af37;
-            color: #0a2540;
-            padding: 4px 14px;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 4px;
+        .logo-empresa img:hover {
+            transform: scale(1.02);
+        }
+        .logo-empresa .subtitulo {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
         
         /* ===== FILTROS ===== */
@@ -835,8 +839,8 @@
                 padding: 15px;
                 border-radius: 20px;
             }
-            .titulo-principal h1 {
-                font-size: 1.3rem;
+            .logo-empresa img {
+                max-width: 140px;
             }
             .menu-hamburguesa {
                 width: 48px;
@@ -859,12 +863,109 @@
                 padding: 12px;
                 border-radius: 16px;
             }
+            .logo-empresa img {
+                max-width: 110px;
+            }
+        }
+        
+        /* ===== MODAL PAPELETA COMPLETA ===== */
+        .modal-papeleta-completa {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-papeleta-completa .modal-contenido {
+            background: white;
+            margin: 3% auto;
+            padding: 30px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+        }
+        .modal-papeleta-completa .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-papeleta-completa .modal-header h3 {
+            color: #0a2540;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .modal-papeleta-completa .cerrar-modal-papeleta {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+            transition: 0.2s;
+        }
+        .modal-papeleta-completa .cerrar-modal-papeleta:hover {
+            color: #c62828;
+        }
+        .modal-papeleta-completa .campo-papeleta {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .modal-papeleta-completa .campo-papeleta .etiqueta {
+            font-weight: 600;
+            color: #0a2540;
+            min-width: 140px;
+            font-size: 0.85rem;
+        }
+        .modal-papeleta-completa .campo-papeleta .valor {
+            color: #1e293b;
+            font-size: 0.85rem;
+            word-break: break-word;
+        }
+        .modal-papeleta-completa .campo-papeleta .valor.notas {
+            white-space: pre-wrap;
+            background: #f8fafc;
+            padding: 8px 12px;
+            border-radius: 8px;
+            width: 100%;
+        }
+        .modal-papeleta-completa .seccion-telefonos {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 8px 0;
+        }
+        .modal-papeleta-completa .seccion-telefonos .telefono-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.85rem;
+        }
+        .modal-papeleta-completa .seccion-telefonos .telefono-item .tel-etiqueta {
+            font-weight: 500;
+            color: #64748b;
+        }
+        .modal-papeleta-completa .seccion-telefonos .telefono-item .tel-valor {
+            color: #0a2540;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <!-- 🔐 AGREGADO: Firebase Auth para autenticación anónima -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -915,15 +1016,29 @@
         </div>
     </div>
 
+    <!-- ===== MODAL PAPELETA COMPLETA ===== -->
+    <div id="modalPapeletaCompleta" class="modal-papeleta-completa">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3>📋 PAPELETA COMPLETA</h3>
+                <span class="cerrar-modal-papeleta" id="cerrarPapeletaCompleta">&times;</span>
+            </div>
+            <div id="contenidoPapeletaCompleta">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================================ -->
     <!-- ===== CONTENEDOR PRINCIPAL ===== -->
     <!-- ============================================================ -->
     <div class="container" id="mainContainer">
 
-        <!-- TÍTULO -->
-        <div class="titulo-principal">
-            <h1>📋 CRM de Citas - Seguimiento por Supervisor</h1>
-            <span class="badge">Conectado a Premanifiesto</span>
+        <!-- ===== LOGO DE EMPRESA (Reemplaza el título) ===== -->
+        <div class="logo-empresa">
+            <img src="https://via.placeholder.com/200x80/0a2540/FFFFFF?text=Destination+Connect" alt="Destination Connect Group" 
+                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIGZpbGw9IiMwYTI1NDAiIHJ4PSIxMiIvPjx0ZXh0IHg9IjEwMCIgeT0iNDgiIGZvbnQtZmFtaWx5PSJBcmlhbCxTZWdvZSBVSSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCI+RGVzdGluYXRpb24gQ29ubmVjdDwvdGV4dD48L3N2Zz4='">
+            <span class="subtitulo">DESTINATION CONNECT GROUP</span>
         </div>
 
         <!-- ===== PESTAÑA: PANEL PRINCIPAL ===== -->
@@ -1289,7 +1404,6 @@
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-        // 🔐 AGREGADO: Referencia a autenticación
         const auth = firebase.auth();
 
         // ========== VARIABLES GLOBALES ==========
@@ -1303,8 +1417,6 @@
         let papeletasCache = [];
         let supervisoresList = [];
         let panelDesbloqueado = false;
-
-        // 🔐 AGREGADO: Estado de autenticación
         let autenticado = false;
 
         const PASSWORD_PANEL = "admin123";
@@ -1321,17 +1433,13 @@
 
         // ========== 🔐 AUTENTICACIÓN ANÓNIMA ==========
         async function autenticarFirebase() {
-            if (autenticado && auth.currentUser) {
-                console.log('✅ Ya autenticado');
-                return true;
-            }
+            if (autenticado && auth.currentUser) return true;
             try {
                 if (!auth.currentUser) {
-                    console.log('🔄 Autenticando anónimamente...');
                     await auth.signInAnonymously();
                 }
                 autenticado = true;
-                console.log('✅ Autenticado correctamente:', auth.currentUser.uid);
+                console.log('✅ Autenticado correctamente');
                 return true;
             } catch (error) {
                 console.error('❌ Error en autenticación:', error);
@@ -1339,7 +1447,6 @@
             }
         }
 
-        // 🔐 Autenticar al cargar la página
         autenticarFirebase();
 
         // ========== TOAST ==========
@@ -1353,7 +1460,7 @@
             setTimeout(() => div.remove(), 3000);
         }
 
-        // ========== MENÚ - TOGGLE ==========
+        // ========== MENÚ ==========
         const menuBtn = document.getElementById('menuBtn');
         const menuLateral = document.getElementById('menuLateral');
         const overlayMenu = document.getElementById('overlayMenu');
@@ -1764,7 +1871,482 @@
             mostrarToast('Búsqueda limpiada');
         }
 
+        // ================================================================
+        // ========== FUNCIONES DE PAPELETAS ==========
+        // ================================================================
+
+        function limpiarFormularioPapeleta() {
+            document.getElementById('formPapeleta').reset();
+            document.getElementById('p_adultos').value = '0';
+            document.getElementById('p_menores').value = '0';
+        }
+
+        // ===== NUEVO: MOSTRAR PAPELETA COMPLETA =====
+        function mostrarPapeletaCompleta(id) {
+            const papeleta = papeletasCache.find(p => p.id === id);
+            if (!papeleta) {
+                mostrarToast('❌ Papeleta no encontrada', 'error');
+                return;
+            }
+
+            // Construir HTML completo con TODOS los campos
+            let html = `
+                <div class="campo-papeleta">
+                    <span class="etiqueta">👤 Nombre</span>
+                    <span class="valor">${papeleta.nombre || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">📍 Lugar</span>
+                    <span class="valor">${papeleta.lugar || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">📅 Fecha / Hora</span>
+                    <span class="valor">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleString() : '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">👩‍💼 Supervisor</span>
+                    <span class="valor"><strong>${papeleta.supervisor || '-'}</strong></span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">🔑 Clave</span>
+                    <span class="valor">${papeleta.clave || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">⏰ Hora</span>
+                    <span class="valor">${papeleta.hora || '-'}</span>
+                </div>
+                
+                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                            <span class="etiqueta" style="min-width: 60px;">👨 Sr.</span>
+                            <span class="valor">${papeleta.sr?.nombre || '-'}</span>
+                        </div>
+                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                            <span class="etiqueta" style="min-width: 40px;">Edad</span>
+                            <span class="valor">${papeleta.sr?.edad || '-'}</span>
+                        </div>
+                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0; grid-column: 1 / -1;">
+                            <span class="etiqueta" style="min-width: 60px;">Ocupación</span>
+                            <span class="valor">${papeleta.sr?.ocupacion || '-'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                            <span class="etiqueta" style="min-width: 60px;">👩 Sra.</span>
+                            <span class="valor">${papeleta.sra?.nombre || '-'}</span>
+                        </div>
+                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                            <span class="etiqueta" style="min-width: 40px;">Edad</span>
+                            <span class="valor">${papeleta.sra?.edad || '-'}</span>
+                        </div>
+                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0; grid-column: 1 / -1;">
+                            <span class="etiqueta" style="min-width: 60px;">Ocupación</span>
+                            <span class="valor">${papeleta.sra?.ocupacion || '-'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="campo-papeleta">
+                    <span class="etiqueta">💍 Estado Civil</span>
+                    <span class="valor">${papeleta.estadoCivil || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">👨‍👩‍👧 Personas</span>
+                    <span class="valor">${papeleta.adultos || 0} adultos, ${papeleta.menores || 0} menores</span>
+                </div>
+
+                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <span style="font-weight: 600; color: #0a2540; display: block; margin-bottom: 8px;">📞 Teléfonos</span>
+                    <div class="seccion-telefonos">
+                        <div class="telefono-item">
+                            <span class="tel-etiqueta">🏠 Casa</span>
+                            <span class="tel-valor">${papeleta.telefonos?.casa || '-'}</span>
+                        </div>
+                        <div class="telefono-item">
+                            <span class="tel-etiqueta">🏢 Sr. Oficina</span>
+                            <span class="tel-valor">${papeleta.telefonos?.srOficina || '-'}</span>
+                        </div>
+                        <div class="telefono-item">
+                            <span class="tel-etiqueta">📱 Sr. Celular</span>
+                            <span class="tel-valor">${papeleta.telefonos?.srCelular || '-'}</span>
+                        </div>
+                        <div class="telefono-item">
+                            <span class="tel-etiqueta">🏢 Sra. Oficina</span>
+                            <span class="tel-valor">${papeleta.telefonos?.sraOficina || '-'}</span>
+                        </div>
+                        <div class="telefono-item">
+                            <span class="tel-etiqueta">📱 Sra. Celular</span>
+                            <span class="tel-valor">${papeleta.telefonos?.sraCelular || '-'}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="campo-papeleta">
+                    <span class="etiqueta">💰 Ingresos</span>
+                    <span class="valor">${papeleta.ingresos || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">💳 Tarjetas</span>
+                    <span class="valor">${papeleta.tarjetas || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">📞 Fecha Llamada</span>
+                    <span class="valor">${papeleta.fechaLlamada || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">✉️ Email</span>
+                    <span class="valor">${papeleta.email || '-'}</span>
+                </div>
+                <div class="campo-papeleta">
+                    <span class="etiqueta">📂 Base</span>
+                    <span class="valor">${papeleta.base || '-'}</span>
+                </div>
+
+                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+                    <span style="font-weight: 600; color: #0a2540; display: block; margin-bottom: 6px;">📝 NOTAS</span>
+                    <div class="valor notas">${papeleta.notas || 'Sin notas'}</div>
+                </div>
+
+                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 0.75rem; color: #94a3b8; text-align: center;">
+                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString()}
+                </div>
+            `;
+
+            document.getElementById('contenidoPapeletaCompleta').innerHTML = html;
+            document.getElementById('modalPapeletaCompleta').style.display = 'block';
+        }
+
+        // ===== CARGAR PAPELETAS =====
+        async function cargarPapeletas() {
+            try {
+                const snapshot = await database.ref('papeletas').once('value');
+                const data = snapshot.val();
+                
+                if (!data) {
+                    papeletasCache = [];
+                    document.getElementById('tablaPapeletasBody').innerHTML = 
+                        '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
+                    document.getElementById('totalPapeletas').textContent = '(0)';
+                    return;
+                }
+
+                papeletasCache = Object.entries(data).map(([id, values]) => ({
+                    id,
+                    ...values
+                }));
+
+                papeletasCache.sort((a, b) => {
+                    return new Date(b.fechaCreacion) - new Date(a.fechaCreacion);
+                });
+
+                document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
+                renderizarPapeletas(papeletasCache);
+
+            } catch (error) {
+                console.error('Error cargando papeletas:', error);
+                mostrarToast('❌ Error al cargar papeletas', 'error');
+            }
+        }
+
+        // ===== GUARDAR PAPELETA =====
+        document.getElementById('formPapeleta').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const authOk = await autenticarFirebase();
+            if (!authOk) {
+                mostrarToast('❌ Error de autenticación. Intenta recargar la página.', 'error');
+                return;
+            }
+            
+            const datos = {
+                nombre: document.getElementById('p_nombre').value.trim(),
+                lugar: document.getElementById('p_lugar').value.trim(),
+                fechaHora: document.getElementById('p_fechaHora').value,
+                supervisor: document.getElementById('p_supervisor').value,
+                clave: document.getElementById('p_clave').value.trim(),
+                hora: document.getElementById('p_hora').value,
+                sr: {
+                    nombre: document.getElementById('p_sr_nombre').value.trim(),
+                    edad: document.getElementById('p_sr_edad').value,
+                    ocupacion: document.getElementById('p_sr_ocupacion').value.trim()
+                },
+                sra: {
+                    nombre: document.getElementById('p_sra_nombre').value.trim(),
+                    edad: document.getElementById('p_sra_edad').value,
+                    ocupacion: document.getElementById('p_sra_ocupacion').value.trim()
+                },
+                estadoCivil: document.getElementById('p_estadoCivil').value,
+                adultos: parseInt(document.getElementById('p_adultos').value) || 0,
+                menores: parseInt(document.getElementById('p_menores').value) || 0,
+                telefonos: {
+                    casa: document.getElementById('p_casa').value.trim(),
+                    srOficina: document.getElementById('p_sr_oficina').value.trim(),
+                    srCelular: document.getElementById('p_sr_celular').value.trim(),
+                    sraOficina: document.getElementById('p_sra_oficina').value.trim(),
+                    sraCelular: document.getElementById('p_sra_celular').value.trim()
+                },
+                ingresos: document.getElementById('p_ingresos').value.trim(),
+                tarjetas: document.getElementById('p_tarjetas').value.trim(),
+                fechaLlamada: document.getElementById('p_fechaLlamada').value,
+                email: document.getElementById('p_email').value.trim(),
+                base: document.getElementById('p_base').value.trim(),
+                notas: document.getElementById('p_notas').value.trim(),
+                fechaCreacion: new Date().toISOString()
+            };
+
+            if (!datos.nombre) {
+                mostrarToast('⚠️ El campo "Nombre" es obligatorio', 'error');
+                return;
+            }
+            if (!datos.supervisor) {
+                mostrarToast('⚠️ Selecciona un supervisor', 'error');
+                return;
+            }
+
+            try {
+                const newRef = database.ref('papeletas').push();
+                await newRef.set(datos);
+                mostrarToast('✅ Papeleta guardada correctamente');
+                limpiarFormularioPapeleta();
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al guardar:', error);
+                if (error.message && error.message.includes('permission_denied')) {
+                    mostrarToast('🔄 Reintentando autenticación...', 'info');
+                    autenticado = false;
+                    const reAuth = await autenticarFirebase();
+                    if (reAuth) {
+                        try {
+                            const newRef = database.ref('papeletas').push();
+                            await newRef.set(datos);
+                            mostrarToast('✅ Papeleta guardada correctamente');
+                            limpiarFormularioPapeleta();
+                            cargarPapeletas();
+                        } catch (retryError) {
+                            mostrarToast('❌ Error al guardar: ' + retryError.message, 'error');
+                        }
+                    } else {
+                        mostrarToast('❌ No se pudo autenticar. Revisa tu conexión.', 'error');
+                    }
+                } else {
+                    mostrarToast('❌ Error al guardar: ' + error.message, 'error');
+                }
+            }
+        });
+
+        // ===== LISTENER EN TIEMPO REAL =====
+        let papeletasListener = null;
+
+        function iniciarListenerPapeletas() {
+            if (papeletasListener) return;
+            
+            papeletasListener = database.ref('papeletas').on('value', (snapshot) => {
+                const data = snapshot.val();
+                
+                if (!data) {
+                    papeletasCache = [];
+                    if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                        document.getElementById('tablaPapeletasBody').innerHTML = 
+                            '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
+                        document.getElementById('totalPapeletas').textContent = '(0)';
+                    }
+                    return;
+                }
+
+                papeletasCache = Object.entries(data).map(([id, values]) => ({
+                    id,
+                    ...values
+                }));
+
+                papeletasCache.sort((a, b) => {
+                    return new Date(b.fechaCreacion) - new Date(a.fechaCreacion);
+                });
+
+                document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
+                
+                if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                    renderizarPapeletas(papeletasCache);
+                }
+            });
+        }
+
+        // ===== RENDERIZAR PAPELETAS =====
+        function renderizarPapeletas(papeletas) {
+            const tbody = document.getElementById('tablaPapeletasBody');
+            
+            const supervisor = document.getElementById('filtroPapeletasSupervisor').value;
+            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
+
+            let filtradas = [...papeletas];
+
+            if (supervisor) {
+                filtradas = filtradas.filter(p => p.supervisor === supervisor);
+            }
+
+            if (busqueda) {
+                filtradas = filtradas.filter(p => {
+                    const nombre = (p.nombre || '').toLowerCase();
+                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
+                    return nombre.includes(busqueda) || telefono.includes(busqueda);
+                });
+            }
+            
+            if (!filtradas || filtradas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas que coincidan con los filtros</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filtradas.forEach((p, index) => {
+                const tr = document.createElement('tr');
+                
+                const td1 = document.createElement('td');
+                td1.textContent = index + 1;
+                tr.appendChild(td1);
+                
+                const td2 = document.createElement('td');
+                td2.innerHTML = `<strong>${p.nombre || 'Sin nombre'}</strong>`;
+                tr.appendChild(td2);
+                
+                const td3 = document.createElement('td');
+                td3.textContent = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
+                tr.appendChild(td3);
+                
+                const td4 = document.createElement('td');
+                td4.textContent = p.supervisor || '-';
+                tr.appendChild(td4);
+                
+                const td5 = document.createElement('td');
+                td5.textContent = p.fechaHora ? new Date(p.fechaHora).toLocaleString() : '-';
+                tr.appendChild(td5);
+                
+                const td6 = document.createElement('td');
+                td6.textContent = p.estadoCivil || '-';
+                tr.appendChild(td6);
+                
+                const td7 = document.createElement('td');
+                td7.textContent = `👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores`;
+                tr.appendChild(td7);
+                
+                const td8 = document.createElement('td');
+                td8.innerHTML = `
+                    <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')">👁️ Ver</button>
+                    <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')">🗑️</button>
+                `;
+                tr.appendChild(td8);
+                
+                tbody.appendChild(tr);
+            });
+        }
+
+        // ===== ELIMINAR PAPELETA =====
+        async function eliminarPapeleta(id) {
+            if (!confirm('¿Estás seguro de eliminar esta papeleta?')) return;
+            
+            try {
+                await database.ref(`papeletas/${id}`).remove();
+                mostrarToast('🗑️ Papeleta eliminada');
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al eliminar:', error);
+                mostrarToast('❌ Error al eliminar', 'error');
+            }
+        }
+
+        // ===== FILTRAR PAPELETAS =====
+        function filtrarPapeletas() {
+            renderizarPapeletas(papeletasCache);
+        }
+
+        // ===== ESTADÍSTICAS PAPELETAS =====
+        async function mostrarEstadisticasPapeletas() {
+            try {
+                const snapshot = await database.ref('papeletas').once('value');
+                const data = snapshot.val();
+                
+                if (!data) {
+                    document.getElementById('contenidoEstadisticasPapeletas').innerHTML = 
+                        '<p style="color:#64748b;">No hay papeletas registradas</p>';
+                    return;
+                }
+
+                const papeletas = Object.values(data);
+                
+                const porSupervisor = {};
+                papeletas.forEach(p => {
+                    const sup = p.supervisor || 'Sin supervisor';
+                    if (!porSupervisor[sup]) {
+                        porSupervisor[sup] = { total: 0, conNotas: 0 };
+                    }
+                    porSupervisor[sup].total++;
+                    if (p.notas && p.notas.trim().length > 0) {
+                        porSupervisor[sup].conNotas++;
+                    }
+                });
+
+                let html = `
+                    <div class="stats-grid">
+                        <div class="stats-card azul">
+                            <div class="numero">${papeletas.length}</div>
+                            <div class="etiqueta">Total Papeletas</div>
+                        </div>
+                        <div class="stats-card verde">
+                            <div class="numero">${papeletas.filter(p => p.notas && p.notas.trim()).length}</div>
+                            <div class="etiqueta">Con Notas</div>
+                        </div>
+                        <div class="stats-card naranja">
+                            <div class="numero">${Object.keys(porSupervisor).length}</div>
+                            <div class="etiqueta">Supervisores</div>
+                        </div>
+                    </div>
+                    <h3 style="color:#0a2540;">📊 Por Supervisor</h3>
+                    <table class="tabla-estadisticas-papeletas">
+                        <thead>
+                            <tr>
+                                <th>Supervisor</th>
+                                <th style="text-align:center;">Total</th>
+                                <th style="text-align:center;">Con Notas</th>
+                                <th style="text-align:center;">% Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                Object.entries(porSupervisor)
+                    .sort((a, b) => b[1].total - a[1].total)
+                    .forEach(([sup, stats]) => {
+                        const pct = stats.total > 0 ? ((stats.conNotas / stats.total) * 100).toFixed(1) : 0;
+                        html += `
+                            <tr>
+                                <td style="font-weight:600;">${sup}</td>
+                                <td style="text-align:center;">${stats.total}</td>
+                                <td style="text-align:center;">${stats.conNotas}</td>
+                                <td style="text-align:center;">${pct}%</td>
+                            </tr>
+                        `;
+                    });
+
+                html += `
+                        </tbody>
+                    </table>
+                `;
+
+                document.getElementById('contenidoEstadisticasPapeletas').innerHTML = html;
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('contenidoEstadisticasPapeletas').innerHTML = 
+                    '<p style="color:red;">Error al cargar estadísticas</p>';
+            }
+        }
+
+        // ================================================================
         // ===== ESTADÍSTICAS DE SUPERVISORES =====
+        // ================================================================
         async function mostrarEstadisticasSupervisores() {
             try {
                 const snapshot = await database.ref('registrosPremanifiesto').once('value');
@@ -2671,359 +3253,8 @@
         document.getElementById('btnDescargarReporteMes').addEventListener('click', descargarReporteMensualExcel);
 
         // ================================================================
-        // ========== 🔐 FUNCIONES DE PAPELETAS CON AUTENTICACIÓN ==========
+        // ========== EVENT LISTENERS PAPELETAS ==========
         // ================================================================
-
-        function limpiarFormularioPapeleta() {
-            document.getElementById('formPapeleta').reset();
-            document.getElementById('p_adultos').value = '0';
-            document.getElementById('p_menores').value = '0';
-        }
-
-        // 🔐 FORMULARIO DE PAPELETA CON AUTENTICACIÓN
-        document.getElementById('formPapeleta').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // 🔐 VERIFICAR AUTENTICACIÓN ANTES DE GUARDAR
-            const authOk = await autenticarFirebase();
-            if (!authOk) {
-                mostrarToast('❌ Error de autenticación. Intenta recargar la página.', 'error');
-                return;
-            }
-            
-            const datos = {
-                nombre: document.getElementById('p_nombre').value.trim(),
-                lugar: document.getElementById('p_lugar').value.trim(),
-                fechaHora: document.getElementById('p_fechaHora').value,
-                supervisor: document.getElementById('p_supervisor').value,
-                clave: document.getElementById('p_clave').value.trim(),
-                hora: document.getElementById('p_hora').value,
-                sr: {
-                    nombre: document.getElementById('p_sr_nombre').value.trim(),
-                    edad: document.getElementById('p_sr_edad').value,
-                    ocupacion: document.getElementById('p_sr_ocupacion').value.trim()
-                },
-                sra: {
-                    nombre: document.getElementById('p_sra_nombre').value.trim(),
-                    edad: document.getElementById('p_sra_edad').value,
-                    ocupacion: document.getElementById('p_sra_ocupacion').value.trim()
-                },
-                estadoCivil: document.getElementById('p_estadoCivil').value,
-                adultos: parseInt(document.getElementById('p_adultos').value) || 0,
-                menores: parseInt(document.getElementById('p_menores').value) || 0,
-                telefonos: {
-                    casa: document.getElementById('p_casa').value.trim(),
-                    srOficina: document.getElementById('p_sr_oficina').value.trim(),
-                    srCelular: document.getElementById('p_sr_celular').value.trim(),
-                    sraOficina: document.getElementById('p_sra_oficina').value.trim(),
-                    sraCelular: document.getElementById('p_sra_celular').value.trim()
-                },
-                ingresos: document.getElementById('p_ingresos').value.trim(),
-                tarjetas: document.getElementById('p_tarjetas').value.trim(),
-                fechaLlamada: document.getElementById('p_fechaLlamada').value,
-                email: document.getElementById('p_email').value.trim(),
-                base: document.getElementById('p_base').value.trim(),
-                notas: document.getElementById('p_notas').value.trim(),
-                fechaCreacion: new Date().toISOString()
-            };
-
-            if (!datos.nombre) {
-                mostrarToast('⚠️ El campo "Nombre" es obligatorio', 'error');
-                return;
-            }
-            if (!datos.supervisor) {
-                mostrarToast('⚠️ Selecciona un supervisor', 'error');
-                return;
-            }
-
-            try {
-                // 🔐 Intentar guardar con autenticación
-                const newRef = database.ref('papeletas').push();
-                await newRef.set(datos);
-                mostrarToast('✅ Papeleta guardada correctamente');
-                limpiarFormularioPapeleta();
-                cargarPapeletas();
-            } catch (error) {
-                console.error('Error al guardar:', error);
-                // Si falla por permisos, intentar re-autenticar
-                if (error.message && error.message.includes('permission_denied')) {
-                    mostrarToast('🔄 Reintentando autenticación...', 'info');
-                    autenticado = false;
-                    const reAuth = await autenticarFirebase();
-                    if (reAuth) {
-                        try {
-                            const newRef = database.ref('papeletas').push();
-                            await newRef.set(datos);
-                            mostrarToast('✅ Papeleta guardada correctamente');
-                            limpiarFormularioPapeleta();
-                            cargarPapeletas();
-                        } catch (retryError) {
-                            mostrarToast('❌ Error al guardar: ' + retryError.message, 'error');
-                        }
-                    } else {
-                        mostrarToast('❌ No se pudo autenticar. Revisa tu conexión.', 'error');
-                    }
-                } else {
-                    mostrarToast('❌ Error al guardar: ' + error.message, 'error');
-                }
-            }
-        });
-
-        // ===== ESCUCHAR CAMBIOS EN TIEMPO REAL PARA PAPELETAS =====
-        let papeletasListener = null;
-
-        function iniciarListenerPapeletas() {
-            if (papeletasListener) return;
-            
-            papeletasListener = database.ref('papeletas').on('value', (snapshot) => {
-                const data = snapshot.val();
-                
-                if (!data) {
-                    papeletasCache = [];
-                    if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
-                        document.getElementById('tablaPapeletasBody').innerHTML = 
-                            '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
-                        document.getElementById('totalPapeletas').textContent = '(0)';
-                    }
-                    return;
-                }
-
-                papeletasCache = Object.entries(data).map(([id, values]) => ({
-                    id,
-                    ...values
-                }));
-
-                papeletasCache.sort((a, b) => {
-                    return new Date(b.fechaCreacion) - new Date(a.fechaCreacion);
-                });
-
-                document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
-                
-                if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
-                    renderizarPapeletas(papeletasCache);
-                }
-            });
-        }
-
-        function renderizarPapeletas(papeletas) {
-            const tbody = document.getElementById('tablaPapeletasBody');
-            
-            const supervisor = document.getElementById('filtroPapeletasSupervisor').value;
-            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
-
-            let filtradas = [...papeletas];
-
-            if (supervisor) {
-                filtradas = filtradas.filter(p => p.supervisor === supervisor);
-            }
-
-            if (busqueda) {
-                filtradas = filtradas.filter(p => {
-                    const nombre = (p.nombre || '').toLowerCase();
-                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
-                    return nombre.includes(busqueda) || telefono.includes(busqueda);
-                });
-            }
-            
-            if (!filtradas || filtradas.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas que coincidan con los filtros</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = '';
-            filtradas.forEach((p, index) => {
-                const tr = document.createElement('tr');
-                
-                const td1 = document.createElement('td');
-                td1.textContent = index + 1;
-                tr.appendChild(td1);
-                
-                const td2 = document.createElement('td');
-                td2.innerHTML = `<strong>${p.nombre || 'Sin nombre'}</strong>`;
-                tr.appendChild(td2);
-                
-                const td3 = document.createElement('td');
-                td3.textContent = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
-                tr.appendChild(td3);
-                
-                const td4 = document.createElement('td');
-                td4.textContent = p.supervisor || '-';
-                tr.appendChild(td4);
-                
-                const td5 = document.createElement('td');
-                td5.textContent = p.fechaHora ? new Date(p.fechaHora).toLocaleString() : '-';
-                tr.appendChild(td5);
-                
-                const td6 = document.createElement('td');
-                td6.textContent = p.estadoCivil || '-';
-                tr.appendChild(td6);
-                
-                const td7 = document.createElement('td');
-                td7.textContent = `👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores`;
-                tr.appendChild(td7);
-                
-                const td8 = document.createElement('td');
-                td8.innerHTML = `
-                    <button class="btn-ver-papeleta" onclick="verPapeleta('${p.id}')">👁️ Ver</button>
-                    <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')">🗑️</button>
-                `;
-                tr.appendChild(td8);
-                
-                tbody.appendChild(tr);
-            });
-        }
-
-        function verPapeleta(id) {
-            const papeleta = papeletasCache.find(p => p.id === id);
-            if (!papeleta) {
-                mostrarToast('❌ Papeleta no encontrada', 'error');
-                return;
-            }
-
-            const texto = `
-        📋 PAPELETA DE REGISTRO
-        ━━━━━━━━━━━━━━━━━━━━━━━━━
-        👤 Nombre: ${papeleta.nombre || '-'}
-        📍 Lugar: ${papeleta.lugar || '-'}
-        📅 Fecha/Hora: ${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleString() : '-'}
-        👩‍💼 Supervisor: ${papeleta.supervisor || '-'}
-        🔑 Clave: ${papeleta.clave || '-'}
-        ⏰ Hora: ${papeleta.hora || '-'}
-
-        👨 Sr.: ${papeleta.sr?.nombre || '-'} | Edad: ${papeleta.sr?.edad || '-'} | Ocupación: ${papeleta.sr?.ocupacion || '-'}
-        👩 Sra.: ${papeleta.sra?.nombre || '-'} | Edad: ${papeleta.sra?.edad || '-'} | Ocupación: ${papeleta.sra?.ocupacion || '-'}
-
-        💍 Estado Civil: ${papeleta.estadoCivil || '-'}
-        👨‍👩‍👧 Personas: ${papeleta.adultos || 0} adultos, ${papeleta.menores || 0} menores
-
-        📞 Teléfonos:
-          Casa: ${papeleta.telefonos?.casa || '-'}
-          Sr. Oficina: ${papeleta.telefonos?.srOficina || '-'}
-          Sr. Celular: ${papeleta.telefonos?.srCelular || '-'}
-          Sra. Oficina: ${papeleta.telefonos?.sraOficina || '-'}
-          Sra. Celular: ${papeleta.telefonos?.sraCelular || '-'}
-
-        💰 Ingresos: ${papeleta.ingresos || '-'}
-        💳 Tarjetas: ${papeleta.tarjetas || '-'}
-        📞 Fecha Llamada: ${papeleta.fechaLlamada || '-'}
-        ✉️ Email: ${papeleta.email || '-'}
-        📂 Base: ${papeleta.base || '-'}
-
-        📝 NOTAS:
-        ${papeleta.notas || 'Sin notas'}
-
-        📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString()}
-        ━━━━━━━━━━━━━━━━━━━━━━━━━
-            `;
-
-            alert(texto);
-        }
-
-        async function eliminarPapeleta(id) {
-            if (!confirm('¿Estás seguro de eliminar esta papeleta?')) return;
-            
-            try {
-                await database.ref(`papeletas/${id}`).remove();
-                mostrarToast('🗑️ Papeleta eliminada');
-            } catch (error) {
-                console.error('Error al eliminar:', error);
-                mostrarToast('❌ Error al eliminar', 'error');
-            }
-        }
-
-        function filtrarPapeletas() {
-            renderizarPapeletas(papeletasCache);
-        }
-
-        async function mostrarEstadisticasPapeletas() {
-            try {
-                const snapshot = await database.ref('papeletas').once('value');
-                const data = snapshot.val();
-                
-                if (!data) {
-                    document.getElementById('contenidoEstadisticasPapeletas').innerHTML = 
-                        '<p style="color:#64748b;">No hay papeletas registradas</p>';
-                    return;
-                }
-
-                const papeletas = Object.values(data);
-                
-                const porSupervisor = {};
-                papeletas.forEach(p => {
-                    const sup = p.supervisor || 'Sin supervisor';
-                    if (!porSupervisor[sup]) {
-                        porSupervisor[sup] = { total: 0, conNotas: 0 };
-                    }
-                    porSupervisor[sup].total++;
-                    if (p.notas && p.notas.trim().length > 0) {
-                        porSupervisor[sup].conNotas++;
-                    }
-                });
-
-                let html = `
-                    <div class="stats-grid">
-                        <div class="stats-card azul">
-                            <div class="numero">${papeletas.length}</div>
-                            <div class="etiqueta">Total Papeletas</div>
-                        </div>
-                        <div class="stats-card verde">
-                            <div class="numero">${papeletas.filter(p => p.notas && p.notas.trim()).length}</div>
-                            <div class="etiqueta">Con Notas</div>
-                        </div>
-                        <div class="stats-card naranja">
-                            <div class="numero">${Object.keys(porSupervisor).length}</div>
-                            <div class="etiqueta">Supervisores</div>
-                        </div>
-                    </div>
-                    <h3 style="color:#0a2540;">📊 Por Supervisor</h3>
-                    <table class="tabla-estadisticas-papeletas">
-                        <thead>
-                            <tr>
-                                <th>Supervisor</th>
-                                <th style="text-align:center;">Total</th>
-                                <th style="text-align:center;">Con Notas</th>
-                                <th style="text-align:center;">% Notas</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                Object.entries(porSupervisor)
-                    .sort((a, b) => b[1].total - a[1].total)
-                    .forEach(([sup, stats]) => {
-                        const pct = stats.total > 0 ? ((stats.conNotas / stats.total) * 100).toFixed(1) : 0;
-                        html += `
-                            <tr>
-                                <td style="font-weight:600;">${sup}</td>
-                                <td style="text-align:center;">${stats.total}</td>
-                                <td style="text-align:center;">${stats.conNotas}</td>
-                                <td style="text-align:center;">${pct}%</td>
-                            </tr>
-                        `;
-                    });
-
-                html += `
-                        </tbody>
-                    </table>
-                `;
-
-                document.getElementById('contenidoEstadisticasPapeletas').innerHTML = html;
-
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('contenidoEstadisticasPapeletas').innerHTML = 
-                    '<p style="color:red;">Error al cargar estadísticas</p>';
-            }
-        }
-
-        // ========== EVENT LISTENERS ==========
-        document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasPorFecha);
-        document.getElementById('recargarBtn').addEventListener('click', () => { if(document.getElementById('fechaEvento').value) cargarCitasPorFecha(); else alert("Elige fecha"); });
-        document.getElementById('descargarExcelBtn').addEventListener('click', descargarExcelProfesional);
-        document.getElementById('buscarBtn').addEventListener('click', buscarPorNombreOTelefono);
-        document.getElementById('limpiarBusquedaBtn').addEventListener('click', limpiarBusqueda);
-        document.getElementById('buscarInput').addEventListener('keypress', (e) => { if(e.key === 'Enter') buscarPorNombreOTelefono(); });
-
         document.getElementById('btnFiltrarPapeletas').addEventListener('click', filtrarPapeletas);
         document.getElementById('btnRecargarPapeletas').addEventListener('click', () => {
             database.ref('papeletas').once('value').then(snapshot => {
@@ -3039,6 +3270,18 @@
         });
         document.getElementById('filtroPapeletasBuscar').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') filtrarPapeletas();
+        });
+
+        // ===== CERRAR MODAL PAPELETA =====
+        document.getElementById('cerrarPapeletaCompleta').addEventListener('click', function() {
+            document.getElementById('modalPapeletaCompleta').style.display = 'none';
+        });
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('modalPapeletaCompleta').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
         });
 
         // ========== INICIALIZACIÓN ==========
