@@ -864,6 +864,8 @@
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <!-- 🔐 AGREGADO: Firebase Auth para autenticación anónima -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -1287,6 +1289,8 @@
 
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+        // 🔐 AGREGADO: Referencia a autenticación
+        const auth = firebase.auth();
 
         // ========== VARIABLES GLOBALES ==========
         let citasOriginales = [];
@@ -1300,6 +1304,9 @@
         let supervisoresList = [];
         let panelDesbloqueado = false;
 
+        // 🔐 AGREGADO: Estado de autenticación
+        let autenticado = false;
+
         const PASSWORD_PANEL = "admin123";
         const PASSWORD_ESTADISTICAS = "supervisor2024";
         const PASSWORD_DESBLOQUEO = "admin123";
@@ -1311,6 +1318,29 @@
             'MISAEL NAVARRO',
             'ARACELI TORRES'
         ];
+
+        // ========== 🔐 AUTENTICACIÓN ANÓNIMA ==========
+        async function autenticarFirebase() {
+            if (autenticado && auth.currentUser) {
+                console.log('✅ Ya autenticado');
+                return true;
+            }
+            try {
+                if (!auth.currentUser) {
+                    console.log('🔄 Autenticando anónimamente...');
+                    await auth.signInAnonymously();
+                }
+                autenticado = true;
+                console.log('✅ Autenticado correctamente:', auth.currentUser.uid);
+                return true;
+            } catch (error) {
+                console.error('❌ Error en autenticación:', error);
+                return false;
+            }
+        }
+
+        // 🔐 Autenticar al cargar la página
+        autenticarFirebase();
 
         // ========== TOAST ==========
         function mostrarToast(mensaje, tipo = 'success') {
@@ -1354,7 +1384,6 @@
 
         cerrarPassword.addEventListener('click', () => {
             modalPassword.style.display = 'none';
-            // Desmarcar el item del menú
             document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
         });
 
@@ -1366,7 +1395,6 @@
                 document.getElementById('menuPanel').classList.remove('locked');
                 document.getElementById('menuPanel').querySelector('.lock-icon').style.display = 'none';
                 document.getElementById('mainContainer').classList.add('visible');
-                // Activar pestaña panel
                 document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
                 document.getElementById('menuPanel').classList.add('active');
                 document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
@@ -1389,30 +1417,23 @@
             btn.addEventListener('click', function() {
                 const pestana = this.dataset.pestana;
                 
-                // Si es Panel Principal y no está desbloqueado
                 if (pestana === 'panel' && !panelDesbloqueado) {
                     toggleMenu();
                     abrirModalPassword();
                     return;
                 }
 
-                // Cerrar menú
                 toggleMenu();
-                
-                // Quitar active de todos
                 document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Mostrar contenedor si no está visible
                 if (!document.getElementById('mainContainer').classList.contains('visible')) {
                     document.getElementById('mainContainer').classList.add('visible');
                 }
                 
-                // Mostrar pestaña
                 document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
                 document.getElementById(`pestana-${pestana}`).classList.add('active');
                 
-                // Cargar datos según pestaña
                 if (pestana === 'mis-papeletas') {
                     cargarPapeletas();
                 }
@@ -2650,7 +2671,7 @@
         document.getElementById('btnDescargarReporteMes').addEventListener('click', descargarReporteMensualExcel);
 
         // ================================================================
-        // ========== FUNCIONES DE PAPELETAS ==========
+        // ========== 🔐 FUNCIONES DE PAPELETAS CON AUTENTICACIÓN ==========
         // ================================================================
 
         function limpiarFormularioPapeleta() {
@@ -2659,8 +2680,16 @@
             document.getElementById('p_menores').value = '0';
         }
 
+        // 🔐 FORMULARIO DE PAPELETA CON AUTENTICACIÓN
         document.getElementById('formPapeleta').addEventListener('submit', async function(e) {
             e.preventDefault();
+            
+            // 🔐 VERIFICAR AUTENTICACIÓN ANTES DE GUARDAR
+            const authOk = await autenticarFirebase();
+            if (!authOk) {
+                mostrarToast('❌ Error de autenticación. Intenta recargar la página.', 'error');
+                return;
+            }
             
             const datos = {
                 nombre: document.getElementById('p_nombre').value.trim(),
@@ -2708,14 +2737,35 @@
             }
 
             try {
+                // 🔐 Intentar guardar con autenticación
                 const newRef = database.ref('papeletas').push();
                 await newRef.set(datos);
                 mostrarToast('✅ Papeleta guardada correctamente');
                 limpiarFormularioPapeleta();
-                cargarPapeletas(); // Recargar listado en tiempo real
+                cargarPapeletas();
             } catch (error) {
                 console.error('Error al guardar:', error);
-                mostrarToast('❌ Error al guardar la papeleta', 'error');
+                // Si falla por permisos, intentar re-autenticar
+                if (error.message && error.message.includes('permission_denied')) {
+                    mostrarToast('🔄 Reintentando autenticación...', 'info');
+                    autenticado = false;
+                    const reAuth = await autenticarFirebase();
+                    if (reAuth) {
+                        try {
+                            const newRef = database.ref('papeletas').push();
+                            await newRef.set(datos);
+                            mostrarToast('✅ Papeleta guardada correctamente');
+                            limpiarFormularioPapeleta();
+                            cargarPapeletas();
+                        } catch (retryError) {
+                            mostrarToast('❌ Error al guardar: ' + retryError.message, 'error');
+                        }
+                    } else {
+                        mostrarToast('❌ No se pudo autenticar. Revisa tu conexión.', 'error');
+                    }
+                } else {
+                    mostrarToast('❌ Error al guardar: ' + error.message, 'error');
+                }
             }
         });
 
@@ -2730,7 +2780,6 @@
                 
                 if (!data) {
                     papeletasCache = [];
-                    // Solo actualizar si la pestaña está visible
                     if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
                         document.getElementById('tablaPapeletasBody').innerHTML = 
                             '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
@@ -2750,7 +2799,6 @@
 
                 document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
                 
-                // Solo renderizar si la pestaña está visible
                 if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
                     renderizarPapeletas(papeletasCache);
                 }
@@ -2760,7 +2808,6 @@
         function renderizarPapeletas(papeletas) {
             const tbody = document.getElementById('tablaPapeletasBody');
             
-            // Aplicar filtros si existen
             const supervisor = document.getElementById('filtroPapeletasSupervisor').value;
             const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
 
@@ -2878,7 +2925,6 @@
             try {
                 await database.ref(`papeletas/${id}`).remove();
                 mostrarToast('🗑️ Papeleta eliminada');
-                // El listener actualizará automáticamente
             } catch (error) {
                 console.error('Error al eliminar:', error);
                 mostrarToast('❌ Error al eliminar', 'error');
@@ -2886,7 +2932,6 @@
         }
 
         function filtrarPapeletas() {
-            // Usar el listener para aplicar filtros
             renderizarPapeletas(papeletasCache);
         }
 
@@ -2981,7 +3026,6 @@
 
         document.getElementById('btnFiltrarPapeletas').addEventListener('click', filtrarPapeletas);
         document.getElementById('btnRecargarPapeletas').addEventListener('click', () => {
-            // Forzar recarga de datos
             database.ref('papeletas').once('value').then(snapshot => {
                 const data = snapshot.val();
                 if (data) {
@@ -2999,15 +3043,15 @@
 
         // ========== INICIALIZACIÓN ==========
         cargarSupervisores();
-        iniciarListenerPapeletas(); // Iniciar escucha en tiempo real
+        iniciarListenerPapeletas();
         
-        // Fecha por defecto para el panel
         const hoy = new Date().toISOString().split('T')[0];
         document.getElementById('fechaEvento').value = hoy;
         
-        console.log('✅ CRM con Papeletas en tiempo real cargado');
-        console.log('🔐 Contraseña para Panel Principal: admin123');
-        console.log('🔐 Contraseña para Estadísticas: supervisor2024');
+        console.log('✅ CRM con Papeletas - Autenticación activada');
+        console.log('🔐 Contraseña Panel Principal: admin123');
+        console.log('🔐 Contraseña Estadísticas: supervisor2024');
+        console.log('🔑 Autenticación anónima: ACTIVADA');
     </script>
 </body>
 </html>
