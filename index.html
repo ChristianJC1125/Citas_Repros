@@ -1343,7 +1343,12 @@
                         </div>
                         <div class="field">
                             <label>Lugar</label>
-                            <input type="text" id="p_lugar" placeholder="Ciudad, país">
+                            <select id="p_lugar">
+                                <option value="">Seleccionar lugar...</option>
+                                <option value="HOTEL SHERATON">HOTEL SHERATON</option>
+                                <option value="HOTEL FONTAN">HOTEL FONTAN</option>
+                                <option value="RESTAURANTE DAIKOKU">RESTAURANTE DAIKOKU</option>
+                            </select>
                         </div>
                         <div class="field">
                             <label>Fecha / Hora</label>
@@ -1362,7 +1367,7 @@
                         </div>
                         <div class="field">
                             <label>Clave</label>
-                            <input type="text" id="p_clave" placeholder="Clave de acceso">
+                            <input type="text" id="p_clave" value="SF" placeholder="Clave de acceso">
                         </div>
                         <div class="field">
                             <label>Hora</label>
@@ -2283,6 +2288,7 @@
             document.getElementById('formPapeleta').reset();
             document.getElementById('p_adultos').value = '0';
             document.getElementById('p_menores').value = '0';
+            document.getElementById('p_clave').value = 'SF';
         }
 
         // ===== NUEVO: MOSTRAR PAPELETA COMPLETA =====
