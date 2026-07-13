@@ -1338,7 +1338,7 @@
                 <form id="formPapeleta">
                     <div class="grid-2">
                         <div class="field">
-                            <label>Nombre *</label>
+                            <label>Nombre Del Operador</label>
                             <input type="text" id="p_nombre" placeholder="Nombre completo" required>
                         </div>
                         <div class="field">
@@ -1351,8 +1351,8 @@
                             </select>
                         </div>
                         <div class="field">
-                            <label>Fecha / Hora</label>
-                            <input type="datetime-local" id="p_fechaHora">
+                            <label>Fecha</label>
+                            <input type="datetime-local">
                         </div>
                     </div>
 
@@ -2310,8 +2310,8 @@
                     <span class="valor">${papeleta.lugar || '-'}</span>
                 </div>
                 <div class="campo-papeleta">
-                    <span class="etiqueta">📅 Fecha / Hora</span>
-                    <span class="valor">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleString() : '-'}</span>
+                    <span class="etiqueta">📅 Fecha </span>
+                    <span class="valor">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocalDateString() : '-'}</span>
                 </div>
                 <div class="campo-papeleta">
                     <span class="etiqueta">👩‍💼 Supervisor</span>
