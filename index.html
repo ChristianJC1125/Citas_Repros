@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -209,7 +209,7 @@
             display: block;
         }
         
-        /* ===== NUEVO: LOGO DE EMPRESA ===== */
+        /* ===== LOGO DE EMPRESA ===== */
         .logo-empresa {
             text-align: center;
             padding: 15px 0 20px 0;
@@ -594,6 +594,19 @@
         .btn-eliminar-papeleta:hover {
             background: #b91c1c;
         }
+        /* ===== NUEVO: Botón Confirmación Final ===== */
+        .btn-confirmacion-final {
+            background: #059669;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-confirmacion-final:hover {
+            background: #047857;
+        }
         
         .filtros-papeletas {
             display: flex;
@@ -620,7 +633,7 @@
             background: white;
         }
 
-        /* ===== CALENDARIO PAPELETAS (compacto, colapsable) ===== */
+        /* ===== CALENDARIO PAPELETAS ===== */
         .papeletas-toolbar {
             display: flex;
             flex-wrap: wrap;
@@ -1165,6 +1178,202 @@
             from { opacity: 0; transform: translateY(-30px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ===== NUEVO: MODAL CONFIRMACIÓN FINAL ===== */
+        .modal-confirmacion-final {
+            display: none;
+            position: fixed;
+            z-index: 2001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-confirmacion-final .modal-contenido {
+            background: white;
+            margin: 2% auto;
+            padding: 30px 35px;
+            border-radius: 24px;
+            width: 92%;
+            max-width: 800px;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+        }
+        .modal-confirmacion-final .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #059669;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-confirmacion-final .modal-header h3 {
+            color: #0a2540;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .modal-confirmacion-final .modal-header h3 i {
+            color: #059669;
+            margin-right: 10px;
+        }
+        .modal-confirmacion-final .cerrar-modal-confirmacion {
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+        }
+        .modal-confirmacion-final .cerrar-modal-confirmacion:hover {
+            color: #c62828;
+        }
+        .modal-confirmacion-final .campo-confirmacion {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .modal-confirmacion-final .campo-confirmacion .etiqueta-conf {
+            font-weight: 600;
+            color: #0a2540;
+            min-width: 160px;
+            font-size: 0.9rem;
+        }
+        .modal-confirmacion-final .campo-confirmacion .valor-conf {
+            color: #1e293b;
+            font-size: 0.9rem;
+            word-break: break-word;
+        }
+        .modal-confirmacion-final .campo-confirmacion .valor-conf.telefono-enlace {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-confirmacion-final .campo-confirmacion .valor-conf.telefono-enlace:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        .modal-confirmacion-final .seccion-telefonos-conf {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 8px 0;
+        }
+        .modal-confirmacion-final .seccion-telefonos-conf .telefono-item-conf {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.9rem;
+        }
+        .modal-confirmacion-final .seccion-telefonos-conf .telefono-item-conf .tel-etiqueta-conf {
+            font-weight: 500;
+            color: #64748b;
+        }
+        .modal-confirmacion-final .seccion-telefonos-conf .telefono-item-conf .tel-valor-conf {
+            color: #2563eb;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .modal-confirmacion-final .seccion-telefonos-conf .telefono-item-conf .tel-valor-conf:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+        .modal-confirmacion-final .fila-datos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 30px;
+            padding: 10px 0;
+        }
+        .modal-confirmacion-final .fila-datos .item-dato {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 6px 0;
+        }
+        .modal-confirmacion-final .fila-datos .item-dato .label-dato {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .modal-confirmacion-final .fila-datos .item-dato .value-dato {
+            font-size: 0.95rem;
+            color: #0a2540;
+            font-weight: 500;
+        }
+        .modal-confirmacion-final .seccion-personas {
+            background: #f0fdf4;
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-left: 4px solid #059669;
+        }
+        .modal-confirmacion-final .seccion-personas .persona-item {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 4px 0;
+        }
+        .modal-confirmacion-final .seccion-personas .persona-item .p-label {
+            font-weight: 600;
+            color: #0a2540;
+            min-width: 60px;
+        }
+        .modal-confirmacion-final .seccion-personas .persona-item .p-info {
+            color: #1e293b;
+        }
+        .modal-confirmacion-final .badge-confirmacion {
+            background: #059669;
+            color: white;
+            padding: 3px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .modal-confirmacion-final .btn-cerrar-confirmacion {
+            background: #0a2540;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .modal-confirmacion-final .btn-cerrar-confirmacion:hover {
+            background: #059669;
+        }
+        @media (max-width: 600px) {
+            .modal-confirmacion-final .fila-datos {
+                grid-template-columns: 1fr;
+            }
+            .modal-confirmacion-final .campo-confirmacion {
+                flex-direction: column;
+                padding: 6px 0;
+            }
+            .modal-confirmacion-final .campo-confirmacion .etiqueta-conf {
+                min-width: auto;
+                font-size: 0.8rem;
+            }
+            .modal-confirmacion-final .campo-confirmacion .valor-conf {
+                font-size: 0.85rem;
+            }
+        }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -1252,12 +1461,25 @@
         </div>
     </div>
 
+    <!-- ===== NUEVO: MODAL CONFIRMACIÓN FINAL ===== -->
+    <div id="modalConfirmacionFinal" class="modal-confirmacion-final">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> CONFIRMACIÓN FINAL</h3>
+                <button class="cerrar-modal-confirmacion" id="cerrarConfirmacionFinal">&times;</button>
+            </div>
+            <div id="contenidoConfirmacionFinal">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================================ -->
     <!-- ===== CONTENEDOR PRINCIPAL ===== -->
     <!-- ============================================================ -->
     <div class="container" id="mainContainer">
 
-        <!-- ===== LOGO DE EMPRESA (Reemplaza el título) ===== -->
+        <!-- ===== LOGO DE EMPRESA ===== -->
         <div class="logo-empresa">
             <img src="imagenes/DTCG.jpeg" alt="Destination Connect Group" 
                  onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjgwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iODAiIGZpbGw9IiMwYTI1NDAiIHJ4PSIxMiIvPjx0ZXh0IHg9IjEwMCIgeT0iNDgiIGZvbnQtZmFtaWx5PSJBcmlhbCxTZWdvZSBVSSxzYW5zLXNlcmlmIiBmb250LXNpemU9IjE4IiBmaWxsPSIjZmZmZmZmIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmb250LXdlaWdodD0iYm9sZCI+RGVzdGluYXRpb24gQ29ubmVjdDwvdGV4dD48L3N2Zz4='">
@@ -1338,8 +1560,8 @@
                 <form id="formPapeleta">
                     <div class="grid-2">
                         <div class="field">
-                            <label>Nombre *</label>
-                            <input type="text" id="p_nombre" placeholder="Nombre completo" required>
+                            <label>Nombre del Operador *</label>
+                            <input type="text" id="p_nombre" placeholder="Nombre completo del operador" required>
                         </div>
                         <div class="field">
                             <label>Lugar</label>
@@ -2299,10 +2521,9 @@
                 return;
             }
 
-            // Construir HTML completo con TODOS los campos
             let html = `
                 <div class="campo-papeleta">
-                    <span class="etiqueta">👤 Nombre</span>
+                    <span class="etiqueta">👤 Nombre del Operador</span>
                     <span class="valor">${papeleta.nombre || '-'}</span>
                 </div>
                 <div class="campo-papeleta">
@@ -2430,6 +2651,150 @@
             document.getElementById('modalPapeletaCompleta').style.display = 'block';
         }
 
+        // ===== NUEVO: CONFIRMACIÓN FINAL =====
+        function mostrarConfirmacionFinal(id) {
+            const papeleta = papeletasCache.find(p => p.id === id);
+            if (!papeleta) {
+                mostrarToast('❌ Papeleta no encontrada', 'error');
+                return;
+            }
+
+            // Función para crear enlace telefónico
+            const telLink = (numero) => {
+                if (!numero || numero === '-') return '-';
+                const limpio = numero.replace(/\s/g, '');
+                return `<a href="tel:${limpio}" class="telefono-enlace" onclick="event.stopPropagation();">📞 ${numero}</a>`;
+            };
+
+            // Función para teléfono en sección
+            const telItem = (label, numero) => {
+                if (!numero || numero === '-') {
+                    return `<div class="telefono-item-conf"><span class="tel-etiqueta-conf">${label}</span><span class="tel-valor-conf">-</span></div>`;
+                }
+                const limpio = numero.replace(/\s/g, '');
+                return `<div class="telefono-item-conf"><span class="tel-etiqueta-conf">${label}</span><a href="tel:${limpio}" class="tel-valor-conf">📞 ${numero}</a></div>`;
+            };
+
+            // Construir HTML de confirmación
+            let html = `
+                <div style="background: #f0fdf4; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; border-left: 5px solid #059669;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <span style="font-weight: 700; color: #0a2540; font-size: 1.1rem;">${papeleta.nombre || 'Sin nombre'}</span>
+                            <span class="badge-confirmacion">✓ Confirmación</span>
+                        </div>
+                        <span style="color: #64748b; font-size: 0.85rem;">ID: ${papeleta.id.substring(0, 8)}</span>
+                    </div>
+                </div>
+
+                <div class="campo-confirmacion">
+                    <span class="etiqueta-conf">👤 Operador</span>
+                    <span class="valor-conf">${papeleta.nombre || '-'}</span>
+                </div>
+                <div class="campo-confirmacion">
+                    <span class="etiqueta-conf">👩‍💼 Supervisor</span>
+                    <span class="valor-conf"><strong>${papeleta.supervisor || '-'}</strong></span>
+                </div>
+                <div class="campo-confirmacion">
+                    <span class="etiqueta-conf">📅 Fecha / Hora</span>
+                    <span class="valor-conf">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleDateString() : '-'} ${papeleta.hora ? `⏰ ${papeleta.hora}` : ''}</span>
+                </div>
+                <div class="campo-confirmacion">
+                    <span class="etiqueta-conf">📍 Lugar</span>
+                    <span class="valor-conf">${papeleta.lugar || '-'}</span>
+                </div>
+
+                <hr style="border: none; border-top: 2px dashed #e2e8f0; margin: 16px 0;">
+
+                <div style="font-weight: 600; color: #0a2540; margin-bottom: 10px;">👤 INFORMACIÓN DEL CLIENTE</div>
+                
+                <div class="fila-datos">
+                    <div class="item-dato">
+                        <span class="label-dato">👨 Sr.</span>
+                        <span class="value-dato">${papeleta.sr?.nombre || '-'}</span>
+                    </div>
+                    <div class="item-dato">
+                        <span class="label-dato">Edad Sr.</span>
+                        <span class="value-dato">${papeleta.sr?.edad || '-'}</span>
+                    </div>
+                    <div class="item-dato" style="grid-column: 1 / -1;">
+                        <span class="label-dato">Ocupación Sr.</span>
+                        <span class="value-dato">${papeleta.sr?.ocupacion || '-'}</span>
+                    </div>
+                    <div class="item-dato">
+                        <span class="label-dato">👩 Sra.</span>
+                        <span class="value-dato">${papeleta.sra?.nombre || '-'}</span>
+                    </div>
+                    <div class="item-dato">
+                        <span class="label-dato">Edad Sra.</span>
+                        <span class="value-dato">${papeleta.sra?.edad || '-'}</span>
+                    </div>
+                    <div class="item-dato" style="grid-column: 1 / -1;">
+                        <span class="label-dato">Ocupación Sra.</span>
+                        <span class="value-dato">${papeleta.sra?.ocupacion || '-'}</span>
+                    </div>
+                </div>
+
+                <div class="campo-confirmacion">
+                    <span class="etiqueta-conf">💍 Estado Civil</span>
+                    <span class="valor-conf">${papeleta.estadoCivil || '-'}</span>
+                </div>
+
+                <div class="seccion-personas">
+                    <div style="font-weight: 600; color: #0a2540; margin-bottom: 6px;">👨‍👩‍👧 Número de Personas</div>
+                    <div class="persona-item">
+                        <span class="p-label">Adultos:</span>
+                        <span class="p-info"><strong>${papeleta.adultos || 0}</strong></span>
+                        <span class="p-label" style="margin-left: 20px;">Menores:</span>
+                        <span class="p-info"><strong>${papeleta.menores || 0}</strong></span>
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 2px dashed #e2e8f0; margin: 16px 0;">
+
+                <div style="font-weight: 600; color: #0a2540; margin-bottom: 10px;">📞 CONTACTOS</div>
+                <div class="seccion-telefonos-conf">
+                    ${telItem('🏠 Casa', papeleta.telefonos?.casa)}
+                    ${telItem('🏢 Sr. Oficina', papeleta.telefonos?.srOficina)}
+                    ${telItem('📱 Sr. Celular', papeleta.telefonos?.srCelular)}
+                    ${telItem('🏢 Sra. Oficina', papeleta.telefonos?.sraOficina)}
+                    ${telItem('📱 Sra. Celular', papeleta.telefonos?.sraCelular)}
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px 30px; margin-top: 12px;">
+                    <div class="item-dato">
+                        <span class="label-dato">💰 Ingresos</span>
+                        <span class="value-dato">${papeleta.ingresos || '-'}</span>
+                    </div>
+                    <div class="item-dato">
+                        <span class="label-dato">💳 Tarjetas</span>
+                        <span class="value-dato">${papeleta.tarjetas || '-'}</span>
+                    </div>
+                    <div class="item-dato">
+                        <span class="label-dato">✉️ Email</span>
+                        <span class="value-dato">${papeleta.email || '-'}</span>
+                    </div>
+                    <div class="item-dato">
+                        <span class="label-dato">📂 Base</span>
+                        <span class="value-dato">${papeleta.base || '-'}</span>
+                    </div>
+                </div>
+
+                ${papeleta.notas ? `
+                <hr style="border: none; border-top: 2px dashed #e2e8f0; margin: 16px 0;">
+                <div style="font-weight: 600; color: #0a2540; margin-bottom: 6px;">📝 COMENTARIOS</div>
+                <div style="background: #f8fafc; padding: 12px 16px; border-radius: 12px; white-space: pre-wrap; font-size: 0.9rem; color: #1e293b;">${papeleta.notas}</div>
+                ` : ''}
+
+                <div style="margin-top: 20px; padding: 12px 16px; background: #f1f5f9; border-radius: 12px; font-size: 0.8rem; color: #64748b; text-align: center;">
+                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString()}
+                </div>
+            `;
+
+            document.getElementById('contenidoConfirmacionFinal').innerHTML = html;
+            document.getElementById('modalConfirmacionFinal').style.display = 'block';
+        }
+
         // ===== CARGAR PAPELETAS =====
         async function cargarPapeletas() {
             if (!papeletasDesbloqueado) return;
@@ -2514,7 +2879,7 @@
             };
 
             if (!datos.nombre) {
-                mostrarToast('⚠️ El campo "Nombre" es obligatorio', 'error');
+                mostrarToast('⚠️ El campo "Nombre del Operador" es obligatorio', 'error');
                 return;
             }
             if (!datos.supervisor) {
@@ -2553,7 +2918,7 @@
             }
         });
 
-        // ===== LISTENER EN TIEMPO REAL (con debounce para no trabar) =====
+        // ===== LISTENER EN TIEMPO REAL =====
         let papeletasListener = null;
 
         function procesarActualizacionPapeletas(data) {
@@ -2729,7 +3094,7 @@
             renderizarPapeletas(papeletasCache);
         }
 
-        // ===== RENDERIZAR PAPELETAS (optimizado) =====
+        // ===== RENDERIZAR PAPELETAS =====
         function obtenerPapeletasFiltradas() {
             const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
             let filtradas = papeletasSupCache.length ? papeletasSupCache : papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
@@ -2778,6 +3143,7 @@
                         <td>👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores</td>
                         <td>
                             <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')">👁️ Ver</button>
+                            <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')">✅ Confirmar</button>
                             <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')">🗑️</button>
                         </td>
                     </tr>`;
@@ -3846,6 +4212,17 @@
 
         // Cerrar modal al hacer clic fuera
         document.getElementById('modalPapeletaCompleta').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // ===== CERRAR MODAL CONFIRMACIÓN FINAL =====
+        document.getElementById('cerrarConfirmacionFinal').addEventListener('click', function() {
+            document.getElementById('modalConfirmacionFinal').style.display = 'none';
+        });
+
+        document.getElementById('modalConfirmacionFinal').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.style.display = 'none';
             }
