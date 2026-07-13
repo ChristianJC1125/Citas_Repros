@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -619,6 +619,153 @@
             font-size: 0.9rem;
             background: white;
         }
+
+        /* ===== CALENDARIO PAPELETAS ===== */
+        .calendario-papeletas {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 15px;
+        }
+        .calendario-papeletas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .calendario-papeletas-header h3 {
+            margin: 0;
+            color: #0a2540;
+            font-size: 1.1rem;
+        }
+        .calendario-nav {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .calendario-nav button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .calendario-nav button:hover {
+            background: #1d4ed8;
+        }
+        .calendario-nav button.btn-hoy {
+            background: #475569;
+        }
+        .calendario-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+        .calendario-dia-nombre {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #64748b;
+            padding: 6px 0;
+        }
+        .calendario-dia {
+            aspect-ratio: 1;
+            min-height: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #334155;
+            position: relative;
+            transition: background 0.15s;
+        }
+        .calendario-dia:hover:not(.vacio):not(.otro-mes) {
+            background: #e0e7ff;
+        }
+        .calendario-dia.vacio {
+            cursor: default;
+        }
+        .calendario-dia.otro-mes {
+            color: #cbd5e1;
+            cursor: default;
+        }
+        .calendario-dia.con-citas {
+            background: #dbeafe;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .calendario-dia.seleccionado {
+            background: #2563eb;
+            color: white;
+            font-weight: 700;
+        }
+        .calendario-dia.hoy {
+            border: 2px solid #f59e0b;
+        }
+        .calendario-dia .badge-citas {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            min-width: 16px;
+            height: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+        }
+        .calendario-dia.seleccionado .badge-citas {
+            background: white;
+            color: #2563eb;
+        }
+        .papeletas-sesion-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 12px;
+            padding: 10px 16px;
+            margin-bottom: 15px;
+        }
+        .papeletas-sesion-bar .sup-nombre {
+            font-weight: 600;
+            color: #065f46;
+        }
+        .btn-cerrar-sesion-papeletas {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-cerrar-sesion-papeletas:hover {
+            background: #475569;
+        }
+        .fecha-cita-seleccionada {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-bottom: 10px;
+        }
+        .fecha-cita-seleccionada strong {
+            color: #0a2540;
+        }
         
         .stats-grid {
             display: grid;
@@ -994,12 +1141,32 @@
             <i class="fas fa-file-alt"></i> Nueva Papeleta
             <span class="badge-menu">+</span>
         </button>
-        <button class="menu-item" data-pestana="mis-papeletas">
+        <button class="menu-item locked" data-pestana="mis-papeletas" id="menuMisPapeletas">
             <i class="fas fa-folder-open"></i> Mis Papeletas
+            <span class="lock-icon"><i class="fas fa-lock"></i></span>
         </button>
         <button class="menu-item" data-pestana="estadisticas-papeletas">
             <i class="fas fa-chart-bar"></i> Estadísticas
         </button>
+    </div>
+
+    <!-- ===== MODAL CONTRASEÑA MIS PAPELETAS ===== -->
+    <div id="modalPasswordPapeletas" class="modal-password">
+        <div class="modal-password-contenido">
+            <div class="modal-header">
+                <h2>🔐 Acceso a Mis Papeletas</h2>
+                <span class="cerrar-modal cerrar-password-papeletas">&times;</span>
+            </div>
+            <p style="margin-bottom:15px; color:#64748b;">Selecciona tu nombre y escribe tu contraseña para ver solo tus papeletas:</p>
+            <label style="font-weight:600; font-size:0.85rem; color:#1e293b;">👩‍💼 Supervisor:</label>
+            <select id="passwordPapeletasSupervisor" class="password-input" style="margin-top:6px;">
+                <option value="">Seleccionar supervisor...</option>
+            </select>
+            <label style="font-weight:600; font-size:0.85rem; color:#1e293b;">🔑 Contraseña:</label>
+            <input type="password" id="passwordMisPapeletas" class="password-input" placeholder="Tu contraseña personal">
+            <button id="verificarPasswordPapeletas" style="width:100%; padding:12px; border-radius:14px; background:#2563eb; color:white; border:none; cursor:pointer; font-size:1rem;">Verificar Acceso</button>
+            <p id="mensajeErrorPasswordPapeletas" style="color:#dc2626; margin-top:10px; display:none; text-align:center;">❌ Supervisor o contraseña incorrectos</p>
+        </div>
     </div>
 
     <!-- ===== MODAL CONTRASEÑA ===== -->
@@ -1281,8 +1448,31 @@
                 <span id="totalPapeletas" style="font-size:0.9rem; color:#64748b; font-weight:normal;"></span>
             </h2>
 
-            <div class="filtros-papeletas">
-                <div>
+            <div id="papeletasSesionBar" class="papeletas-sesion-bar" style="display:none;">
+                <span>👤 Sesión activa: <span class="sup-nombre" id="papeletasSupActivo"></span></span>
+                <button type="button" class="btn-cerrar-sesion-papeletas" id="btnCerrarSesionPapeletas">🔒 Cerrar sesión</button>
+            </div>
+
+            <div class="calendario-papeletas" id="calendarioPapeletasContainer" style="display:none;">
+                <div class="calendario-papeletas-header">
+                    <h3>📅 Calendario de Citas</h3>
+                    <div class="calendario-nav">
+                        <button type="button" id="calPrevMes">◀ Anterior</button>
+                        <button type="button" id="calHoy" class="btn-hoy">Hoy</button>
+                        <button type="button" id="calNextMes">Siguiente ▶</button>
+                    </div>
+                </div>
+                <div id="calendarioPapeletasMes" style="text-align:center; font-weight:600; color:#0a2540; margin-bottom:10px;"></div>
+                <div class="calendario-grid" id="calendarioPapeletasGrid"></div>
+                <p style="font-size:0.75rem; color:#94a3b8; margin-top:10px; text-align:center;">
+                    Los días marcados tienen papeletas con cita. Haz clic en un día para verlas.
+                </p>
+            </div>
+
+            <p id="fechaCitaSeleccionada" class="fecha-cita-seleccionada" style="display:none;"></p>
+
+            <div class="filtros-papeletas" id="filtrosPapeletasContainer" style="display:none;">
+                <div id="filtroSupervisorWrapper" style="display:none;">
                     <label>Filtrar por supervisor:</label>
                     <select id="filtroPapeletasSupervisor">
                         <option value="">Todos</option>
@@ -1296,7 +1486,7 @@
                 <button id="btnRecargarPapeletas" style="background:#475569; color:white; border:none; padding:8px 20px; border-radius:30px; cursor:pointer;">🔄 Recargar</button>
             </div>
 
-            <div style="overflow-x:auto;">
+            <div id="tablaPapeletasContainer" style="overflow-x:auto; display:none;">
                 <table class="tabla-papeletas">
                     <thead>
                         <tr>
@@ -1418,10 +1608,32 @@
         let supervisoresList = [];
         let panelDesbloqueado = false;
         let autenticado = false;
+        let papeletasDesbloqueado = false;
+        let supervisorPapeletasAuth = '';
+        let calendarioMesActual = new Date().getMonth();
+        let calendarioAnioActual = new Date().getFullYear();
+        let fechaCitaFiltro = '';
 
         const PASSWORD_PANEL = "admin123";
         const PASSWORD_ESTADISTICAS = "supervisor2024";
         const PASSWORD_DESBLOQUEO = "admin123";
+
+        // Contraseñas individuales por supervisor para Mis Papeletas
+        const PASSWORD_PAPELETAS_SUP = {
+            'ABRAHAM ROLDAN': 'abraham2024',
+            'LUIS COLULA': 'luis2024',
+            'MACARENA ZAMORA': 'macarena2024',
+            'THALIA PINEDA': 'thalia2024',
+            'YARET NAJERA': 'yaret2024',
+            'MISAEL NAVARRO': 'misael2024',
+            'ARACELI TORRES': 'araceli2024'
+        };
+
+        function obtenerPasswordPapeletasSupervisor(supervisor) {
+            if (PASSWORD_PAPELETAS_SUP[supervisor]) return PASSWORD_PAPELETAS_SUP[supervisor];
+            const primerNombre = (supervisor || '').split(' ')[0].toLowerCase();
+            return primerNombre ? `${primerNombre}2024` : '';
+        }
 
         const SUPERVISORES_INACTIVOS = [
             'YARET NAJERA',
@@ -1519,6 +1731,115 @@
             }
         });
 
+        // ========== MODAL CONTRASEÑA MIS PAPELETAS ==========
+        const modalPasswordPapeletas = document.getElementById('modalPasswordPapeletas');
+
+        function abrirModalPasswordPapeletas() {
+            modalPasswordPapeletas.style.display = 'block';
+            document.getElementById('passwordMisPapeletas').value = '';
+            document.getElementById('mensajeErrorPasswordPapeletas').style.display = 'none';
+            const select = document.getElementById('passwordPapeletasSupervisor');
+            if (select.options.length <= 1 && supervisoresList.length > 0) {
+                supervisoresList.forEach(sup => {
+                    const opt = document.createElement('option');
+                    opt.value = sup;
+                    opt.textContent = sup;
+                    select.appendChild(opt);
+                });
+            }
+        }
+
+        function cerrarModalPasswordPapeletas() {
+            modalPasswordPapeletas.style.display = 'none';
+        }
+
+        document.querySelector('.cerrar-password-papeletas').addEventListener('click', () => {
+            cerrarModalPasswordPapeletas();
+            document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+        });
+
+        function activarSesionPapeletas(supervisor, mostrarTab = true) {
+            papeletasDesbloqueado = true;
+            supervisorPapeletasAuth = supervisor;
+            sessionStorage.setItem('papeletasAuth', JSON.stringify({ supervisor, ts: Date.now() }));
+
+            document.getElementById('menuMisPapeletas').classList.remove('locked');
+            document.getElementById('menuMisPapeletas').querySelector('.lock-icon').style.display = 'none';
+
+            document.getElementById('papeletasSesionBar').style.display = 'flex';
+            document.getElementById('papeletasSupActivo').textContent = supervisor;
+            document.getElementById('calendarioPapeletasContainer').style.display = 'block';
+            document.getElementById('filtrosPapeletasContainer').style.display = 'flex';
+            document.getElementById('tablaPapeletasContainer').style.display = 'block';
+
+            fechaCitaFiltro = '';
+            document.getElementById('fechaCitaSeleccionada').style.display = 'none';
+
+            cerrarModalPasswordPapeletas();
+
+            if (mostrarTab) {
+                document.getElementById('mainContainer').classList.add('visible');
+                document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+                document.getElementById('menuMisPapeletas').classList.add('active');
+                document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
+                document.getElementById('pestana-mis-papeletas').classList.add('active');
+            }
+
+            cargarPapeletas();
+            renderizarCalendarioPapeletas();
+            if (mostrarTab) mostrarToast(`🔓 Bienvenida/o, ${supervisor.split(' ')[0]}`);
+        }
+
+        function cerrarSesionPapeletas() {
+            papeletasDesbloqueado = false;
+            supervisorPapeletasAuth = '';
+            fechaCitaFiltro = '';
+            sessionStorage.removeItem('papeletasAuth');
+
+            document.getElementById('menuMisPapeletas').classList.add('locked');
+            document.getElementById('menuMisPapeletas').querySelector('.lock-icon').style.display = '';
+            document.getElementById('papeletasSesionBar').style.display = 'none';
+            document.getElementById('calendarioPapeletasContainer').style.display = 'none';
+            document.getElementById('filtrosPapeletasContainer').style.display = 'none';
+            document.getElementById('tablaPapeletasContainer').style.display = 'none';
+            document.getElementById('fechaCitaSeleccionada').style.display = 'none';
+
+            document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.pestana').forEach(p => p.classList.remove('active'));
+            document.getElementById('pestana-nueva-papeleta').classList.add('active');
+            document.querySelector('[data-pestana="nueva-papeleta"]').classList.add('active');
+            mostrarToast('🔒 Sesión de papeletas cerrada');
+        }
+
+        function restaurarSesionPapeletas() {
+            try {
+                const saved = sessionStorage.getItem('papeletasAuth');
+                if (!saved) return false;
+                const { supervisor } = JSON.parse(saved);
+                if (!supervisor || !obtenerPasswordPapeletasSupervisor(supervisor)) return false;
+                activarSesionPapeletas(supervisor, false);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        document.getElementById('verificarPasswordPapeletas').addEventListener('click', () => {
+            const sup = document.getElementById('passwordPapeletasSupervisor').value;
+            const pass = document.getElementById('passwordMisPapeletas').value;
+            if (sup && pass === obtenerPasswordPapeletasSupervisor(sup)) {
+                activarSesionPapeletas(sup);
+            } else {
+                document.getElementById('mensajeErrorPasswordPapeletas').style.display = 'block';
+            }
+        });
+
+        document.getElementById('passwordMisPapeletas').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('verificarPasswordPapeletas').click();
+        });
+
+        document.getElementById('btnCerrarSesionPapeletas').addEventListener('click', cerrarSesionPapeletas);
+
         // ========== MENÚ - CAMBIO DE PESTAÑA ==========
         document.querySelectorAll('.menu-item').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -1527,6 +1848,12 @@
                 if (pestana === 'panel' && !panelDesbloqueado) {
                     toggleMenu();
                     abrirModalPassword();
+                    return;
+                }
+
+                if (pestana === 'mis-papeletas' && !papeletasDesbloqueado) {
+                    toggleMenu();
+                    abrirModalPasswordPapeletas();
                     return;
                 }
 
@@ -1543,6 +1870,7 @@
                 
                 if (pestana === 'mis-papeletas') {
                     cargarPapeletas();
+                    renderizarCalendarioPapeletas();
                 }
                 if (pestana === 'estadisticas-papeletas') {
                     mostrarEstadisticasPapeletas();
@@ -1556,12 +1884,15 @@
                 const data = snapshot.val();
                 supervisoresList = data && Array.isArray(data) ? data : ['ABRAHAM ROLDAN','LUIS COLULA','MACARENA ZAMORA','THALIA PINEDA','YARET NAJERA','MISAEL NAVARRO'];
                 
-                const selects = ['filtroSupervisor', 'p_supervisor', 'filtroPapeletasSupervisor'];
+                const selects = ['filtroSupervisor', 'p_supervisor', 'filtroPapeletasSupervisor', 'passwordPapeletasSupervisor'];
                 selects.forEach(id => {
                     const select = document.getElementById(id);
                     if (!select) return;
                     const currentValue = select.value;
-                    select.innerHTML = '<option value="">Seleccionar...</option>';
+                    const esPasswordPapeletas = id === 'passwordPapeletasSupervisor';
+                    select.innerHTML = esPasswordPapeletas
+                        ? '<option value="">Seleccionar supervisor...</option>'
+                        : '<option value="">Seleccionar...</option>';
                     supervisoresList.forEach(sup => {
                         const opt = document.createElement('option');
                         opt.value = sup;
@@ -2022,6 +2353,7 @@
 
         // ===== CARGAR PAPELETAS =====
         async function cargarPapeletas() {
+            if (!papeletasDesbloqueado) return;
             try {
                 const snapshot = await database.ref('papeletas').once('value');
                 const data = snapshot.val();
@@ -2031,6 +2363,7 @@
                     document.getElementById('tablaPapeletasBody').innerHTML = 
                         '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
                     document.getElementById('totalPapeletas').textContent = '(0)';
+                    renderizarCalendarioPapeletas();
                     return;
                 }
 
@@ -2043,8 +2376,9 @@
                     return new Date(b.fechaCreacion) - new Date(a.fechaCreacion);
                 });
 
-                document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
+                document.getElementById('totalPapeletas').textContent = `(${papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth).length})`;
                 renderizarPapeletas(papeletasCache);
+                renderizarCalendarioPapeletas();
 
             } catch (error) {
                 console.error('Error cargando papeletas:', error);
@@ -2149,10 +2483,11 @@
                 
                 if (!data) {
                     papeletasCache = [];
-                    if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                    if (papeletasDesbloqueado && document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
                         document.getElementById('tablaPapeletasBody').innerHTML = 
                             '<tr><td colspan="8" style="text-align:center; color:#64748b;">No hay papeletas guardadas</td></tr>';
                         document.getElementById('totalPapeletas').textContent = '(0)';
+                        renderizarCalendarioPapeletas();
                     }
                     return;
                 }
@@ -2166,25 +2501,132 @@
                     return new Date(b.fechaCreacion) - new Date(a.fechaCreacion);
                 });
 
-                document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
-                
-                if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
-                    renderizarPapeletas(papeletasCache);
+                if (papeletasDesbloqueado) {
+                    const totalSup = papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth).length;
+                    document.getElementById('totalPapeletas').textContent = `(${totalSup})`;
+                    
+                    if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                        renderizarPapeletas(papeletasCache);
+                        renderizarCalendarioPapeletas();
+                    }
                 }
             });
+        }
+
+        // ===== CALENDARIO DE CITAS EN PAPELETAS =====
+        const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        const DIAS_ES = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+        function obtenerFechaCitaPapeleta(p) {
+            if (!p.fechaHora) return null;
+            return p.fechaHora.split('T')[0];
+        }
+
+        function obtenerPapeletasDelSupervisor() {
+            if (!supervisorPapeletasAuth) return [];
+            return papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
+        }
+
+        function contarPapeletasPorFecha(papeletas) {
+            const mapa = {};
+            papeletas.forEach(p => {
+                const fecha = obtenerFechaCitaPapeleta(p);
+                if (fecha) {
+                    mapa[fecha] = (mapa[fecha] || 0) + 1;
+                }
+            });
+            return mapa;
+        }
+
+        function renderizarCalendarioPapeletas() {
+            if (!papeletasDesbloqueado) return;
+
+            const grid = document.getElementById('calendarioPapeletasGrid');
+            const mesLabel = document.getElementById('calendarioPapeletasMes');
+            if (!grid || !mesLabel) return;
+
+            mesLabel.textContent = `${MESES_ES[calendarioMesActual]} ${calendarioAnioActual}`;
+
+            const papeletasSup = obtenerPapeletasDelSupervisor();
+            const conteoPorFecha = contarPapeletasPorFecha(papeletasSup);
+
+            const hoy = new Date();
+            const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+
+            grid.innerHTML = '';
+            DIAS_ES.forEach(d => {
+                const el = document.createElement('div');
+                el.className = 'calendario-dia-nombre';
+                el.textContent = d;
+                grid.appendChild(el);
+            });
+
+            const primerDia = new Date(calendarioAnioActual, calendarioMesActual, 1);
+            const ultimoDia = new Date(calendarioAnioActual, calendarioMesActual + 1, 0);
+            const inicioSemana = primerDia.getDay();
+
+            for (let i = 0; i < inicioSemana; i++) {
+                const vacio = document.createElement('div');
+                vacio.className = 'calendario-dia vacio';
+                grid.appendChild(vacio);
+            }
+
+            for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+                const fechaStr = `${calendarioAnioActual}-${String(calendarioMesActual+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+                const cantidad = conteoPorFecha[fechaStr] || 0;
+
+                const celda = document.createElement('div');
+                celda.className = 'calendario-dia';
+                if (cantidad > 0) celda.classList.add('con-citas');
+                if (fechaStr === hoyStr) celda.classList.add('hoy');
+                if (fechaStr === fechaCitaFiltro) celda.classList.add('seleccionado');
+
+                celda.textContent = dia;
+                if (cantidad > 0) {
+                    const badge = document.createElement('span');
+                    badge.className = 'badge-citas';
+                    badge.textContent = cantidad;
+                    celda.appendChild(badge);
+                    celda.addEventListener('click', () => seleccionarFechaCita(fechaStr));
+                }
+
+                grid.appendChild(celda);
+            }
+        }
+
+        function seleccionarFechaCita(fecha) {
+            if (fechaCitaFiltro === fecha) {
+                fechaCitaFiltro = '';
+                document.getElementById('fechaCitaSeleccionada').style.display = 'none';
+            } else {
+                fechaCitaFiltro = fecha;
+                const [y, m, d] = fecha.split('-');
+                document.getElementById('fechaCitaSeleccionada').innerHTML =
+                    `📅 Mostrando papeletas con cita del: <strong>${d}/${m}/${y}</strong> — <a href="#" id="limpiarFechaCita" style="color:#2563eb;">Ver todas</a>`;
+                document.getElementById('fechaCitaSeleccionada').style.display = 'block';
+                document.getElementById('limpiarFechaCita').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    fechaCitaFiltro = '';
+                    document.getElementById('fechaCitaSeleccionada').style.display = 'none';
+                    renderizarCalendarioPapeletas();
+                    renderizarPapeletas(papeletasCache);
+                });
+            }
+            renderizarCalendarioPapeletas();
+            renderizarPapeletas(papeletasCache);
         }
 
         // ===== RENDERIZAR PAPELETAS =====
         function renderizarPapeletas(papeletas) {
             const tbody = document.getElementById('tablaPapeletasBody');
+            if (!papeletasDesbloqueado) return;
             
-            const supervisor = document.getElementById('filtroPapeletasSupervisor').value;
             const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
 
-            let filtradas = [...papeletas];
+            let filtradas = papeletas.filter(p => p.supervisor === supervisorPapeletasAuth);
 
-            if (supervisor) {
-                filtradas = filtradas.filter(p => p.supervisor === supervisor);
+            if (fechaCitaFiltro) {
+                filtradas = filtradas.filter(p => obtenerFechaCitaPapeleta(p) === fechaCitaFiltro);
             }
 
             if (busqueda) {
@@ -3262,14 +3704,34 @@
                 if (data) {
                     papeletasCache = Object.entries(data).map(([id, values]) => ({ id, ...values }));
                     papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
-                    document.getElementById('totalPapeletas').textContent = `(${papeletasCache.length})`;
-                    renderizarPapeletas(papeletasCache);
+                    if (papeletasDesbloqueado) {
+                        document.getElementById('totalPapeletas').textContent = `(${papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth).length})`;
+                        renderizarPapeletas(papeletasCache);
+                        renderizarCalendarioPapeletas();
+                    }
                 }
             });
             mostrarToast('🔄 Papeletas recargadas');
         });
         document.getElementById('filtroPapeletasBuscar').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') filtrarPapeletas();
+        });
+
+        document.getElementById('calPrevMes').addEventListener('click', () => {
+            calendarioMesActual--;
+            if (calendarioMesActual < 0) { calendarioMesActual = 11; calendarioAnioActual--; }
+            renderizarCalendarioPapeletas();
+        });
+        document.getElementById('calNextMes').addEventListener('click', () => {
+            calendarioMesActual++;
+            if (calendarioMesActual > 11) { calendarioMesActual = 0; calendarioAnioActual++; }
+            renderizarCalendarioPapeletas();
+        });
+        document.getElementById('calHoy').addEventListener('click', () => {
+            const hoy = new Date();
+            calendarioMesActual = hoy.getMonth();
+            calendarioAnioActual = hoy.getFullYear();
+            renderizarCalendarioPapeletas();
         });
 
         // ===== CERRAR MODAL PAPELETA =====
@@ -3287,6 +3749,7 @@
         // ========== INICIALIZACIÓN ==========
         cargarSupervisores();
         iniciarListenerPapeletas();
+        restaurarSesionPapeletas();
         
         const hoy = new Date().toISOString().split('T')[0];
         document.getElementById('fechaEvento').value = hoy;
@@ -3294,6 +3757,7 @@
         console.log('✅ CRM con Papeletas - Autenticación activada');
         console.log('🔐 Contraseña Panel Principal: admin123');
         console.log('🔐 Contraseña Estadísticas: supervisor2024');
+        console.log('🔐 Contraseñas Mis Papeletas: nombre2024 (ej: thalia2024)');
         console.log('🔑 Autenticación anónima: ACTIVADA');
     </script>
 </body>
