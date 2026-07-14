@@ -2532,7 +2532,14 @@
                 </div>
                 <div class="campo-papeleta">
                     <span class="etiqueta">📅 Fecha</span>
-                    <span class="valor">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleDateString() : '-'}</span>
+                    <span class="valor">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleString('es-MX', {
+                     year: 'numeric',
+                     month: '2-digit',
+                     day: '2-digit',
+                     hour: '2-digit',
+                     minute: '2-digit',
+                     hour12: true
+}) : '-'}</span>
                 </div>
                 <div class="campo-papeleta">
                     <span class="etiqueta">👩‍💼 Supervisor</span>
@@ -2643,7 +2650,15 @@
                 </div>
 
                 <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 0.75rem; color: #94a3b8; text-align: center;">
-                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString()}
+                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString('es-MX', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+})}
                 </div>
             `;
 
@@ -2697,7 +2712,14 @@
                 </div>
                 <div class="campo-confirmacion">
                     <span class="etiqueta-conf">📅 Fecha / Hora</span>
-                    <span class="valor-conf">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleDateString() : '-'} ${papeleta.hora ? `⏰ ${papeleta.hora}` : ''}</span>
+   <span class="valor-conf">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleString('es-MX', {
+                  year: 'numeric',
+                  month: '2-digit',
+                  day: '2-digit',
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  hour12: true
+}) : '-'}</span>
                 </div>
                 <div class="campo-confirmacion">
                     <span class="etiqueta-conf">📍 Lugar</span>
@@ -2787,7 +2809,15 @@
                 ` : ''}
 
                 <div style="margin-top: 20px; padding: 12px 16px; background: #f1f5f9; border-radius: 12px; font-size: 0.8rem; color: #64748b; text-align: center;">
-                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString()}
+                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString('es-MX', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true
+})}
                 </div>
             `;
 
@@ -3132,7 +3162,14 @@
 
                 tbody.innerHTML = filtradas.map((p, index) => {
                     const tel = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
-                    const fecha = p.fechaHora ? new Date(p.fechaHora).toLocaleString() : '-';
+                    const fecha = p.fechaHora ? new Date(p.fechaHora).toLocaleString('es-MX', { 
+                     year: 'numeric', 
+                     month: '2-digit', 
+                     day: '2-digit',
+                     hour: '2-digit', 
+                     minute: '2-digit',
+                     hour12: true 
+}) : '-';
                     return `<tr>
                         <td>${index + 1}</td>
                         <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong></td>
