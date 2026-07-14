@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -594,7 +594,7 @@
         .btn-eliminar-papeleta:hover {
             background: #b91c1c;
         }
-        /* ===== NUEVO: Botón Confirmación Final ===== */
+        /* ===== BOTONES NUEVOS PAPELETAS ===== */
         .btn-confirmacion-final {
             background: #059669;
             color: white;
@@ -606,6 +606,42 @@
         }
         .btn-confirmacion-final:hover {
             background: #047857;
+        }
+        .btn-confirmar-asistencia {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-confirmar-asistencia:hover {
+            background: #15803d;
+        }
+        .btn-incontactable {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-incontactable:hover {
+            background: #b91c1c;
+        }
+        .btn-reprogramar {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-reprogramar:hover {
+            background: #d97706;
         }
         
         .filtros-papeletas {
@@ -1179,7 +1215,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== NUEVO: MODAL CONFIRMACIÓN FINAL ===== */
+        /* ===== MODAL CONFIRMACIÓN FINAL ===== */
         .modal-confirmacion-final {
             display: none;
             position: fixed;
@@ -1374,6 +1410,141 @@
                 font-size: 0.85rem;
             }
         }
+
+        /* ===== MODAL REPROGRAMAR ===== */
+        .modal-reprogramar {
+            display: none;
+            position: fixed;
+            z-index: 2002;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-reprogramar .modal-contenido {
+            background: white;
+            margin: 5% auto;
+            padding: 30px 35px;
+            border-radius: 24px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+        }
+        .modal-reprogramar .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-reprogramar .modal-header h3 {
+            color: #0a2540;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .modal-reprogramar .modal-header h3 i {
+            color: #f59e0b;
+            margin-right: 10px;
+        }
+        .modal-reprogramar .cerrar-modal-reprogramar {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+        }
+        .modal-reprogramar .cerrar-modal-reprogramar:hover {
+            color: #c62828;
+        }
+        .modal-reprogramar .campo-reprogramar {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 18px;
+        }
+        .modal-reprogramar .campo-reprogramar label {
+            font-weight: 600;
+            color: #0a2540;
+            font-size: 0.9rem;
+        }
+        .modal-reprogramar .campo-reprogramar input,
+        .modal-reprogramar .campo-reprogramar textarea {
+            padding: 10px 14px;
+            border: 1.5px solid #dce1e8;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: 0.2s;
+        }
+        .modal-reprogramar .campo-reprogramar input:focus,
+        .modal-reprogramar .campo-reprogramar textarea:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+        }
+        .modal-reprogramar .campo-reprogramar textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-reprogramar .btn-guardar-reprogramacion {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .modal-reprogramar .btn-guardar-reprogramacion:hover {
+            background: #d97706;
+        }
+        .modal-reprogramar .btn-cancelar-reprogramacion {
+            background: #64748b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .modal-reprogramar .btn-cancelar-reprogramacion:hover {
+            background: #475569;
+        }
+        .modal-reprogramar .info-cliente-repro {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f59e0b;
+        }
+        .modal-reprogramar .info-cliente-repro .nombre-cliente {
+            font-weight: 700;
+            color: #0a2540;
+            font-size: 1.1rem;
+        }
+        .modal-reprogramar .info-cliente-repro .detalle-cliente {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 4px;
+        }
     </style>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -1461,7 +1632,7 @@
         </div>
     </div>
 
-    <!-- ===== NUEVO: MODAL CONFIRMACIÓN FINAL ===== -->
+    <!-- ===== MODAL CONFIRMACIÓN FINAL ===== -->
     <div id="modalConfirmacionFinal" class="modal-confirmacion-final">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -1469,6 +1640,19 @@
                 <button class="cerrar-modal-confirmacion" id="cerrarConfirmacionFinal">&times;</button>
             </div>
             <div id="contenidoConfirmacionFinal">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL REPROGRAMAR ===== -->
+    <div id="modalReprogramar" class="modal-reprogramar">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-plus"></i> REPROGRAMAR CITA</h3>
+                <button class="cerrar-modal-reprogramar" id="cerrarReprogramar">&times;</button>
+            </div>
+            <div id="contenidoReprogramar">
                 <!-- Se llena dinámicamente con JavaScript -->
             </div>
         </div>
@@ -1908,6 +2092,7 @@
         let conteoFechasCache = null;
         let renderPapeletasTimer = null;
         let papeletasListenerTimer = null;
+        let papeletaReprogramarId = null;
 
         const PASSWORD_PANEL = "admin123";
         const PASSWORD_ESTADISTICAS = "supervisor2024";
@@ -2513,7 +2698,38 @@
             document.getElementById('p_clave').value = 'SF';
         }
 
-        // ===== NUEVO: MOSTRAR PAPELETA COMPLETA =====
+        // ===== FUNCIONES DE FORMATO DE FECHA/HORA =====
+        function formatearFechaHora(fecha) {
+            if (!fecha) return '-';
+            return new Date(fecha).toLocaleString('es-MX', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        function formatearFechaCorta(fecha) {
+            if (!fecha) return '-';
+            return new Date(fecha).toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        function formatearHora(fecha) {
+            if (!fecha) return '-';
+            return new Date(fecha).toLocaleTimeString('es-MX', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        // ===== MOSTRAR PAPELETA COMPLETA =====
         function mostrarPapeletaCompleta(id) {
             const papeleta = papeletasCache.find(p => p.id === id);
             if (!papeleta) {
@@ -2531,15 +2747,8 @@
                     <span class="valor">${papeleta.lugar || '-'}</span>
                 </div>
                 <div class="campo-papeleta">
-                    <span class="etiqueta">📅 Fecha</span>
-                    <span class="valor">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleString('es-MX', {
-                     year: 'numeric',
-                     month: '2-digit',
-                     day: '2-digit',
-                     hour: '2-digit',
-                     minute: '2-digit',
-                     hour12: true
-}) : '-'}</span>
+                    <span class="etiqueta">📅 Fecha / Hora</span>
+                    <span class="valor">${formatearFechaHora(papeleta.fechaHora)}</span>
                 </div>
                 <div class="campo-papeleta">
                     <span class="etiqueta">👩‍💼 Supervisor</span>
@@ -2650,15 +2859,7 @@
                 </div>
 
                 <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 0.75rem; color: #94a3b8; text-align: center;">
-                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString('es-MX', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-})}
+                    📅 Creado: ${formatearFechaHora(papeleta.fechaCreacion)}
                 </div>
             `;
 
@@ -2666,20 +2867,13 @@
             document.getElementById('modalPapeletaCompleta').style.display = 'block';
         }
 
-        // ===== NUEVO: CONFIRMACIÓN FINAL =====
+        // ===== CONFIRMACIÓN FINAL =====
         function mostrarConfirmacionFinal(id) {
             const papeleta = papeletasCache.find(p => p.id === id);
             if (!papeleta) {
                 mostrarToast('❌ Papeleta no encontrada', 'error');
                 return;
             }
-
-            // Función para crear enlace telefónico
-            const telLink = (numero) => {
-                if (!numero || numero === '-') return '-';
-                const limpio = numero.replace(/\s/g, '');
-                return `<a href="tel:${limpio}" class="telefono-enlace" onclick="event.stopPropagation();">📞 ${numero}</a>`;
-            };
 
             // Función para teléfono en sección
             const telItem = (label, numero) => {
@@ -2690,7 +2884,6 @@
                 return `<div class="telefono-item-conf"><span class="tel-etiqueta-conf">${label}</span><a href="tel:${limpio}" class="tel-valor-conf">📞 ${numero}</a></div>`;
             };
 
-            // Construir HTML de confirmación
             let html = `
                 <div style="background: #f0fdf4; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; border-left: 5px solid #059669;">
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
@@ -2712,14 +2905,7 @@
                 </div>
                 <div class="campo-confirmacion">
                     <span class="etiqueta-conf">📅 Fecha / Hora</span>
-   <span class="valor-conf">${papeleta.fechaHora ? new Date(papeleta.fechaHora).toLocaleString('es-MX', {
-                  year: 'numeric',
-                  month: '2-digit',
-                  day: '2-digit',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                  hour12: true
-}) : '-'}</span>
+                    <span class="valor-conf">${formatearFechaHora(papeleta.fechaHora)}</span>
                 </div>
                 <div class="campo-confirmacion">
                     <span class="etiqueta-conf">📍 Lugar</span>
@@ -2809,20 +2995,160 @@
                 ` : ''}
 
                 <div style="margin-top: 20px; padding: 12px 16px; background: #f1f5f9; border-radius: 12px; font-size: 0.8rem; color: #64748b; text-align: center;">
-                    📅 Creado: ${new Date(papeleta.fechaCreacion).toLocaleString('es-MX', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true
-})}
+                    📅 Creado: ${formatearFechaHora(papeleta.fechaCreacion)}
                 </div>
             `;
 
             document.getElementById('contenidoConfirmacionFinal').innerHTML = html;
             document.getElementById('modalConfirmacionFinal').style.display = 'block';
+        }
+
+        // ===== REPROGRAMAR =====
+        function mostrarReprogramar(id) {
+            const papeleta = papeletasCache.find(p => p.id === id);
+            if (!papeleta) {
+                mostrarToast('❌ Papeleta no encontrada', 'error');
+                return;
+            }
+
+            papeletaReprogramarId = id;
+
+            let html = `
+                <div class="info-cliente-repro">
+                    <div class="nombre-cliente">${papeleta.nombre || 'Sin nombre'}</div>
+                    <div class="detalle-cliente">👩‍💼 ${papeleta.supervisor || 'Sin supervisor'} | 📅 ${formatearFechaCorta(papeleta.fechaHora)}</div>
+                </div>
+
+                <div class="campo-reprogramar">
+                    <label for="reproFecha">📅 Nueva Fecha *</label>
+                    <input type="date" id="reproFecha" value="${new Date().toISOString().split('T')[0]}" required>
+                </div>
+
+                <div class="campo-reprogramar">
+                    <label for="reproComentario">📝 Comentario (opcional)</label>
+                    <textarea id="reproComentario" placeholder="Motivo de la reprogramación, nueva hora, etc."></textarea>
+                </div>
+
+                <button class="btn-guardar-reprogramacion" onclick="guardarReprogramacion()">💾 Guardar Reprogramación</button>
+                <button class="btn-cancelar-reprogramacion" onclick="cerrarReprogramar()">✕ Cancelar</button>
+            `;
+
+            document.getElementById('contenidoReprogramar').innerHTML = html;
+            document.getElementById('modalReprogramar').style.display = 'block';
+        }
+
+        async function guardarReprogramacion() {
+            const nuevaFecha = document.getElementById('reproFecha').value;
+            const comentario = document.getElementById('reproComentario').value.trim();
+
+            if (!nuevaFecha) {
+                mostrarToast('⚠️ Selecciona una fecha para reprogramar', 'error');
+                return;
+            }
+
+            if (!papeletaReprogramarId) {
+                mostrarToast('❌ Error: No se encontró la papeleta', 'error');
+                return;
+            }
+
+            try {
+                // Obtener la papeleta actual para conservar todos los datos
+                const papeleta = papeletasCache.find(p => p.id === papeletaReprogramarId);
+                if (!papeleta) {
+                    mostrarToast('❌ Papeleta no encontrada', 'error');
+                    return;
+                }
+
+                // Actualizar solo la fecha y agregar comentario de reprogramación
+                const fechaHoraActual = papeleta.fechaHora || '';
+                const comentarioAnterior = papeleta.notas || '';
+                
+                // Crear el nuevo comentario con la información de reprogramación
+                const fechaFormateada = new Date(nuevaFecha).toLocaleDateString('es-MX', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                
+                const nuevoComentario = `🔄 REPROGRAMADO: ${fechaFormateada}\n${comentario ? `📝 ${comentario}\n` : ''}${comentarioAnterior ? `---\n${comentarioAnterior}` : ''}`;
+
+                await database.ref(`papeletas/${papeletaReprogramarId}`).update({
+                    fechaHora: nuevaFecha,
+                    notas: nuevoComentario,
+                    fechaReprogramacion: new Date().toISOString(),
+                    reprogramadoPor: supervisorPapeletasAuth
+                });
+
+                mostrarToast('✅ Cita reprogramada correctamente');
+                cerrarReprogramar();
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al reprogramar:', error);
+                mostrarToast('❌ Error al reprogramar: ' + error.message, 'error');
+            }
+        }
+
+        function cerrarReprogramar() {
+            document.getElementById('modalReprogramar').style.display = 'none';
+            papeletaReprogramarId = null;
+        }
+
+        // ===== CONFIRMAR ASISTENCIA =====
+        async function confirmarAsistencia(id) {
+            if (!confirm('¿Confirmar asistencia para esta papeleta?')) return;
+            
+            try {
+                const papeleta = papeletasCache.find(p => p.id === id);
+                if (!papeleta) {
+                    mostrarToast('❌ Papeleta no encontrada', 'error');
+                    return;
+                }
+
+                const comentarioActual = papeleta.notas || '';
+                const nuevoComentario = `✅ ASISTENCIA CONFIRMADA: ${new Date().toLocaleDateString('es-MX')}\n${comentarioActual}`;
+
+                await database.ref(`papeletas/${id}`).update({
+                    asistenciaConfirmada: true,
+                    fechaConfirmacionAsistencia: new Date().toISOString(),
+                    notas: nuevoComentario
+                });
+
+                mostrarToast('✅ Asistencia confirmada correctamente');
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al confirmar asistencia:', error);
+                mostrarToast('❌ Error al confirmar asistencia', 'error');
+            }
+        }
+
+        // ===== INCONTACTABLE =====
+        async function marcarIncontactable(id) {
+            const motivo = prompt('📝 Motivo por el cual no se puede contactar:');
+            if (motivo === null) return;
+            
+            try {
+                const papeleta = papeletasCache.find(p => p.id === id);
+                if (!papeleta) {
+                    mostrarToast('❌ Papeleta no encontrada', 'error');
+                    return;
+                }
+
+                const comentarioActual = papeleta.notas || '';
+                const nuevoComentario = `📵 INCONTACTABLE: ${motivo || 'Sin motivo especificado'} - ${new Date().toLocaleDateString('es-MX')}\n${comentarioActual}`;
+
+                await database.ref(`papeletas/${id}`).update({
+                    incontactable: true,
+                    fechaIncontactable: new Date().toISOString(),
+                    motivoIncontactable: motivo || 'Sin motivo',
+                    notas: nuevoComentario
+                });
+
+                mostrarToast('📵 Marcado como incontactable');
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al marcar incontactable:', error);
+                mostrarToast('❌ Error al marcar incontactable', 'error');
+            }
         }
 
         // ===== CARGAR PAPELETAS =====
@@ -3162,26 +3488,33 @@
 
                 tbody.innerHTML = filtradas.map((p, index) => {
                     const tel = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
-                    const fecha = p.fechaHora ? new Date(p.fechaHora).toLocaleString('es-MX', { 
-                     year: 'numeric', 
-                     month: '2-digit', 
-                     day: '2-digit',
-                     hour: '2-digit', 
-                     minute: '2-digit',
-                     hour12: true 
-}) : '-';
+                    const fecha = formatearFechaHora(p.fechaHora);
+                    
+                    // Verificar si ya tiene estado
+                    const tieneConfirmacion = p.asistenciaConfirmada === true;
+                    const esIncontactable = p.incontactable === true;
+                    const tieneReprogramacion = p.fechaReprogramacion ? true : false;
+                    
+                    let estadoBadge = '';
+                    if (tieneConfirmacion) estadoBadge = '<span style="color:#16a34a; font-weight:bold;">✅</span>';
+                    else if (esIncontactable) estadoBadge = '<span style="color:#dc2626; font-weight:bold;">📵</span>';
+                    else if (tieneReprogramacion) estadoBadge = '<span style="color:#f59e0b; font-weight:bold;">🔄</span>';
+                    
                     return `<tr>
                         <td>${index + 1}</td>
-                        <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong></td>
+                        <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong> ${estadoBadge}</td>
                         <td>${escaparHtml(tel)}</td>
                         <td>${escaparHtml(p.supervisor || '-')}</td>
                         <td>${escaparHtml(fecha)}</td>
                         <td>${escaparHtml(p.estadoCivil || '-')}</td>
                         <td>👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores</td>
-                        <td>
-                            <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')">👁️ Ver</button>
-                            <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')">✅ Confirmar</button>
-                            <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')">🗑️</button>
+                        <td style="min-width: 200px;">
+                            <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')" title="Ver detalles">👁️</button>
+                            <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')" title="Confirmación final">✅ Conf</button>
+                            <button class="btn-confirmar-asistencia" onclick="confirmarAsistencia('${p.id}')" title="Confirmar asistencia">📋 Asist</button>
+                            <button class="btn-incontactable" onclick="marcarIncontactable('${p.id}')" title="Marcar como incontactable">📵 No</button>
+                            <button class="btn-reprogramar" onclick="mostrarReprogramar('${p.id}')" title="Reprogramar cita">🔄 Repro</button>
+                            <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')" title="Eliminar">🗑️</button>
                         </td>
                     </tr>`;
                 }).join('');
@@ -4247,7 +4580,6 @@
             document.getElementById('modalPapeletaCompleta').style.display = 'none';
         });
 
-        // Cerrar modal al hacer clic fuera
         document.getElementById('modalPapeletaCompleta').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.style.display = 'none';
@@ -4262,6 +4594,14 @@
         document.getElementById('modalConfirmacionFinal').addEventListener('click', function(e) {
             if (e.target === this) {
                 this.style.display = 'none';
+            }
+        });
+
+        // ===== CERRAR MODAL REPROGRAMAR =====
+        document.getElementById('cerrarReprogramar').addEventListener('click', cerrarReprogramar);
+        document.getElementById('modalReprogramar').addEventListener('click', function(e) {
+            if (e.target === this) {
+                cerrarReprogramar();
             }
         });
 
