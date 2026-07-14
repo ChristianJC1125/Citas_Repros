@@ -2729,279 +2729,151 @@
             });
         }
 
-        // ===== MOSTRAR PAPELETA COMPLETA =====
-        function mostrarPapeletaCompleta(id) {
-            const papeleta = papeletasCache.find(p => p.id === id);
-            if (!papeleta) {
-                mostrarToast('❌ Papeleta no encontrada', 'error');
-                return;
-            }
+   // ===== MOSTRAR PAPELETA COMPLETA =====
+function mostrarPapeletaCompleta(id) {
+    const papeleta = papeletasCache.find(p => p.id === id);
+    if (!papeleta) {
+        mostrarToast('❌ Papeleta no encontrada', 'error');
+        return;
+    }
 
-            let html = `
-                <div class="campo-papeleta">
-                    <span class="etiqueta">👤 Nombre del Operador</span>
-                    <span class="valor">${papeleta.nombre || '-'}</span>
-                </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">📍 Lugar</span>
-                    <span class="valor">${papeleta.lugar || '-'}</span>
-                </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">📅 Fecha / Hora</span>
-                    <span class="valor">${formatearFechaHora(papeleta.fechaHora)}</span>
-                </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">👩‍💼 Supervisor</span>
-                    <span class="valor"><strong>${papeleta.supervisor || '-'}</strong></span>
-                </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">🔑 Clave</span>
-                    <span class="valor">${papeleta.clave || '-'}</span>
-                </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">⏰ Hora</span>
-                    <span class="valor">${papeleta.hora || '-'}</span>
-                </div>
-                
-                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
-                            <span class="etiqueta" style="min-width: 60px;">👨 Sr.</span>
-                            <span class="valor">${papeleta.sr?.nombre || '-'}</span>
-                        </div>
-                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
-                            <span class="etiqueta" style="min-width: 40px;">Edad</span>
-                            <span class="valor">${papeleta.sr?.edad || '-'}</span>
-                        </div>
-                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0; grid-column: 1 / -1;">
-                            <span class="etiqueta" style="min-width: 60px;">Ocupación</span>
-                            <span class="valor">${papeleta.sr?.ocupacion || '-'}</span>
-                        </div>
-                    </div>
-                </div>
+    // Función para convertir hora a AM/PM
+    function convertirHoraAMPM(hora) {
+        if (!hora) return '-';
+        const partes = hora.split(':');
+        let h = parseInt(partes[0]);
+        const m = partes[1] || '00';
+        const ampm = h >= 12 ? 'p.m.' : 'a.m.';
+        h = h % 12;
+        h = h ? h : 12;
+        return `${h}:${m} ${ampm}`;
+    }
 
-                <div style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
-                            <span class="etiqueta" style="min-width: 60px;">👩 Sra.</span>
-                            <span class="valor">${papeleta.sra?.nombre || '-'}</span>
-                        </div>
-                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
-                            <span class="etiqueta" style="min-width: 40px;">Edad</span>
-                            <span class="valor">${papeleta.sra?.edad || '-'}</span>
-                        </div>
-                        <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0; grid-column: 1 / -1;">
-                            <span class="etiqueta" style="min-width: 60px;">Ocupación</span>
-                            <span class="valor">${papeleta.sra?.ocupacion || '-'}</span>
-                        </div>
-                    </div>
+    let html = `
+        <div class="campo-papeleta">
+            <span class="etiqueta">👤 Nombre del Operador</span>
+            <span class="valor">${papeleta.nombre || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">📍 Lugar</span>
+            <span class="valor">${papeleta.lugar || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">👩‍💼 Supervisor</span>
+            <span class="valor"><strong>${papeleta.supervisor || '-'}</strong></span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">🔑 Clave</span>
+            <span class="valor">${papeleta.clave || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">⏰ Hora</span>
+            <span class="valor">${papeleta.hora ? convertirHoraAMPM(papeleta.hora) : '-'}</span>
+        </div>
+        
+        <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                    <span class="etiqueta" style="min-width: 60px;">👨 Sr.</span>
+                    <span class="valor">${papeleta.sr?.nombre || '-'}</span>
                 </div>
+                <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                    <span class="etiqueta" style="min-width: 40px;">Edad</span>
+                    <span class="valor">${papeleta.sr?.edad || '-'}</span>
+                </div>
+                <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0; grid-column: 1 / -1;">
+                    <span class="etiqueta" style="min-width: 60px;">Ocupación</span>
+                    <span class="valor">${papeleta.sr?.ocupacion || '-'}</span>
+                </div>
+            </div>
+        </div>
 
-                <div class="campo-papeleta">
-                    <span class="etiqueta">💍 Estado Civil</span>
-                    <span class="valor">${papeleta.estadoCivil || '-'}</span>
+        <div style="margin-top: 8px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                    <span class="etiqueta" style="min-width: 60px;">👩 Sra.</span>
+                    <span class="valor">${papeleta.sra?.nombre || '-'}</span>
                 </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">👨‍👩‍👧 Personas</span>
-                    <span class="valor">${papeleta.adultos || 0} adultos, ${papeleta.menores || 0} menores</span>
+                <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0;">
+                    <span class="etiqueta" style="min-width: 40px;">Edad</span>
+                    <span class="valor">${papeleta.sra?.edad || '-'}</span>
                 </div>
+                <div class="campo-papeleta" style="border-bottom: none; padding: 4px 0; grid-column: 1 / -1;">
+                    <span class="etiqueta" style="min-width: 60px;">Ocupación</span>
+                    <span class="valor">${papeleta.sra?.ocupacion || '-'}</span>
+                </div>
+            </div>
+        </div>
 
-                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
-                    <span style="font-weight: 600; color: #0a2540; display: block; margin-bottom: 8px;">📞 Teléfonos</span>
-                    <div class="seccion-telefonos">
-                        <div class="telefono-item">
-                            <span class="tel-etiqueta">🏠 Casa</span>
-                            <span class="tel-valor">${papeleta.telefonos?.casa || '-'}</span>
-                        </div>
-                        <div class="telefono-item">
-                            <span class="tel-etiqueta">🏢 Sr. Oficina</span>
-                            <span class="tel-valor">${papeleta.telefonos?.srOficina || '-'}</span>
-                        </div>
-                        <div class="telefono-item">
-                            <span class="tel-etiqueta">📱 Sr. Celular</span>
-                            <span class="tel-valor">${papeleta.telefonos?.srCelular || '-'}</span>
-                        </div>
-                        <div class="telefono-item">
-                            <span class="tel-etiqueta">🏢 Sra. Oficina</span>
-                            <span class="tel-valor">${papeleta.telefonos?.sraOficina || '-'}</span>
-                        </div>
-                        <div class="telefono-item">
-                            <span class="tel-etiqueta">📱 Sra. Celular</span>
-                            <span class="tel-valor">${papeleta.telefonos?.sraCelular || '-'}</span>
-                        </div>
-                    </div>
-                </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">💍 Estado Civil</span>
+            <span class="valor">${papeleta.estadoCivil || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">👨‍👩‍👧 Personas</span>
+            <span class="valor">${papeleta.adultos || 0} adultos, ${papeleta.menores || 0} menores</span>
+        </div>
 
-                <div class="campo-papeleta">
-                    <span class="etiqueta">💰 Ingresos</span>
-                    <span class="valor">${papeleta.ingresos || '-'}</span>
+        <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+            <span style="font-weight: 600; color: #0a2540; display: block; margin-bottom: 8px;">📞 Teléfonos</span>
+            <div class="seccion-telefonos">
+                <div class="telefono-item">
+                    <span class="tel-etiqueta">🏠 Casa</span>
+                    <span class="tel-valor">${papeleta.telefonos?.casa || '-'}</span>
                 </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">💳 Tarjetas</span>
-                    <span class="valor">${papeleta.tarjetas || '-'}</span>
+                <div class="telefono-item">
+                    <span class="tel-etiqueta">🏢 Sr. Oficina</span>
+                    <span class="tel-valor">${papeleta.telefonos?.srOficina || '-'}</span>
                 </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">📞 Fecha Llamada</span>
-                    <span class="valor">${papeleta.fechaLlamada || '-'}</span>
+                <div class="telefono-item">
+                    <span class="tel-etiqueta">📱 Sr. Celular</span>
+                    <span class="tel-valor">${papeleta.telefonos?.srCelular || '-'}</span>
                 </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">✉️ Email</span>
-                    <span class="valor">${papeleta.email || '-'}</span>
+                <div class="telefono-item">
+                    <span class="tel-etiqueta">🏢 Sra. Oficina</span>
+                    <span class="tel-valor">${papeleta.telefonos?.sraOficina || '-'}</span>
                 </div>
-                <div class="campo-papeleta">
-                    <span class="etiqueta">📂 Base</span>
-                    <span class="valor">${papeleta.base || '-'}</span>
+                <div class="telefono-item">
+                    <span class="tel-etiqueta">📱 Sra. Celular</span>
+                    <span class="tel-valor">${papeleta.telefonos?.sraCelular || '-'}</span>
                 </div>
+            </div>
+        </div>
 
-                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
-                    <span style="font-weight: 600; color: #0a2540; display: block; margin-bottom: 6px;">📝 COMENTARIOS</span>
-                    <div class="valor notas">${papeleta.notas || 'Sin notas'}</div>
-                </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">💰 Ingresos</span>
+            <span class="valor">${papeleta.ingresos || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">💳 Tarjetas</span>
+            <span class="valor">${papeleta.tarjetas || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">📞 Fecha Llamada</span>
+            <span class="valor">${papeleta.fechaLlamada || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">✉️ Email</span>
+            <span class="valor">${papeleta.email || '-'}</span>
+        </div>
+        <div class="campo-papeleta">
+            <span class="etiqueta">📂 Base</span>
+            <span class="valor">${papeleta.base || '-'}</span>
+        </div>
 
-                <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 0.75rem; color: #94a3b8; text-align: center;">
-                    📅 Creado: ${formatearFechaHora(papeleta.fechaCreacion)}
-                </div>
-            `;
+        <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px;">
+            <span style="font-weight: 600; color: #0a2540; display: block; margin-bottom: 6px;">📝 COMENTARIOS</span>
+            <div class="valor notas">${papeleta.notas || 'Sin notas'}</div>
+        </div>
 
-            document.getElementById('contenidoPapeletaCompleta').innerHTML = html;
-            document.getElementById('modalPapeletaCompleta').style.display = 'block';
-        }
+        <div style="margin-top: 12px; border-top: 1px solid #e2e8f0; padding-top: 12px; font-size: 0.75rem; color: #94a3b8; text-align: center;">
+            📅 Creado: ${formatearFechaHora(papeleta.fechaCreacion)}
+        </div>
+    `;
 
-        // ===== CONFIRMACIÓN FINAL =====
-        function mostrarConfirmacionFinal(id) {
-            const papeleta = papeletasCache.find(p => p.id === id);
-            if (!papeleta) {
-                mostrarToast('❌ Papeleta no encontrada', 'error');
-                return;
-            }
-
-            // Función para teléfono en sección
-            const telItem = (label, numero) => {
-                if (!numero || numero === '-') {
-                    return `<div class="telefono-item-conf"><span class="tel-etiqueta-conf">${label}</span><span class="tel-valor-conf">-</span></div>`;
-                }
-                const limpio = numero.replace(/\s/g, '');
-                return `<div class="telefono-item-conf"><span class="tel-etiqueta-conf">${label}</span><a href="tel:${limpio}" class="tel-valor-conf">📞 ${numero}</a></div>`;
-            };
-
-            let html = `
-                <div style="background: #f0fdf4; border-radius: 12px; padding: 15px 20px; margin-bottom: 20px; border-left: 5px solid #059669;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                        <div>
-                            <span style="font-weight: 700; color: #0a2540; font-size: 1.1rem;">${papeleta.nombre || 'Sin nombre'}</span>
-                            <span class="badge-confirmacion">✓ Confirmación</span>
-                        </div>
-                        <span style="color: #64748b; font-size: 0.85rem;">ID: ${papeleta.id.substring(0, 8)}</span>
-                    </div>
-                </div>
-
-                <div class="campo-confirmacion">
-                    <span class="etiqueta-conf">👤 Operador</span>
-                    <span class="valor-conf">${papeleta.nombre || '-'}</span>
-                </div>
-                <div class="campo-confirmacion">
-                    <span class="etiqueta-conf">👩‍💼 Supervisor</span>
-                    <span class="valor-conf"><strong>${papeleta.supervisor || '-'}</strong></span>
-                </div>
-                <div class="campo-confirmacion">
-                    <span class="etiqueta-conf">📅 Fecha / Hora</span>
-                    <span class="valor-conf">${formatearFechaHora(papeleta.fechaHora)}</span>
-                </div>
-                <div class="campo-confirmacion">
-                    <span class="etiqueta-conf">📍 Lugar</span>
-                    <span class="valor-conf">${papeleta.lugar || '-'}</span>
-                </div>
-
-                <hr style="border: none; border-top: 2px dashed #e2e8f0; margin: 16px 0;">
-
-                <div style="font-weight: 600; color: #0a2540; margin-bottom: 10px;">👤 INFORMACIÓN DEL CLIENTE</div>
-                
-                <div class="fila-datos">
-                    <div class="item-dato">
-                        <span class="label-dato">👨 Sr.</span>
-                        <span class="value-dato">${papeleta.sr?.nombre || '-'}</span>
-                    </div>
-                    <div class="item-dato">
-                        <span class="label-dato">Edad Sr.</span>
-                        <span class="value-dato">${papeleta.sr?.edad || '-'}</span>
-                    </div>
-                    <div class="item-dato" style="grid-column: 1 / -1;">
-                        <span class="label-dato">Ocupación Sr.</span>
-                        <span class="value-dato">${papeleta.sr?.ocupacion || '-'}</span>
-                    </div>
-                    <div class="item-dato">
-                        <span class="label-dato">👩 Sra.</span>
-                        <span class="value-dato">${papeleta.sra?.nombre || '-'}</span>
-                    </div>
-                    <div class="item-dato">
-                        <span class="label-dato">Edad Sra.</span>
-                        <span class="value-dato">${papeleta.sra?.edad || '-'}</span>
-                    </div>
-                    <div class="item-dato" style="grid-column: 1 / -1;">
-                        <span class="label-dato">Ocupación Sra.</span>
-                        <span class="value-dato">${papeleta.sra?.ocupacion || '-'}</span>
-                    </div>
-                </div>
-
-                <div class="campo-confirmacion">
-                    <span class="etiqueta-conf">💍 Estado Civil</span>
-                    <span class="valor-conf">${papeleta.estadoCivil || '-'}</span>
-                </div>
-
-                <div class="seccion-personas">
-                    <div style="font-weight: 600; color: #0a2540; margin-bottom: 6px;">👨‍👩‍👧 Número de Personas</div>
-                    <div class="persona-item">
-                        <span class="p-label">Adultos:</span>
-                        <span class="p-info"><strong>${papeleta.adultos || 0}</strong></span>
-                        <span class="p-label" style="margin-left: 20px;">Menores:</span>
-                        <span class="p-info"><strong>${papeleta.menores || 0}</strong></span>
-                    </div>
-                </div>
-
-                <hr style="border: none; border-top: 2px dashed #e2e8f0; margin: 16px 0;">
-
-                <div style="font-weight: 600; color: #0a2540; margin-bottom: 10px;">📞 CONTACTOS</div>
-                <div class="seccion-telefonos-conf">
-                    ${telItem('🏠 Casa', papeleta.telefonos?.casa)}
-                    ${telItem('🏢 Sr. Oficina', papeleta.telefonos?.srOficina)}
-                    ${telItem('📱 Sr. Celular', papeleta.telefonos?.srCelular)}
-                    ${telItem('🏢 Sra. Oficina', papeleta.telefonos?.sraOficina)}
-                    ${telItem('📱 Sra. Celular', papeleta.telefonos?.sraCelular)}
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px 30px; margin-top: 12px;">
-                    <div class="item-dato">
-                        <span class="label-dato">💰 Ingresos</span>
-                        <span class="value-dato">${papeleta.ingresos || '-'}</span>
-                    </div>
-                    <div class="item-dato">
-                        <span class="label-dato">💳 Tarjetas</span>
-                        <span class="value-dato">${papeleta.tarjetas || '-'}</span>
-                    </div>
-                    <div class="item-dato">
-                        <span class="label-dato">✉️ Email</span>
-                        <span class="value-dato">${papeleta.email || '-'}</span>
-                    </div>
-                    <div class="item-dato">
-                        <span class="label-dato">📂 Base</span>
-                        <span class="value-dato">${papeleta.base || '-'}</span>
-                    </div>
-                </div>
-
-                ${papeleta.notas ? `
-                <hr style="border: none; border-top: 2px dashed #e2e8f0; margin: 16px 0;">
-                <div style="font-weight: 600; color: #0a2540; margin-bottom: 6px;">📝 COMENTARIOS</div>
-                <div style="background: #f8fafc; padding: 12px 16px; border-radius: 12px; white-space: pre-wrap; font-size: 0.9rem; color: #1e293b;">${papeleta.notas}</div>
-                ` : ''}
-
-                <div style="margin-top: 20px; padding: 12px 16px; background: #f1f5f9; border-radius: 12px; font-size: 0.8rem; color: #64748b; text-align: center;">
-                    📅 Creado: ${formatearFechaHora(papeleta.fechaCreacion)}
-                </div>
-            `;
-
-            document.getElementById('contenidoConfirmacionFinal').innerHTML = html;
-            document.getElementById('modalConfirmacionFinal').style.display = 'block';
-        }
+    document.getElementById('contenidoPapeletaCompleta').innerHTML = html;
+    document.getElementById('modalPapeletaCompleta').style.display = 'block';
+}
 
         // ===== REPROGRAMAR =====
         function mostrarReprogramar(id) {
@@ -3025,7 +2897,7 @@
                 </div>
 
                 <div class="campo-reprogramar">
-                    <label for="reproComentario">📝 Comentario (opcional)</label>
+                    <label for="reproComentario">📝 Comentario </label>
                     <textarea id="reproComentario" placeholder="Motivo de la reprogramación, nueva hora, etc."></textarea>
                 </div>
 
