@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -2226,15 +2226,19 @@
         let calendarioVisible = false;
         let papeletasSupCache = [];
         let conteoFechasCache = null;
-        let renderPapeletasTimer = null;
-        let papeletasListenerTimer = null;
         let papeletaReprogramarId = null;
+
+        // Timers para debounce
+        let renderTimeout = null;
+        let searchTimeout = null;
+        let listenerTimeout = null;
+        let busquedaPapeletasTimer = null;
+        let toastTimeout = null;
 
         const PASSWORD_PANEL = "admin123";
         const PASSWORD_ESTADISTICAS = "supervisor2024";
         const PASSWORD_DESBLOQUEO = "admin123";
 
-        // Contraseñas individuales por supervisor para Mis Papeletas
         const PASSWORD_PAPELETAS_SUP = {
             'ABRAHAM ROLDAN': 'abraham2024',
             'LUIS COLULA': 'luis2024',
@@ -2245,12 +2249,6 @@
             'ARACELI TORRES': 'araceli2024'
         };
 
-        function obtenerPasswordPapeletasSupervisor(supervisor) {
-            if (PASSWORD_PAPELETAS_SUP[supervisor]) return PASSWORD_PAPELETAS_SUP[supervisor];
-            const primerNombre = (supervisor || '').split(' ')[0].toLowerCase();
-            return primerNombre ? `${primerNombre}2024` : '';
-        }
-
         const SUPERVISORES_INACTIVOS = [
             'YARET NAJERA',
             'ABRAHAM ROLDAN',
@@ -2259,36 +2257,136 @@
             'ARACELI TORRES'
         ];
 
-        // ========== 🔐 AUTENTICACIÓN ANÓNIMA ==========
-        async function autenticarFirebase() {
-            if (autenticado && auth.currentUser) return true;
-            try {
-                if (!auth.currentUser) {
-                    await auth.signInAnonymously();
-                }
-                autenticado = true;
-                console.log('✅ Autenticado correctamente');
-                return true;
-            } catch (error) {
-                console.error('❌ Error en autenticación:', error);
-                return false;
-            }
+        const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        const DIAS_ES = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+
+        // ========== FUNCIONES DE UTILIDAD ==========
+        function obtenerPasswordPapeletasSupervisor(supervisor) {
+            if (PASSWORD_PAPELETAS_SUP[supervisor]) return PASSWORD_PAPELETAS_SUP[supervisor];
+            const primerNombre = (supervisor || '').split(' ')[0].toLowerCase();
+            return primerNombre ? `${primerNombre}2024` : '';
         }
 
-        autenticarFirebase();
+        function escaparHtml(texto) {
+            if (!texto) return '';
+            return String(texto)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
 
-        // ========== TOAST ==========
+        function formatearFechaCorta(fecha) {
+            if (!fecha) return '-';
+            return new Date(fecha).toLocaleDateString('es-MX', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        function formatearFechaHora(fecha) {
+            if (!fecha) return '-';
+            return new Date(fecha).toLocaleString('es-MX', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+        }
+
+        function convertirHoraAMPM(hora) {
+            if (!hora) return '-';
+            const partes = hora.split(':');
+            let h = parseInt(partes[0]);
+            const m = partes[1] || '00';
+            const ampm = h >= 12 ? 'p.m.' : 'a.m.';
+            h = h % 12;
+            h = h ? h : 12;
+            return `${h}:${m} ${ampm}`;
+        }
+
+        function obtenerFechaCitaPapeleta(p) {
+            if (!p.fechaHora) return null;
+            return p.fechaHora.split('T')[0];
+        }
+
+        function separarClienteYAcompanante(nombreCompleto) {
+            if (!nombreCompleto) return { cliente: '', acompanante: '' };
+            let cliente = nombreCompleto;
+            let acompanante = '';
+            if (nombreCompleto.includes('/')) {
+                const partes = nombreCompleto.split('/').map(p => p.trim());
+                cliente = partes[0] || '';
+                acompanante = partes.slice(1).join(' / ') || '';
+            } else if (nombreCompleto.includes(' Y ') || nombreCompleto.includes(' y ')) {
+                const sep = nombreCompleto.includes(' Y ') ? ' Y ' : ' y ';
+                const partes = nombreCompleto.split(sep).map(p => p.trim());
+                cliente = partes[0] || '';
+                acompanante = partes.slice(1).join(sep) || '';
+            } else if (nombreCompleto.includes(',')) {
+                const partes = nombreCompleto.split(',').map(p => p.trim());
+                cliente = partes[0] || '';
+                acompanante = partes.slice(1).join(', ') || '';
+            }
+            if (cliente.startsWith('[REAGENDADO] ')) {
+                cliente = cliente.replace('[REAGENDADO] ', '');
+            }
+            return { cliente, acompanante };
+        }
+
+        function estaBloqueada(cita) {
+            return cita.asistencia === 'Llegó';
+        }
+
+        // ========== TOAST OPTIMIZADO ==========
         function mostrarToast(mensaje, tipo = 'success') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            
             const div = document.createElement('div');
             div.textContent = mensaje;
             div.className = `toast ${tipo}`;
             document.body.appendChild(div);
-            setTimeout(() => div.remove(), 3000);
+            
+            toastTimeout = setTimeout(() => {
+                if (div.parentNode) div.remove();
+                toastTimeout = null;
+            }, 3000);
         }
 
-        // ========== MENÚ ==========
+        // ========== 🔐 AUTENTICACIÓN ANÓNIMA ==========
+        let authPromise = null;
+
+        async function autenticarFirebase() {
+            if (autenticado && auth.currentUser) return true;
+            
+            if (authPromise) return authPromise;
+            
+            authPromise = (async () => {
+                try {
+                    if (!auth.currentUser) {
+                        await auth.signInAnonymously();
+                    }
+                    autenticado = true;
+                    console.log('✅ Autenticado correctamente');
+                    return true;
+                } catch (error) {
+                    console.error('❌ Error en autenticación:', error);
+                    return false;
+                } finally {
+                    authPromise = null;
+                }
+            })();
+            
+            return authPromise;
+        }
+
+        // ========== FUNCIONES DEL MENÚ ==========
         const menuBtn = document.getElementById('menuBtn');
         const menuLateral = document.getElementById('menuLateral');
         const overlayMenu = document.getElementById('overlayMenu');
@@ -2307,9 +2405,8 @@
         menuBtn.addEventListener('click', toggleMenu);
         overlayMenu.addEventListener('click', toggleMenu);
 
-        // ========== MODAL CONTRASEÑA ==========
+        // ========== MODAL CONTRASEÑA PANEL ==========
         const modalPassword = document.getElementById('modalPassword');
-        const cerrarPassword = document.querySelector('.cerrar-password');
 
         function abrirModalPassword() {
             modalPassword.style.display = 'block';
@@ -2317,7 +2414,7 @@
             document.getElementById('mensajeErrorPassword').style.display = 'none';
         }
 
-        cerrarPassword.addEventListener('click', () => {
+        document.querySelector('.cerrar-password').addEventListener('click', () => {
             modalPassword.style.display = 'none';
             document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
         });
@@ -2356,6 +2453,7 @@
             document.getElementById('mensajeErrorPasswordPapeletas').style.display = 'none';
             const select = document.getElementById('passwordPapeletasSupervisor');
             if (select.options.length <= 1 && supervisoresList.length > 0) {
+                select.innerHTML = '<option value="">Seleccionar supervisor...</option>';
                 supervisoresList.forEach(sup => {
                     const opt = document.createElement('option');
                     opt.value = sup;
@@ -2374,6 +2472,21 @@
             document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
         });
 
+        document.getElementById('verificarPasswordPapeletas').addEventListener('click', () => {
+            const sup = document.getElementById('passwordPapeletasSupervisor').value;
+            const pass = document.getElementById('passwordMisPapeletas').value;
+            if (sup && pass === obtenerPasswordPapeletasSupervisor(sup)) {
+                activarSesionPapeletas(sup);
+            } else {
+                document.getElementById('mensajeErrorPasswordPapeletas').style.display = 'block';
+            }
+        });
+
+        document.getElementById('passwordMisPapeletas').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') document.getElementById('verificarPasswordPapeletas').click();
+        });
+
+        // ========== SESIÓN PAPELETAS ==========
         function activarSesionPapeletas(supervisor, mostrarTab = true) {
             papeletasDesbloqueado = true;
             supervisorPapeletasAuth = supervisor;
@@ -2445,20 +2558,6 @@
             }
         }
 
-        document.getElementById('verificarPasswordPapeletas').addEventListener('click', () => {
-            const sup = document.getElementById('passwordPapeletasSupervisor').value;
-            const pass = document.getElementById('passwordMisPapeletas').value;
-            if (sup && pass === obtenerPasswordPapeletasSupervisor(sup)) {
-                activarSesionPapeletas(sup);
-            } else {
-                document.getElementById('mensajeErrorPasswordPapeletas').style.display = 'block';
-            }
-        });
-
-        document.getElementById('passwordMisPapeletas').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') document.getElementById('verificarPasswordPapeletas').click();
-        });
-
         document.getElementById('btnCerrarSesionPapeletas').addEventListener('click', cerrarSesionPapeletas);
 
         // ========== MENÚ - CAMBIO DE PESTAÑA ==========
@@ -2491,7 +2590,7 @@
                 
                 if (pestana === 'mis-papeletas') {
                     actualizarCachePapeletasSupervisor();
-                    renderizarPapeletas(papeletasCache);
+                    renderizarPapeletas();
                 }
                 if (pestana === 'estadisticas-papeletas') {
                     mostrarEstadisticasPapeletas();
@@ -2525,74 +2624,226 @@
             }).catch(err => console.error('Error cargando supervisores:', err));
         }
 
-        // ================================================================
-        // ========== CRM ORIGINAL - FUNCIONES ==========
-        // ================================================================
+        // ========== FUNCIONES DEL PANEL PRINCIPAL ==========
+        async function cargarCitasPorFecha() {
+            const fechaEvento = document.getElementById('fechaEvento').value;
+            if (!fechaEvento) { alert("Selecciona una fecha"); return; }
+            
+            fechaSeleccionada = fechaEvento;
+            supervisorSeleccionado = document.getElementById('filtroSupervisor').value;
 
-        function separarClienteYAcompanante(nombreCompleto) {
-            if (!nombreCompleto) return { cliente: '', acompanante: '' };
-            let cliente = nombreCompleto;
-            let acompanante = '';
-            if (nombreCompleto.includes('/')) {
-                const partes = nombreCompleto.split('/').map(p => p.trim());
-                cliente = partes[0] || '';
-                acompanante = partes.slice(1).join(' / ') || '';
-            } else if (nombreCompleto.includes(' Y ') || nombreCompleto.includes(' y ')) {
-                const sep = nombreCompleto.includes(' Y ') ? ' Y ' : ' y ';
-                const partes = nombreCompleto.split(sep).map(p => p.trim());
-                cliente = partes[0] || '';
-                acompanante = partes.slice(1).join(sep) || '';
-            } else if (nombreCompleto.includes(',')) {
-                const partes = nombreCompleto.split(',').map(p => p.trim());
-                cliente = partes[0] || '';
-                acompanante = partes.slice(1).join(', ') || '';
-            }
-            if (cliente.startsWith('[REAGENDADO] ')) {
-                cliente = cliente.replace('[REAGENDADO] ', '');
-            }
-            return { cliente, acompanante };
-        }
+            try {
+                const snapshot = await database.ref('registrosPremanifiesto').once('value');
+                const data = snapshot.val();
+                if (!data) { citasOriginales = []; mostrarCitas([]); return; }
 
-        function estaBloqueada(cita) {
-            return cita.asistencia === 'Llegó';
-        }
+                let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+                const fechaNormalizada = new Date(fechaEvento).toISOString().split('T')[0];
 
-        async function desbloquearCita(id) {
-            const password = prompt("🔐 Ingresa la contraseña para desbloquear esta cita:");
-            if (password === PASSWORD_DESBLOQUEO) {
-                try {
-                    await database.ref(`registrosPremanifiesto/${id}`).update({
-                        asistencia: null,
-                        fechaRegistroAsistencia: null
-                    });
-                    mostrarToast('🔓 Cita desbloqueada correctamente');
-                    cargarCitasPorFecha();
-                } catch (error) {
-                    mostrarToast('Error al desbloquear', 'error');
+                let filtradas = todasCitas.filter(cita => {
+                    if (!cita.diaEvento) return false;
+                    let fechaCita = cita.diaEvento;
+                    try { fechaCita = new Date(cita.diaEvento).toISOString().split('T')[0]; } catch(e) {}
+                    return fechaCita === fechaNormalizada;
+                });
+
+                if (supervisorSeleccionado) {
+                    filtradas = filtradas.filter(c => c.supervisora === supervisorSeleccionado);
                 }
-            } else if (password !== null) {
-                alert('❌ Contraseña incorrecta');
+
+                filtradas.sort((a,b) => (a.hora || '').localeCompare(b.hora || '') || (a.citaPorDia || 0) - (b.citaPorDia || 0));
+                
+                citasOriginales = filtradas;
+                citasFiltradasActuales = [...citasOriginales];
+                mostrarCitas(citasFiltradasActuales);
+                mostrarToast(`📋 ${filtradas.length} cita(s) cargadas`);
+            } catch (error) {
+                mostrarToast('Error de conexión', 'error');
             }
         }
 
-        function crearCelda(texto, maxLength = null) {
-            const td = document.createElement('td');
-            let contenido = texto || '';
-            if (maxLength && contenido.length > maxLength) {
-                td.textContent = contenido.substring(0, maxLength) + '...';
-                td.title = contenido;
-            } else {
-                td.textContent = contenido;
+        function mostrarCitas(citas) {
+            const tbody = document.getElementById('citasBody');
+            if (!citas || !citas.length) {
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">📭 No hay citas para mostrar</td></tr>';
+                document.getElementById('resumenContainer').style.display = 'none';
+                return;
             }
-            return td;
-        }
 
-        function crearBoton(texto, clase, onClick) {
-            const btn = document.createElement('button');
-            btn.textContent = texto;
-            btn.className = clase;
-            btn.onclick = onClick;
-            return btn;
+            // Usar DocumentFragment para mejor rendimiento
+            const fragment = document.createDocumentFragment();
+            let llegaron = 0, noLlegaron = 0, citasAgendadas = 0, citasDeNuevo = 0, contestaron = 0, noContesto = 0;
+
+            citas.forEach(cita => {
+                const tr = document.createElement('tr');
+                const bloqueada = estaBloqueada(cita);
+                if (bloqueada) tr.className = 'fila-bloqueada';
+                
+                // N° Cita
+                const tdCita = document.createElement('td');
+                tdCita.textContent = cita.citaPorDia || cita.cita || '-';
+                tr.appendChild(tdCita);
+                
+                // Cliente
+                const tdCliente = document.createElement('td');
+                const { cliente, acompanante } = separarClienteYAcompanante(cita.nombre);
+                tdCliente.innerHTML = `
+                    <div class="cliente-acompanante">
+                        <span class="cliente-principal">${cliente || 'Sin nombre'}</span>
+                        ${acompanante ? `<span class="acompanante">👤 ${acompanante}</span>` : ''}
+                        ${bloqueada ? '<span class="badge-bloqueado">🔒 BLOQUEADO</span>' : ''}
+                    </div>
+                `;
+                tr.appendChild(tdCliente);
+                
+                // Teléfono
+                const tdTel = document.createElement('td');
+                tdTel.textContent = cita.telefono || '-';
+                tr.appendChild(tdTel);
+                
+                // Hora
+                const tdHora = document.createElement('td');
+                tdHora.textContent = cita.hora || '-';
+                tr.appendChild(tdHora);
+                
+                // Hotel
+                const tdHotel = document.createElement('td');
+                tdHotel.textContent = cita.hotel || '-';
+                tr.appendChild(tdHotel);
+                
+                // Supervisor
+                const tdSup = document.createElement('td');
+                tdSup.textContent = cita.supervisora || '-';
+                tr.appendChild(tdSup);
+                
+                // Operador
+                const tdOp = document.createElement('td');
+                tdOp.textContent = cita.operador || '-';
+                tr.appendChild(tdOp);
+
+                // Asistencia
+                const tdAsistencia = document.createElement('td');
+                const asistencia = cita.asistencia;
+                let asistenciaHtml = '';
+                if (asistencia === 'Llegó') {
+                    asistenciaHtml = '<span class="asistencia-estado estado-llego">✅ Llegó</span>';
+                    llegaron++;
+                } else if (asistencia === 'No llegó') {
+                    asistenciaHtml = '<span class="asistencia-estado estado-no-llego">❌ No llegó</span>';
+                    noLlegaron++;
+                } else {
+                    asistenciaHtml = '<span class="sin-registro">⚪ Sin registrar</span>';
+                }
+                tdAsistencia.innerHTML = asistenciaHtml;
+                tr.appendChild(tdAsistencia);
+
+                // Estado Llamada
+                const tdEstadoLlamada = document.createElement('td');
+                const estadoLlamada = cita.estadoLlamada || '';
+                let estadoHtml = '';
+                if (estadoLlamada === 'Cita') {
+                    estadoHtml = '<span class="asistencia-estado estado-cita">📅 Cita agendada</span>';
+                    citasAgendadas++;
+                } else if (estadoLlamada === 'Cita de nuevo') {
+                    estadoHtml = '<span class="asistencia-estado estado-cita-nuevo">🔄 Cita de nuevo</span>';
+                    citasDeNuevo++;
+                } else if (estadoLlamada === 'Contestó') {
+                    estadoHtml = '<span class="asistencia-estado estado-contesto">📞 Contestó</span>';
+                    contestaron++;
+                } else if (estadoLlamada === 'No contestó') {
+                    estadoHtml = '<span class="asistencia-estado estado-no-contesto">📵 No contestó</span>';
+                    noContesto++;
+                } else {
+                    estadoHtml = '<span class="sin-registro">⚪ Pendiente</span>';
+                }
+                tdEstadoLlamada.innerHTML = estadoHtml;
+                tr.appendChild(tdEstadoLlamada);
+
+                // Comentarios
+                const tdComentarios = document.createElement('td');
+                const textarea = document.createElement('textarea');
+                textarea.value = cita.comentarios || '';
+                textarea.placeholder = 'Escribe observaciones...';
+                textarea.className = 'comentario-textarea';
+                textarea.rows = 2;
+                if (bloqueada) {
+                    textarea.disabled = true;
+                    textarea.placeholder = '🔒 Bloqueado - No se pueden editar comentarios';
+                } else {
+                    textarea.onblur = () => guardarComentario(cita.id, textarea.value);
+                }
+                tdComentarios.appendChild(textarea);
+                tr.appendChild(tdComentarios);
+
+                // Acciones
+                const tdAcciones = document.createElement('td');
+                tdAcciones.className = 'asistencia-btns';
+                
+                if (bloqueada) {
+                    const btnDesbloquear = document.createElement('button');
+                    btnDesbloquear.textContent = '🔓 Desbloquear';
+                    btnDesbloquear.className = 'btn-desbloquear';
+                    btnDesbloquear.onclick = () => desbloquearCita(cita.id);
+                    tdAcciones.appendChild(btnDesbloquear);
+                } else {
+                    const btnLlego = document.createElement('button');
+                    btnLlego.textContent = '✅ Llegó';
+                    btnLlego.className = 'btn-llego';
+                    btnLlego.onclick = () => registrarAsistencia(cita.id, 'Llegó');
+                    tdAcciones.appendChild(btnLlego);
+                    
+                    const btnNoLlego = document.createElement('button');
+                    btnNoLlego.textContent = '❌ No llegó';
+                    btnNoLlego.className = 'btn-no-llego';
+                    btnNoLlego.onclick = () => registrarAsistencia(cita.id, 'No llegó');
+                    tdAcciones.appendChild(btnNoLlego);
+                    
+                    const btnCita = document.createElement('button');
+                    btnCita.textContent = '📅 Cita';
+                    btnCita.className = 'btn-cita';
+                    btnCita.onclick = () => registrarEstadoLlamada(cita.id, 'Cita');
+                    tdAcciones.appendChild(btnCita);
+                    
+                    const btnCitaNuevo = document.createElement('button');
+                    btnCitaNuevo.textContent = '🔄 Cita de nuevo';
+                    btnCitaNuevo.className = 'btn-cita-nuevo';
+                    btnCitaNuevo.onclick = () => registrarEstadoLlamada(cita.id, 'Cita de nuevo');
+                    tdAcciones.appendChild(btnCitaNuevo);
+                    
+                    const btnContesto = document.createElement('button');
+                    btnContesto.textContent = '📞 Contestó';
+                    btnContesto.className = 'btn-contesto';
+                    btnContesto.onclick = () => registrarEstadoLlamada(cita.id, 'Contestó');
+                    tdAcciones.appendChild(btnContesto);
+                    
+                    const btnNoContesto = document.createElement('button');
+                    btnNoContesto.textContent = '📵 No contestó';
+                    btnNoContesto.className = 'btn-no-contesto';
+                    btnNoContesto.onclick = () => registrarEstadoLlamada(cita.id, 'No contestó');
+                    tdAcciones.appendChild(btnNoContesto);
+                }
+                tr.appendChild(tdAcciones);
+                
+                fragment.appendChild(tr);
+            });
+
+            tbody.innerHTML = '';
+            tbody.appendChild(fragment);
+
+            // Actualizar resumen
+            const resumenContainer = document.getElementById('resumenContainer');
+            resumenContainer.style.display = 'block';
+            resumenContainer.innerHTML = `
+                📊 <strong>RESUMEN DE SEGUIMIENTO</strong><br>
+                <span>📋 Total citas: ${citas.length}</span>
+                <span>✅ Llegaron: ${llegaron}</span>
+                <span>❌ No llegaron: ${noLlegaron}</span>
+                <span>📅 Cita agendada: ${citasAgendadas}</span>
+                <span>🔄 Cita de nuevo: ${citasDeNuevo}</span>
+                <span>📞 Contestó: ${contestaron}</span>
+                <span>📵 No contestó: ${noContesto}</span>
+                <span>🔒 Bloqueadas: ${llegaron}</span>
+            `;
         }
 
         async function registrarAsistencia(id, estado) {
@@ -2633,166 +2884,21 @@
             }
         }
 
-        function mostrarCitas(citas) {
-            const tbody = document.getElementById('citasBody');
-            if (!citas.length) {
-                tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">📭 No hay citas para mostrar</td></tr>';
-                document.getElementById('resumenContainer').style.display = 'none';
-                return;
-            }
-
-            tbody.innerHTML = '';
-            let llegaron = 0, noLlegaron = 0, citasAgendadas = 0, citasDeNuevo = 0, contestaron = 0, noContesto = 0;
-
-            citas.forEach(cita => {
-                const tr = document.createElement('tr');
-                const bloqueada = estaBloqueada(cita);
-                if (bloqueada) tr.className = 'fila-bloqueada';
-                
-                tr.appendChild(crearCelda(cita.citaPorDia || cita.cita || '-'));
-                
-                const tdCliente = document.createElement('td');
-                const { cliente, acompanante } = separarClienteYAcompanante(cita.nombre);
-                tdCliente.innerHTML = `
-                    <div class="cliente-acompanante">
-                        <span class="cliente-principal">${cliente || 'Sin nombre'}</span>
-                        ${acompanante ? `<span class="acompanante">👤 ${acompanante}</span>` : ''}
-                        ${bloqueada ? '<span class="badge-bloqueado">🔒 BLOQUEADO</span>' : ''}
-                    </div>
-                `;
-                tr.appendChild(tdCliente);
-                
-                tr.appendChild(crearCelda(cita.telefono || '-'));
-                tr.appendChild(crearCelda(cita.hora || '-'));
-                tr.appendChild(crearCelda(cita.hotel || '-', 25));
-                tr.appendChild(crearCelda(cita.supervisora || '-', 20));
-                tr.appendChild(crearCelda(cita.operador || '-', 20));
-
-                const tdAsistencia = document.createElement('td');
-                const asistencia = cita.asistencia;
-                let asistenciaHtml = '';
-                if (asistencia === 'Llegó') {
-                    asistenciaHtml = '<span class="asistencia-estado estado-llego">✅ Llegó</span>';
-                    llegaron++;
-                } else if (asistencia === 'No llegó') {
-                    asistenciaHtml = '<span class="asistencia-estado estado-no-llego">❌ No llegó</span>';
-                    noLlegaron++;
-                } else {
-                    asistenciaHtml = '<span class="sin-registro">⚪ Sin registrar</span>';
+        async function desbloquearCita(id) {
+            const password = prompt("🔐 Ingresa la contraseña para desbloquear esta cita:");
+            if (password === PASSWORD_DESBLOQUEO) {
+                try {
+                    await database.ref(`registrosPremanifiesto/${id}`).update({
+                        asistencia: null,
+                        fechaRegistroAsistencia: null
+                    });
+                    mostrarToast('🔓 Cita desbloqueada correctamente');
+                    cargarCitasPorFecha();
+                } catch (error) {
+                    mostrarToast('Error al desbloquear', 'error');
                 }
-                tdAsistencia.innerHTML = asistenciaHtml;
-                tr.appendChild(tdAsistencia);
-
-                const tdEstadoLlamada = document.createElement('td');
-                const estadoLlamada = cita.estadoLlamada || '';
-                let estadoHtml = '';
-                if (estadoLlamada === 'Cita') {
-                    estadoHtml = '<span class="asistencia-estado estado-cita">📅 Cita agendada</span>';
-                    citasAgendadas++;
-                } else if (estadoLlamada === 'Cita de nuevo') {
-                    estadoHtml = '<span class="asistencia-estado estado-cita-nuevo">🔄 Cita de nuevo</span>';
-                    citasDeNuevo++;
-                } else if (estadoLlamada === 'Contestó') {
-                    estadoHtml = '<span class="asistencia-estado estado-contesto">📞 Contestó</span>';
-                    contestaron++;
-                } else if (estadoLlamada === 'No contestó') {
-                    estadoHtml = '<span class="asistencia-estado estado-no-contesto">📵 No contestó</span>';
-                    noContesto++;
-                } else {
-                    estadoHtml = '<span class="sin-registro">⚪ Pendiente</span>';
-                }
-                tdEstadoLlamada.innerHTML = estadoHtml;
-                tr.appendChild(tdEstadoLlamada);
-
-                const tdComentarios = document.createElement('td');
-                const textarea = document.createElement('textarea');
-                textarea.value = cita.comentarios || '';
-                textarea.placeholder = 'Escribe observaciones...';
-                textarea.className = 'comentario-textarea';
-                textarea.rows = 2;
-                if (bloqueada) {
-                    textarea.disabled = true;
-                    textarea.placeholder = '🔒 Bloqueado - No se pueden editar comentarios';
-                } else {
-                    textarea.onblur = () => guardarComentario(cita.id, textarea.value);
-                }
-                tdComentarios.appendChild(textarea);
-                tr.appendChild(tdComentarios);
-
-                const tdAcciones = document.createElement('td');
-                tdAcciones.className = 'asistencia-btns';
-                
-                if (bloqueada) {
-                    const btnDesbloquear = crearBoton('🔓 Desbloquear', 'btn-desbloquear', () => desbloquearCita(cita.id));
-                    tdAcciones.appendChild(btnDesbloquear);
-                } else {
-                    const btnLlego = crearBoton('✅ Llegó', 'btn-llego', () => registrarAsistencia(cita.id, 'Llegó'));
-                    const btnNoLlego = crearBoton('❌ No llegó', 'btn-no-llego', () => registrarAsistencia(cita.id, 'No llegó'));
-                    const btnCita = crearBoton('📅 Cita', 'btn-cita', () => registrarEstadoLlamada(cita.id, 'Cita'));
-                    const btnCitaNuevo = crearBoton('🔄 Cita de nuevo', 'btn-cita-nuevo', () => registrarEstadoLlamada(cita.id, 'Cita de nuevo'));
-                    const btnContesto = crearBoton('📞 Contestó', 'btn-contesto', () => registrarEstadoLlamada(cita.id, 'Contestó'));
-                    const btnNoContesto = crearBoton('📵 No contestó', 'btn-no-contesto', () => registrarEstadoLlamada(cita.id, 'No contestó'));
-                    
-                    tdAcciones.appendChild(btnLlego);
-                    tdAcciones.appendChild(btnNoLlego);
-                    tdAcciones.appendChild(btnCita);
-                    tdAcciones.appendChild(btnCitaNuevo);
-                    tdAcciones.appendChild(btnContesto);
-                    tdAcciones.appendChild(btnNoContesto);
-                }
-                tr.appendChild(tdAcciones);
-                
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('resumenContainer').style.display = 'block';
-            document.getElementById('resumenContainer').innerHTML = `
-                📊 <strong>RESUMEN DE SEGUIMIENTO</strong><br>
-                <span>📋 Total citas: ${citas.length}</span>
-                <span>✅ Llegaron: ${llegaron}</span>
-                <span>❌ No llegaron: ${noLlegaron}</span>
-                <span>📅 Cita agendada: ${citasAgendadas}</span>
-                <span>🔄 Cita de nuevo: ${citasDeNuevo}</span>
-                <span>📞 Contestó: ${contestaron}</span>
-                <span>📵 No contestó: ${noContesto}</span>
-                <span>🔒 Bloqueadas: ${llegaron}</span>
-            `;
-        }
-
-        async function cargarCitasPorFecha() {
-            const fechaEvento = document.getElementById('fechaEvento').value;
-            if (!fechaEvento) { alert("Selecciona una fecha"); return; }
-            
-            fechaSeleccionada = fechaEvento;
-            supervisorSeleccionado = document.getElementById('filtroSupervisor').value;
-
-            try {
-                const snapshot = await database.ref('registrosPremanifiesto').once('value');
-                const data = snapshot.val();
-                if (!data) { citasOriginales = []; mostrarCitas([]); return; }
-
-                let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
-                const fechaNormalizada = new Date(fechaEvento).toISOString().split('T')[0];
-
-                let filtradas = todasCitas.filter(cita => {
-                    if (!cita.diaEvento) return false;
-                    let fechaCita = cita.diaEvento;
-                    try { fechaCita = new Date(cita.diaEvento).toISOString().split('T')[0]; } catch(e) {}
-                    return fechaCita === fechaNormalizada;
-                });
-
-                if (supervisorSeleccionado) {
-                    filtradas = filtradas.filter(c => c.supervisora === supervisorSeleccionado);
-                }
-
-                filtradas.sort((a,b) => (a.hora || '').localeCompare(b.hora || '') || (a.citaPorDia || 0) - (b.citaPorDia || 0));
-                
-                citasOriginales = filtradas;
-                citasFiltradasActuales = [...citasOriginales];
-                mostrarCitas(citasFiltradasActuales);
-                mostrarToast(`📋 ${filtradas.length} cita(s) cargadas`);
-            } catch (error) {
-                mostrarToast('Error de conexión', 'error');
+            } else if (password !== null) {
+                alert('❌ Contraseña incorrecta');
             }
         }
 
@@ -2823,58 +2929,12 @@
             mostrarToast('Búsqueda limpiada');
         }
 
-        // ================================================================
         // ========== FUNCIONES DE PAPELETAS ==========
-        // ================================================================
-
         function limpiarFormularioPapeleta() {
             document.getElementById('formPapeleta').reset();
             document.getElementById('p_adultos').value = '0';
             document.getElementById('p_menores').value = '0';
             document.getElementById('p_clave').value = 'SF';
-        }
-
-        // ===== FUNCIONES DE FORMATO DE FECHA/HORA =====
-        function formatearFechaHora(fecha) {
-            if (!fecha) return '-';
-            return new Date(fecha).toLocaleString('es-MX', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-        }
-
-        function formatearFechaCorta(fecha) {
-            if (!fecha) return '-';
-            return new Date(fecha).toLocaleDateString('es-MX', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-        }
-
-        function formatearHora(fecha) {
-            if (!fecha) return '-';
-            return new Date(fecha).toLocaleTimeString('es-MX', {
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
-        }
-
-        // ===== FUNCIÓN CONVERTIR HORA A AM/PM =====
-        function convertirHoraAMPM(hora) {
-            if (!hora) return '-';
-            const partes = hora.split(':');
-            let h = parseInt(partes[0]);
-            const m = partes[1] || '00';
-            const ampm = h >= 12 ? 'p.m.' : 'a.m.';
-            h = h % 12;
-            h = h ? h : 12;
-            return `${h}:${m} ${ampm}`;
         }
 
         // ===== MOSTRAR PAPELETA COMPLETA =====
@@ -3019,7 +3079,6 @@
                 return;
             }
 
-            // Función para teléfono en sección
             const telItem = (label, numero) => {
                 if (!numero || numero === '-') {
                     return `<div class="telefono-item-conf"><span class="tel-etiqueta-conf">${label}</span><span class="tel-valor-conf">-</span></div>`;
@@ -3294,14 +3353,24 @@
             }
         }
 
+        // ===== ELIMINAR PAPELETA =====
+        async function eliminarPapeleta(id) {
+            if (!confirm('¿Estás seguro de eliminar esta papeleta?')) return;
+            
+            try {
+                await database.ref(`papeletas/${id}`).remove();
+                mostrarToast('🗑️ Papeleta eliminada');
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al eliminar:', error);
+                mostrarToast('❌ Error al eliminar', 'error');
+            }
+        }
+
         // ===== CARGAR PAPELETAS =====
         async function cargarPapeletas() {
             if (!papeletasDesbloqueado) return;
-            if (papeletasCache.length > 0) {
-                actualizarCachePapeletasSupervisor();
-                renderizarPapeletas(papeletasCache);
-                return;
-            }
+            
             try {
                 const snapshot = await database.ref('papeletas').once('value');
                 const data = snapshot.val();
@@ -3323,12 +3392,204 @@
 
                 papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
                 actualizarCachePapeletasSupervisor();
-                renderizarPapeletas(papeletasCache);
+                renderizarPapeletas();
 
             } catch (error) {
                 console.error('Error cargando papeletas:', error);
                 mostrarToast('❌ Error al cargar papeletas', 'error');
             }
+        }
+
+        // ===== RENDERIZAR PAPELETAS OPTIMIZADO =====
+        function renderizarPapeletas() {
+            if (!papeletasDesbloqueado) return;
+            
+            clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(() => {
+                const tbody = document.getElementById('tablaPapeletasBody');
+                const filtradas = obtenerPapeletasFiltradas();
+                actualizarBannerFecha(filtradas);
+
+                if (!filtradas || !filtradas.length) {
+                    const msg = fechaCitaFiltro
+                        ? 'No hay papeletas con cita en esta fecha'
+                        : 'No hay papeletas que coincidan con los filtros';
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">${msg}</td></tr>`;
+                    return;
+                }
+
+                // Usar fragment para mejor rendimiento
+                const fragment = document.createDocumentFragment();
+                
+                filtradas.forEach((p, index) => {
+                    const tr = document.createElement('tr');
+                    const tel = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
+                    const fecha = formatearFechaCorta(p.fechaHora);
+                    
+                    const tieneConfirmacion = p.asistenciaConfirmada === true;
+                    const esIncontactable = p.incontactable === true;
+                    const tieneReprogramacion = p.fechaReprogramacion ? true : false;
+                    
+                    let estadoBadge = '';
+                    if (tieneConfirmacion) estadoBadge = '<span style="color:#16a34a; font-weight:bold;">✅</span>';
+                    else if (esIncontactable) estadoBadge = '<span style="color:#dc2626; font-weight:bold;">📵</span>';
+                    else if (tieneReprogramacion) estadoBadge = '<span style="color:#f59e0b; font-weight:bold;">🔄</span>';
+                    
+                    tr.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong> ${estadoBadge}</td>
+                        <td>${escaparHtml(tel)}</td>
+                        <td>${escaparHtml(p.supervisor || '-')}</td>
+                        <td>${escaparHtml(fecha)}</td>
+                        <td>${escaparHtml(p.estadoCivil || '-')}</td>
+                        <td>👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores</td>
+                        <td style="min-width: 200px;">
+                            <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')" title="Ver detalles">VER</button>
+                            <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')" title="Confirmación final">✅ Conf</button>
+                            <button class="btn-confirmar-asistencia" onclick="confirmarAsistencia('${p.id}')" title="Confirmar asistencia">📋 Asist</button>
+                            <button class="btn-incontactable" onclick="marcarIncontactable('${p.id}')" title="Marcar como incontactable">📵 No</button>
+                            <button class="btn-reprogramar" onclick="mostrarReprogramar('${p.id}')" title="Reprogramar cita">🔄 Repro</button>
+                            <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')" title="Eliminar">🗑️</button>
+                        </td>
+                    `;
+                    fragment.appendChild(tr);
+                });
+
+                tbody.innerHTML = '';
+                tbody.appendChild(fragment);
+            }, 150);
+        }
+
+        function obtenerPapeletasFiltradas() {
+            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
+            let filtradas = papeletasSupCache.length ? papeletasSupCache : papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
+
+            if (fechaCitaFiltro) {
+                filtradas = filtradas.filter(p => obtenerFechaCitaPapeleta(p) === fechaCitaFiltro);
+            }
+
+            if (busqueda) {
+                filtradas = filtradas.filter(p => {
+                    const nombre = (p.nombre || '').toLowerCase();
+                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
+                    return nombre.includes(busqueda) || telefono.includes(busqueda);
+                });
+            }
+            return filtradas;
+        }
+
+        function actualizarCachePapeletasSupervisor() {
+            if (!supervisorPapeletasAuth) {
+                papeletasSupCache = [];
+                conteoFechasCache = {};
+                return;
+            }
+            papeletasSupCache = papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
+            conteoFechasCache = {};
+            papeletasSupCache.forEach(p => {
+                const fecha = obtenerFechaCitaPapeleta(p);
+                if (fecha) conteoFechasCache[fecha] = (conteoFechasCache[fecha] || 0) + 1;
+            });
+            document.getElementById('totalPapeletas').textContent = `(${papeletasSupCache.length})`;
+        }
+
+        function actualizarBotonCalendario() {
+            const btn = document.getElementById('btnToggleCalendario');
+            if (!btn) return;
+            if (calendarioVisible) {
+                btn.textContent = '✕ Cerrar calendario';
+                btn.classList.add('activo');
+            } else {
+                btn.textContent = '📅 Ver calendario';
+                btn.classList.remove('activo');
+            }
+        }
+
+        function actualizarBannerFecha(filtradas) {
+            const banner = document.getElementById('fechaCitaBanner');
+            if (!fechaCitaFiltro) {
+                banner.style.display = 'none';
+                return;
+            }
+            document.getElementById('fechaCitaBannerTexto').textContent = formatearFechaCorta(fechaCitaFiltro);
+            document.getElementById('fechaCitaBannerCount').textContent = filtradas.length;
+            banner.style.display = 'flex';
+        }
+
+        function limpiarFiltroFecha() {
+            fechaCitaFiltro = '';
+            document.getElementById('filtroFechaCitaRapido').value = '';
+            document.getElementById('fechaCitaBanner').style.display = 'none';
+            if (calendarioVisible) renderizarCalendarioPapeletas();
+            renderizarPapeletas();
+        }
+
+        function filtrarPapeletas() {
+            renderizarPapeletas();
+        }
+
+        // ===== CALENDARIO DE CITAS EN PAPELETAS =====
+        function toggleCalendarioPapeletas() {
+            calendarioVisible = !calendarioVisible;
+            const container = document.getElementById('calendarioPapeletasContainer');
+            container.style.display = calendarioVisible ? 'block' : 'none';
+            actualizarBotonCalendario();
+            if (calendarioVisible) {
+                actualizarCachePapeletasSupervisor();
+                renderizarCalendarioPapeletas();
+            }
+        }
+
+        function renderizarCalendarioPapeletas() {
+            if (!papeletasDesbloqueado || !calendarioVisible) return;
+
+            const grid = document.getElementById('calendarioPapeletasGrid');
+            const mesLabel = document.getElementById('calendarioPapeletasMes');
+            if (!grid || !mesLabel) return;
+
+            if (!conteoFechasCache) actualizarCachePapeletasSupervisor();
+
+            mesLabel.textContent = `${MESES_ES[calendarioMesActual]} ${calendarioAnioActual}`;
+
+            const hoy = new Date();
+            const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+
+            const ultimoDia = new Date(calendarioAnioActual, calendarioMesActual + 1, 0).getDate();
+            const inicioSemana = new Date(calendarioAnioActual, calendarioMesActual, 1).getDay();
+
+            let html = DIAS_ES.map(d => `<div class="calendario-dia-nombre">${d}</div>`).join('');
+            html += '<div class="calendario-dia vacio"></div>'.repeat(inicioSemana);
+
+            for (let dia = 1; dia <= ultimoDia; dia++) {
+                const fechaStr = `${calendarioAnioActual}-${String(calendarioMesActual+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+                const cantidad = conteoFechasCache[fechaStr] || 0;
+                let clases = 'calendario-dia';
+                if (cantidad > 0) clases += ' con-citas';
+                if (fechaStr === hoyStr) clases += ' hoy';
+                if (fechaStr === fechaCitaFiltro) clases += ' seleccionado';
+
+                const badge = cantidad > 0 ? `<span class="badge-citas">${cantidad}</span>` : '';
+                const click = cantidad > 0 ? ` onclick="seleccionarFechaCita('${fechaStr}')"` : '';
+                html += `<div class="${clases}"${click}>${dia}${badge}</div>`;
+            }
+
+            grid.innerHTML = html;
+
+            const citasMes = Object.entries(conteoFechasCache).reduce((sum, [fecha, n]) => {
+                const [y, m] = fecha.split('-').map(Number);
+                return (y === calendarioAnioActual && m === calendarioMesActual + 1) ? sum + n : sum;
+            }, 0);
+            const totalEl = document.getElementById('totalCitasMes');
+            if (totalEl) totalEl.textContent = citasMes > 0 ? `${citasMes} cita(s) este mes` : '';
+        }
+
+        function seleccionarFechaCita(fecha) {
+            fechaCitaFiltro = fecha;
+            document.getElementById('filtroFechaCitaRapido').value = fecha;
+            calendarioVisible = false;
+            document.getElementById('calendarioPapeletasContainer').style.display = 'none';
+            actualizarBotonCalendario();
+            renderizarPapeletas();
         }
 
         // ===== GUARDAR PAPELETA =====
@@ -3417,269 +3678,42 @@
             }
         });
 
-        // ===== LISTENER EN TIEMPO REAL =====
+        // ===== LISTENER EN TIEMPO REAL OPTIMIZADO =====
         let papeletasListener = null;
-
-        function procesarActualizacionPapeletas(data) {
-            if (!data) {
-                papeletasCache = [];
-                papeletasSupCache = [];
-                conteoFechasCache = {};
-                if (papeletasDesbloqueado && document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
-                    document.getElementById('tablaPapeletasBody').innerHTML = 
-                        '<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">No hay papeletas guardadas</td></tr>';
-                    document.getElementById('totalPapeletas').textContent = '(0)';
-                    if (calendarioVisible) renderizarCalendarioPapeletas();
-                }
-                return;
-            }
-
-            papeletasCache = Object.entries(data).map(([id, values]) => ({ id, ...values }));
-            papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
-
-            if (papeletasDesbloqueado) {
-                actualizarCachePapeletasSupervisor();
-                if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
-                    renderizarPapeletas(papeletasCache);
-                    if (calendarioVisible) renderizarCalendarioPapeletas();
-                }
-            }
-        }
 
         function iniciarListenerPapeletas() {
             if (papeletasListener) return;
             
             papeletasListener = database.ref('papeletas').on('value', (snapshot) => {
-                clearTimeout(papeletasListenerTimer);
-                papeletasListenerTimer = setTimeout(() => {
-                    procesarActualizacionPapeletas(snapshot.val());
-                }, 350);
+                clearTimeout(listenerTimeout);
+                listenerTimeout = setTimeout(() => {
+                    const data = snapshot.val();
+                    if (!data) {
+                        papeletasCache = [];
+                        papeletasSupCache = [];
+                        conteoFechasCache = {};
+                        if (papeletasDesbloqueado && document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                            document.getElementById('tablaPapeletasBody').innerHTML = 
+                                '<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">No hay papeletas guardadas</td></tr>';
+                            document.getElementById('totalPapeletas').textContent = '(0)';
+                            if (calendarioVisible) renderizarCalendarioPapeletas();
+                        }
+                        return;
+                    }
+
+                    papeletasCache = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+                    papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
+
+                    if (papeletasDesbloqueado) {
+                        actualizarCachePapeletasSupervisor();
+                        if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                            renderizarPapeletas();
+                            if (calendarioVisible) renderizarCalendarioPapeletas();
+                        }
+                    }
+                    listenerTimeout = null;
+                }, 500);
             });
-        }
-
-        // ===== CALENDARIO DE CITAS EN PAPELETAS =====
-        const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        const DIAS_ES = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
-
-        function escaparHtml(texto) {
-            if (!texto) return '';
-            return String(texto)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
-        }
-
-        function obtenerFechaCitaPapeleta(p) {
-            if (!p.fechaHora) return null;
-            return p.fechaHora.split('T')[0];
-        }
-
-        function actualizarCachePapeletasSupervisor() {
-            if (!supervisorPapeletasAuth) {
-                papeletasSupCache = [];
-                conteoFechasCache = {};
-                return;
-            }
-            papeletasSupCache = papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
-            conteoFechasCache = {};
-            papeletasSupCache.forEach(p => {
-                const fecha = obtenerFechaCitaPapeleta(p);
-                if (fecha) conteoFechasCache[fecha] = (conteoFechasCache[fecha] || 0) + 1;
-            });
-            document.getElementById('totalPapeletas').textContent = `(${papeletasSupCache.length})`;
-        }
-
-        function actualizarBotonCalendario() {
-            const btn = document.getElementById('btnToggleCalendario');
-            if (!btn) return;
-            if (calendarioVisible) {
-                btn.textContent = '✕ Cerrar calendario';
-                btn.classList.add('activo');
-            } else {
-                btn.textContent = '📅 Ver calendario';
-                btn.classList.remove('activo');
-            }
-        }
-
-        function toggleCalendarioPapeletas() {
-            calendarioVisible = !calendarioVisible;
-            const container = document.getElementById('calendarioPapeletasContainer');
-            container.style.display = calendarioVisible ? 'block' : 'none';
-            actualizarBotonCalendario();
-            if (calendarioVisible) {
-                actualizarCachePapeletasSupervisor();
-                renderizarCalendarioPapeletas();
-            }
-        }
-
-        function cerrarCalendarioPapeletas() {
-            calendarioVisible = false;
-            document.getElementById('calendarioPapeletasContainer').style.display = 'none';
-            actualizarBotonCalendario();
-        }
-
-        function formatearFechaDisplay(fecha) {
-            const [y, m, d] = fecha.split('-');
-            return `${d}/${m}/${y}`;
-        }
-
-        function actualizarBannerFecha(filtradas) {
-            const banner = document.getElementById('fechaCitaBanner');
-            if (!fechaCitaFiltro) {
-                banner.style.display = 'none';
-                return;
-            }
-            document.getElementById('fechaCitaBannerTexto').textContent = formatearFechaDisplay(fechaCitaFiltro);
-            document.getElementById('fechaCitaBannerCount').textContent = filtradas.length;
-            banner.style.display = 'flex';
-        }
-
-        function limpiarFiltroFecha() {
-            fechaCitaFiltro = '';
-            document.getElementById('filtroFechaCitaRapido').value = '';
-            document.getElementById('fechaCitaBanner').style.display = 'none';
-            if (calendarioVisible) renderizarCalendarioPapeletas();
-            renderizarPapeletas(papeletasCache);
-        }
-
-        function renderizarCalendarioPapeletas() {
-            if (!papeletasDesbloqueado || !calendarioVisible) return;
-
-            const grid = document.getElementById('calendarioPapeletasGrid');
-            const mesLabel = document.getElementById('calendarioPapeletasMes');
-            if (!grid || !mesLabel) return;
-
-            if (!conteoFechasCache) actualizarCachePapeletasSupervisor();
-
-            mesLabel.textContent = `${MESES_ES[calendarioMesActual]} ${calendarioAnioActual}`;
-
-            const hoy = new Date();
-            const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
-
-            const ultimoDia = new Date(calendarioAnioActual, calendarioMesActual + 1, 0).getDate();
-            const inicioSemana = new Date(calendarioAnioActual, calendarioMesActual, 1).getDay();
-
-            let html = DIAS_ES.map(d => `<div class="calendario-dia-nombre">${d}</div>`).join('');
-            html += '<div class="calendario-dia vacio"></div>'.repeat(inicioSemana);
-
-            for (let dia = 1; dia <= ultimoDia; dia++) {
-                const fechaStr = `${calendarioAnioActual}-${String(calendarioMesActual+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-                const cantidad = conteoFechasCache[fechaStr] || 0;
-                let clases = 'calendario-dia';
-                if (cantidad > 0) clases += ' con-citas';
-                if (fechaStr === hoyStr) clases += ' hoy';
-                if (fechaStr === fechaCitaFiltro) clases += ' seleccionado';
-
-                const badge = cantidad > 0 ? `<span class="badge-citas">${cantidad}</span>` : '';
-                const click = cantidad > 0 ? ` onclick="seleccionarFechaCita('${fechaStr}')"` : '';
-                html += `<div class="${clases}"${click}>${dia}${badge}</div>`;
-            }
-
-            grid.innerHTML = html;
-
-            const citasMes = Object.entries(conteoFechasCache).reduce((sum, [fecha, n]) => {
-                const [y, m] = fecha.split('-').map(Number);
-                return (y === calendarioAnioActual && m === calendarioMesActual + 1) ? sum + n : sum;
-            }, 0);
-            const totalEl = document.getElementById('totalCitasMes');
-            if (totalEl) totalEl.textContent = citasMes > 0 ? `${citasMes} cita(s) este mes` : '';
-        }
-
-        function seleccionarFechaCita(fecha) {
-            fechaCitaFiltro = fecha;
-            document.getElementById('filtroFechaCitaRapido').value = fecha;
-            cerrarCalendarioPapeletas();
-            renderizarPapeletas(papeletasCache);
-        }
-
-        // ===== RENDERIZAR PAPELETAS =====
-        function obtenerPapeletasFiltradas() {
-            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
-            let filtradas = papeletasSupCache.length ? papeletasSupCache : papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
-
-            if (fechaCitaFiltro) {
-                filtradas = filtradas.filter(p => obtenerFechaCitaPapeleta(p) === fechaCitaFiltro);
-            }
-
-            if (busqueda) {
-                filtradas = filtradas.filter(p => {
-                    const nombre = (p.nombre || '').toLowerCase();
-                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
-                    return nombre.includes(busqueda) || telefono.includes(busqueda);
-                });
-            }
-            return filtradas;
-        }
-
-        function renderizarPapeletas(papeletas) {
-            if (!papeletasDesbloqueado) return;
-
-            clearTimeout(renderPapeletasTimer);
-            renderPapeletasTimer = setTimeout(() => {
-                const tbody = document.getElementById('tablaPapeletasBody');
-                const filtradas = obtenerPapeletasFiltradas();
-                actualizarBannerFecha(filtradas);
-
-                if (!filtradas.length) {
-                    const msg = fechaCitaFiltro
-                        ? 'No hay papeletas con cita en esta fecha'
-                        : 'No hay papeletas que coincidan con los filtros';
-                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">${msg}</td></tr>`;
-                    return;
-                }
-
-                tbody.innerHTML = filtradas.map((p, index) => {
-                    const tel = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
-                    const fecha = formatearFechaCorta(p.fechaHora);
-                    
-                    const tieneConfirmacion = p.asistenciaConfirmada === true;
-                    const esIncontactable = p.incontactable === true;
-                    const tieneReprogramacion = p.fechaReprogramacion ? true : false;
-                    
-                    let estadoBadge = '';
-                    if (tieneConfirmacion) estadoBadge = '<span style="color:#16a34a; font-weight:bold;">✅</span>';
-                    else if (esIncontactable) estadoBadge = '<span style="color:#dc2626; font-weight:bold;">📵</span>';
-                    else if (tieneReprogramacion) estadoBadge = '<span style="color:#f59e0b; font-weight:bold;">🔄</span>';
-                    
-                    return `<tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong> ${estadoBadge}</td>
-                        <td>${escaparHtml(tel)}</td>
-                        <td>${escaparHtml(p.supervisor || '-')}</td>
-                        <td>${escaparHtml(fecha)}</td>
-                        <td>${escaparHtml(p.estadoCivil || '-')}</td>
-                        <td>👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores</td>
-                        <td style="min-width: 200px;">
-                            <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')" title="Ver detalles">VER</button>
-                            <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')" title="Confirmación final">✅ Conf</button>
-                            <button class="btn-confirmar-asistencia" onclick="confirmarAsistencia('${p.id}')" title="Confirmar asistencia">📋 Asist</button>
-                            <button class="btn-incontactable" onclick="marcarIncontactable('${p.id}')" title="Marcar como incontactable">📵 No</button>
-                            <button class="btn-reprogramar" onclick="mostrarReprogramar('${p.id}')" title="Reprogramar cita">🔄 Repro</button>
-                            <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')" title="Eliminar">🗑️</button>
-                        </td>
-                    </tr>`;
-                }).join('');
-            }, 50);
-        }
-
-        // ===== ELIMINAR PAPELETA =====
-        async function eliminarPapeleta(id) {
-            if (!confirm('¿Estás seguro de eliminar esta papeleta?')) return;
-            
-            try {
-                await database.ref(`papeletas/${id}`).remove();
-                mostrarToast('🗑️ Papeleta eliminada');
-                cargarPapeletas();
-            } catch (error) {
-                console.error('Error al eliminar:', error);
-                mostrarToast('❌ Error al eliminar', 'error');
-            }
-        }
-
-        // ===== FILTRAR PAPELETAS =====
-        function filtrarPapeletas() {
-            renderizarPapeletas(papeletasCache);
         }
 
         // ===== ESTADÍSTICAS PAPELETAS =====
@@ -3764,9 +3798,7 @@
             }
         }
 
-        // ================================================================
-        // ===== ESTADÍSTICAS DE SUPERVISORES =====
-        // ================================================================
+        // ========== ESTADÍSTICAS DE SUPERVISORES ==========
         async function mostrarEstadisticasSupervisores() {
             try {
                 const snapshot = await database.ref('registrosPremanifiesto').once('value');
@@ -3974,9 +4006,9 @@
                 }
                 
                 html += `
-                            </tbody>
-                        </table>
-                    </div>
+                        </tbody>
+                    </table>
+                </div>
                 `;
                 
                 document.getElementById('contenidoInactivos').innerHTML = html;
@@ -4180,7 +4212,7 @@
 
         // ===== EXCEL PROFESIONAL =====
         function descargarExcelProfesional() {
-            if (!citasFiltradasActuales.length) {
+            if (!citasFiltradasActuales || !citasFiltradasActuales.length) {
                 alert("No hay citas para exportar");
                 return;
             }
@@ -4380,8 +4412,8 @@
             const pestanas = Object.keys(datosVentasPorPestana);
             
             let pestanasHtml = `
-                <div class="pestanas-ventas">
-                    <button class="pestana-ventas active" data-pestana="Todas">📊 Todas (${totalRegistros})</button>
+                <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">
+                    <button class="pestana-ventas active" data-pestana="Todas" style="background:#0a2540; color:white; border:none; padding:8px 16px; border-radius:20px; cursor:pointer;">📊 Todas (${totalRegistros})</button>
             `;
             
             const mesesOrden = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
@@ -4402,7 +4434,7 @@
                 const count = datosVentasPorPestana[p].length;
                 const icono = p.toLowerCase().includes('semana') || p.toLowerCase().includes('curso') ? '📅' : '📊';
                 pestanasHtml += `
-                    <button class="pestana-ventas" data-pestana="${p}">${icono} ${p} (${count})</button>
+                    <button class="pestana-ventas" data-pestana="${p}" style="background:#64748b; color:white; border:none; padding:8px 16px; border-radius:20px; cursor:pointer;">${icono} ${p} (${count})</button>
                 `;
             });
             
@@ -4449,42 +4481,42 @@
                 const totalRegistrosBase = datos.length;
                 
                 let html = `
-                    <div class="ventas-resumen-grid">
-                        <div class="ventas-resumen-card q-card">
-                            <div class="icono">✅</div>
-                            <div class="valor">${totalQ}</div>
-                            <div class="etiqueta">Calificados (Q) - ${totalRegistrosBase > 0 ? ((totalQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin-bottom:20px;">
+                        <div style="background:rgba(16,185,129,0.15); backdrop-filter:blur(5px); padding:15px; border-radius:12px; text-align:center; border-left:4px solid #10b981;">
+                            <div style="font-size:1.2rem;">✅</div>
+                            <div style="font-size:1.8rem; font-weight:700; color:#10b981;">${totalQ}</div>
+                            <div style="font-size:0.8rem; color:#64748b;">Calificados (Q)</div>
+                            <div style="font-size:0.7rem; color:#94a3b8;">${totalRegistrosBase > 0 ? ((totalQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
                         </div>
-                        <div class="ventas-resumen-card nq-card">
-                            <div class="icono">❌</div>
-                            <div class="valor">${totalNQ}</div>
-                            <div class="etiqueta">No Calificados (NQ) - ${totalRegistrosBase > 0 ? ((totalNQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                        <div style="background:rgba(239,68,68,0.15); backdrop-filter:blur(5px); padding:15px; border-radius:12px; text-align:center; border-left:4px solid #ef4444;">
+                            <div style="font-size:1.2rem;">❌</div>
+                            <div style="font-size:1.8rem; font-weight:700; color:#ef4444;">${totalNQ}</div>
+                            <div style="font-size:0.8rem; color:#64748b;">No Calificados (NQ)</div>
+                            <div style="font-size:0.7rem; color:#94a3b8;">${totalRegistrosBase > 0 ? ((totalNQ/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
                         </div>
-                        <div class="ventas-resumen-card ct-card">
-                            <div class="icono">🔄</div>
-                            <div class="valor">${totalCT}</div>
-                            <div class="etiqueta">Citados (CT) - ${totalRegistrosBase > 0 ? ((totalCT/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
+                        <div style="background:rgba(59,130,246,0.15); backdrop-filter:blur(5px); padding:15px; border-radius:12px; text-align:center; border-left:4px solid #3b82f6;">
+                            <div style="font-size:1.2rem;">🔄</div>
+                            <div style="font-size:1.8rem; font-weight:700; color:#3b82f6;">${totalCT}</div>
+                            <div style="font-size:0.8rem; color:#64748b;">Citados (CT)</div>
+                            <div style="font-size:0.7rem; color:#94a3b8;">${totalRegistrosBase > 0 ? ((totalCT/totalRegistrosBase)*100).toFixed(1) : 0}%</div>
                         </div>
-                        <div class="ventas-resumen-card total-card">
-                            <div class="icono">💰</div>
-                            <div class="valor">$${totalVentasGlobal.toLocaleString()}</div>
-                            <div class="etiqueta">Volumen Total de Ventas</div>
+                        <div style="background:rgba(245,158,11,0.15); backdrop-filter:blur(5px); padding:15px; border-radius:12px; text-align:center; border-left:4px solid #f59e0b;">
+                            <div style="font-size:1.2rem;">💰</div>
+                            <div style="font-size:1.8rem; font-weight:700; color:#f59e0b;">$${totalVentasGlobal.toLocaleString()}</div>
+                            <div style="font-size:0.8rem; color:#64748b;">Volumen Total de Ventas</div>
                         </div>
                     </div>
-                `;
-                
-                html += `
-                    <h4 class="titulo-seccion-ventas">📋 TABLA DE CONVERSIÓN POR BASE</h4>
+                    <h4 style="color:#0a2540; margin:15px 0 10px;">📋 TABLA DE CONVERSIÓN POR BASE</h4>
                     <div style="overflow-x: auto;">
-                        <table class="tabla-conversion">
+                        <table style="width:100%; border-collapse:collapse; font-size:0.85rem;">
                             <thead>
-                                <tr>
-                                    <th style="text-align:left; padding-left:20px;">Base de Datos</th>
-                                    <th>Volumen Total ($)</th>
-                                    <th># Ventas (Q)</th>
-                                    <th># No Ventas (NQ)</th>
-                                    <th># Total Registros</th>
-                                    <th>Tasa de Conversión (%)</th>
+                                <tr style="background:#0a2540; color:white;">
+                                    <th style="text-align:left; padding:10px 15px;">Base de Datos</th>
+                                    <th style="padding:10px; text-align:center;">Volumen Total ($)</th>
+                                    <th style="padding:10px; text-align:center;"># Ventas (Q)</th>
+                                    <th style="padding:10px; text-align:center;"># No Ventas (NQ)</th>
+                                    <th style="padding:10px; text-align:center;"># Total Registros</th>
+                                    <th style="padding:10px; text-align:center;">Tasa de Conversión (%)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -4499,79 +4531,47 @@
                     const volumen = stats.totalVentas;
                     const tasaConversion = totalBase > 0 ? (ventasQ / totalBase) * 100 : 0;
                     
-                    let conversionClass = 'conversion-baja';
-                    if (tasaConversion >= 80) conversionClass = 'conversion-alta';
-                    else if (tasaConversion >= 50) conversionClass = 'conversion-media';
+                    let conversionClass = '';
+                    if (tasaConversion >= 80) conversionClass = 'color:#059669; font-weight:bold;';
+                    else if (tasaConversion >= 50) conversionClass = 'color:#d97706; font-weight:bold;';
+                    else conversionClass = 'color:#dc2626; font-weight:bold;';
                     
                     html += `
-                        <tr>
-                            <td class="base-nombre">${base}</td>
-                            <td class="volumen">$${volumen.toLocaleString()}</td>
-                            <td><span class="q-badge">${ventasQ}</span></td>
-                            <td><span class="nq-badge">${noVentasNQ}</span></td>
-                            <td>${totalBase}</td>
-                            <td class="${conversionClass}">${tasaConversion.toFixed(2)}%</td>
+                        <tr style="border-bottom:1px solid rgba(226,232,240,0.5);">
+                            <td style="padding:8px 15px; font-weight:600; color:#0a2540;">${base}</td>
+                            <td style="padding:8px; text-align:center; color:#0d9488; font-weight:600;">$${volumen.toLocaleString()}</td>
+                            <td style="padding:8px; text-align:center; color:#059669; font-weight:600;">${ventasQ}</td>
+                            <td style="padding:8px; text-align:center; color:#dc2626;">${noVentasNQ}</td>
+                            <td style="padding:8px; text-align:center;">${totalBase}</td>
+                            <td style="padding:8px; text-align:center; ${conversionClass}">${tasaConversion.toFixed(2)}%</td>
                         </tr>
                     `;
                 });
                 
                 const totalConversion = totalRegistrosBase > 0 ? (totalQ / totalRegistrosBase) * 100 : 0;
-                let totalConversionClass = 'conversion-baja';
-                if (totalConversion >= 80) totalConversionClass = 'conversion-alta';
-                else if (totalConversion >= 50) totalConversionClass = 'conversion-media';
+                let totalConversionClass = '';
+                if (totalConversion >= 80) totalConversionClass = 'color:#059669;';
+                else if (totalConversion >= 50) totalConversionClass = 'color:#d97706;';
+                else totalConversionClass = 'color:#dc2626;';
                 
                 html += `
-                            <tr class="total-row">
-                                <td><strong>TOTALES</strong></td>
-                                <td><strong>$${totalVentasGlobal.toLocaleString()}</strong></td>
-                                <td><strong>${totalQ}</strong></td>
-                                <td><strong>${totalNQ}</strong></td>
-                                <td><strong>${totalRegistrosBase}</strong></td>
-                                <td class="${totalConversionClass}"><strong>${totalConversion.toFixed(2)}%</strong></td>
+                            <tr style="background:rgba(232,240,254,0.4); font-weight:bold;">
+                                <td style="padding:10px 15px;">TOTALES</td>
+                                <td style="padding:10px; text-align:center; color:#0d9488;">$${totalVentasGlobal.toLocaleString()}</td>
+                                <td style="padding:10px; text-align:center; color:#059669;">${totalQ}</td>
+                                <td style="padding:10px; text-align:center; color:#dc2626;">${totalNQ}</td>
+                                <td style="padding:10px; text-align:center;">${totalRegistrosBase}</td>
+                                <td style="padding:10px; text-align:center; ${totalConversionClass}">${totalConversion.toFixed(2)}%</td>
                             </tr>
                         </tbody>
                     </table>
                     </div>
-                `;
-                
-                html += `
-                    <h4 class="titulo-seccion-ventas">📊 VOLUMEN TOTAL POR BASE DE DATOS</h4>
-                    <div class="grafica-ventas-barras">
-                `;
-                
-                sortedBases.forEach(([base, stats]) => {
-                    const pct = maxVentas > 0 ? (stats.totalVentas / maxVentas) * 100 : 0;
-                    const mostrar = stats.totalVentas > 0;
-                    html += `
-                        <div class="barra-venta">
-                            <span class="barra-venta-label">${base}</span>
-                            <div class="barra-venta-container">
-                                <div class="barra-venta-fill venta" style="width: ${mostrar ? Math.max(pct, 5) : 5}%; background: ${mostrar ? 'linear-gradient(90deg, #0d9488, #14b8a6)' : 'linear-gradient(90deg, #94a3b8, #cbd5e1)'};">
-                                    ${mostrar ? `$${stats.totalVentas.toLocaleString()}` : '$0'}
-                                </div>
-                            </div>
-                            <span class="barra-venta-valor">${mostrar ? `$${stats.totalVentas.toLocaleString()}` : '$0'}</span>
-                        </div>
-                    `;
-                });
-                
-                html += `</div>`;
-                
-                html += `
-                    <div class="leyenda-ventas">
-                        <div class="leyenda-ventas-item">
-                            <span class="color-box q-color"></span> <strong>Q</strong> = Calificados (Ventas concretadas)
-                        </div>
-                        <div class="leyenda-ventas-item">
-                            <span class="color-box nq-color"></span> <strong>NQ</strong> = No Calificados (No ventas)
-                        </div>
-                        <div class="leyenda-ventas-item">
-                            <span class="color-box ct-color"></span> <strong>CT</strong> = Citados (Pendientes de calificar)
-                        </div>
-                        <div class="leyenda-ventas-item">
-                            <span style="width:16px; height:16px; border-radius:4px; background: linear-gradient(90deg, #0d9488, #14b8a6);"></span>
-                            <strong>Volumen de Venta</strong>
-                        </div>
+                    <div style="margin-top:20px; padding:15px; background:rgba(248,250,252,0.4); border-radius:12px; font-size:0.8rem; color:#64748b;">
+                        <p style="margin:0;"><strong>📌 Leyenda:</strong></p>
+                        <p style="margin:2px 0;">• <strong style="color:#059669;">Q</strong> = Calificados (Ventas concretadas)</p>
+                        <p style="margin:2px 0;">• <strong style="color:#dc2626;">NQ</strong> = No Calificados (No ventas)</p>
+                        <p style="margin:2px 0;">• <strong style="color:#3b82f6;">CT</strong> = Citados (Pendientes de calificar)</p>
+                        <p style="margin:2px 0;">• <strong style="color:#d97706;">Tasa de Conversión</strong> = (Q / Total Registros) * 100</p>
                     </div>
                 `;
                 
@@ -4579,14 +4579,16 @@
             }
             
             let contenidoCompleto = pestanasHtml;
-            contenidoCompleto += `<div id="contenidoPestana" class="contenido-pestana">${renderizarEstadisticas('Todas')}</div>`;
+            contenidoCompleto += `<div id="contenidoPestana">${renderizarEstadisticas('Todas')}</div>`;
             
             container.innerHTML = contenidoCompleto;
             
             document.querySelectorAll('.pestana-ventas').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.pestana-ventas').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
+                    document.querySelectorAll('.pestana-ventas').forEach(b => {
+                        b.style.background = '#64748b';
+                    });
+                    this.style.background = '#0a2540';
                     
                     const pestana = this.dataset.pestana;
                     const contenido = document.getElementById('contenidoPestana');
@@ -4597,18 +4599,74 @@
             document.getElementById('modalVentas').style.display = 'block';
         }
 
-        // ===== MODALES =====
+        // ========== MODALES ==========
         const modalEstadisticas = document.getElementById('modalEstadisticas');
         const modalInactivos = document.getElementById('modalInactivos');
         const modalReporteMensual = document.getElementById('modalReporteMensual');
         const modalVentas = document.getElementById('modalVentas');
-        
+
+        // Cerrar modales al hacer click fuera
+        window.addEventListener('click', (e) => {
+            if (e.target === modalEstadisticas) modalEstadisticas.style.display = 'none';
+            if (e.target === modalInactivos) modalInactivos.style.display = 'none';
+            if (e.target === modalReporteMensual) modalReporteMensual.style.display = 'none';
+            if (e.target === modalVentas) modalVentas.style.display = 'none';
+            if (e.target === document.getElementById('modalPapeletaCompleta')) {
+                document.getElementById('modalPapeletaCompleta').style.display = 'none';
+            }
+            if (e.target === document.getElementById('modalConfirmacionFinal')) {
+                document.getElementById('modalConfirmacionFinal').style.display = 'none';
+            }
+            if (e.target === document.getElementById('modalReprogramar')) {
+                cerrarReprogramar();
+            }
+        });
+
+        // Cerrar modales con botones
+        document.querySelector('.cerrar-estadisticas').addEventListener('click', () => { modalEstadisticas.style.display = 'none'; });
+        document.querySelector('.cerrar-inactivos').addEventListener('click', () => { modalInactivos.style.display = 'none'; });
+        document.querySelector('.cerrar-reporte-mensual').addEventListener('click', () => { modalReporteMensual.style.display = 'none'; });
+        document.querySelector('.cerrar-ventas').addEventListener('click', () => { modalVentas.style.display = 'none'; });
+        document.getElementById('cerrarPapeletaCompleta').addEventListener('click', function() {
+            document.getElementById('modalPapeletaCompleta').style.display = 'none';
+        });
+        document.getElementById('cerrarConfirmacionFinal').addEventListener('click', function() {
+            document.getElementById('modalConfirmacionFinal').style.display = 'none';
+        });
+        document.getElementById('cerrarReprogramar').addEventListener('click', cerrarReprogramar);
+
+        // ========== EVENT LISTENERS PRINCIPALES ==========
+        // Panel principal
+        document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasPorFecha);
+        document.getElementById('recargarBtn').addEventListener('click', () => {
+            if (fechaSeleccionada) cargarCitasPorFecha();
+            else mostrarToast('⚠️ Selecciona una fecha primero', 'error');
+        });
+        document.getElementById('fechaEvento').addEventListener('change', cargarCitasPorFecha);
+        document.getElementById('filtroSupervisor').addEventListener('change', cargarCitasPorFecha);
+        document.getElementById('buscarBtn').addEventListener('click', buscarPorNombreOTelefono);
+        document.getElementById('limpiarBusquedaBtn').addEventListener('click', limpiarBusqueda);
+
+        // Debounce para búsqueda en tiempo real
+        document.getElementById('buscarInput').addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(buscarPorNombreOTelefono, 500);
+        });
+        document.getElementById('buscarInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                clearTimeout(searchTimeout);
+                buscarPorNombreOTelefono();
+            }
+        });
+
+        // Botones de acciones
+        document.getElementById('descargarExcelBtn').addEventListener('click', descargarExcelProfesional);
         document.getElementById('btnEstadisticasSup').addEventListener('click', () => {
             document.getElementById('contenidoEstadisticas').innerHTML = `
                 <div style="text-align: center; padding: 20px;">
                     <label>🔐 Ingrese la contraseña para acceder:</label>
                     <input type="password" id="passwordEstadisticas" class="password-input" placeholder="Contraseña">
-                    <button id="verificarPasswordEstadisticas" style="background: #0a2540;">Verificar Acceso</button>
+                    <button id="verificarPasswordEstadisticas" style="background: #0a2540; padding:10px 20px; border-radius:14px;">Verificar Acceso</button>
                 </div>
             `;
             document.getElementById('passwordEstadisticas').value = '';
@@ -4626,13 +4684,13 @@
             }
             modalEstadisticas.style.display = 'block';
         });
-        
+
         document.getElementById('btnInactivosSup').addEventListener('click', () => {
             document.getElementById('contenidoInactivos').innerHTML = '<p style="text-align:center;">Cargando lista de supervisores inactivos...</p>';
             modalInactivos.style.display = 'block';
             mostrarSupervisoresInactivos();
         });
-        
+
         document.getElementById('btnReporteMensual').addEventListener('click', () => {
             const hoy = new Date();
             const mesActual = `${hoy.getFullYear()}-${String(hoy.getMonth() + 1).padStart(2, '0')}`;
@@ -4640,7 +4698,7 @@
             document.getElementById('contenidoReporteMensual').innerHTML = '<p style="text-align:center; color:#64748b;">Selecciona un mes y presiona "Cargar Reporte"</p>';
             modalReporteMensual.style.display = 'block';
         });
-        
+
         document.getElementById('btnVentas').addEventListener('click', () => {
             if (datosVentasExcel && datosVentasExcel.length > 0) {
                 mostrarEstadisticasVentas();
@@ -4653,31 +4711,17 @@
                 modalVentas.style.display = 'block';
             }
         });
-        
+
         document.getElementById('btnCargarExcel').addEventListener('click', cargarExcelManifiesto);
         document.getElementById('inputExcel').addEventListener('change', procesarExcelManifiesto);
-        
-        document.querySelector('.cerrar-estadisticas').addEventListener('click', () => { modalEstadisticas.style.display = 'none'; });
-        document.querySelector('.cerrar-inactivos').addEventListener('click', () => { modalInactivos.style.display = 'none'; });
-        document.querySelector('.cerrar-reporte-mensual').addEventListener('click', () => { modalReporteMensual.style.display = 'none'; });
-        document.querySelector('.cerrar-ventas').addEventListener('click', () => { modalVentas.style.display = 'none'; });
-        
-        window.addEventListener('click', (e) => {
-            if (e.target === modalEstadisticas) modalEstadisticas.style.display = 'none';
-            if (e.target === modalInactivos) modalInactivos.style.display = 'none';
-            if (e.target === modalReporteMensual) modalReporteMensual.style.display = 'none';
-            if (e.target === modalVentas) modalVentas.style.display = 'none';
-        });
-
         document.getElementById('btnCargarReporteMes').addEventListener('click', cargarReporteMensual);
         document.getElementById('btnDescargarReporteMes').addEventListener('click', descargarReporteMensualExcel);
 
-        // ================================================================
-        // ========== EVENT LISTENERS PAPELETAS ==========
-        // ================================================================
+        // Papeletas eventos
         document.getElementById('btnFiltrarPapeletas').addEventListener('click', filtrarPapeletas);
         document.getElementById('btnToggleCalendario').addEventListener('click', toggleCalendarioPapeletas);
         document.getElementById('btnLimpiarFechaCita').addEventListener('click', limpiarFiltroFecha);
+
         document.getElementById('filtroFechaCitaRapido').addEventListener('change', (e) => {
             if (e.target.value) {
                 seleccionarFechaCita(e.target.value);
@@ -4685,21 +4729,23 @@
                 limpiarFiltroFecha();
             }
         });
-        let busquedaPapeletasTimer = null;
+
         document.getElementById('filtroPapeletasBuscar').addEventListener('input', () => {
             clearTimeout(busquedaPapeletasTimer);
-            busquedaPapeletasTimer = setTimeout(() => filtrarPapeletas(), 300);
+            busquedaPapeletasTimer = setTimeout(filtrarPapeletas, 400);
         });
+        document.getElementById('filtroPapeletasBuscar').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') filtrarPapeletas();
+        });
+
         document.getElementById('btnRecargarPapeletas').addEventListener('click', () => {
             papeletasCache = [];
             papeletasSupCache = [];
             conteoFechasCache = null;
             cargarPapeletas().then(() => mostrarToast('🔄 Papeletas recargadas'));
         });
-        document.getElementById('filtroPapeletasBuscar').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') filtrarPapeletas();
-        });
 
+        // Calendario navegación
         document.getElementById('calPrevMes').addEventListener('click', () => {
             calendarioMesActual--;
             if (calendarioMesActual < 0) { calendarioMesActual = 11; calendarioAnioActual--; }
@@ -4717,49 +4763,21 @@
             renderizarCalendarioPapeletas();
         });
 
-        // ===== CERRAR MODAL PAPELETA =====
-        document.getElementById('cerrarPapeletaCompleta').addEventListener('click', function() {
-            document.getElementById('modalPapeletaCompleta').style.display = 'none';
-        });
-
-        document.getElementById('modalPapeletaCompleta').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
-        });
-
-        // ===== CERRAR MODAL CONFIRMACIÓN FINAL =====
-        document.getElementById('cerrarConfirmacionFinal').addEventListener('click', function() {
-            document.getElementById('modalConfirmacionFinal').style.display = 'none';
-        });
-
-        document.getElementById('modalConfirmacionFinal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                this.style.display = 'none';
-            }
-        });
-
-        // ===== CERRAR MODAL REPROGRAMAR =====
-        document.getElementById('cerrarReprogramar').addEventListener('click', cerrarReprogramar);
-        document.getElementById('modalReprogramar').addEventListener('click', function(e) {
-            if (e.target === this) {
-                cerrarReprogramar();
-            }
-        });
-
         // ========== INICIALIZACIÓN ==========
         cargarSupervisores();
         iniciarListenerPapeletas();
         restaurarSesionPapeletas();
-        
+
         const hoy = new Date().toISOString().split('T')[0];
         document.getElementById('fechaEvento').value = hoy;
-        
-        console.log('✅ CRM con Papeletas - Autenticación activada');
+
+        // Iniciar autenticación en segundo plano
+        setTimeout(() => autenticarFirebase(), 500);
+
+        console.log('✅ CRM Optimizado - Rendimiento mejorado');
         console.log('🔐 Contraseña Panel Principal: admin123');
         console.log('🔐 Contraseña Estadísticas: supervisor2024');
         console.log('🔐 Contraseñas Mis Papeletas: nombre2024 (ej: thalia2024)');
-        console.log('🔑 Autenticación anónima: ACTIVADA');
     </script>
 </body>
 </html>
