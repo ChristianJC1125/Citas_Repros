@@ -12,24 +12,20 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-
             background-image: url('imagenes/img7.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
-
             position: relative;
             overflow-x: hidden;
         }
 
-        /* Overlay Premium */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
             z-index: 0;
-
             background:
                 linear-gradient(
                     135deg,
@@ -40,7 +36,6 @@
                 );
         }
 
-        /* ===== BOTÓN HAMBURGUESA ===== */
         .menu-hamburguesa {
             position: fixed;
             top: 20px;
@@ -71,7 +66,6 @@
             font-size: 28px;
         }
 
-        /* ===== MENÚ LATERAL ===== */
         .menu-lateral {
             position: fixed;
             top: 0;
@@ -171,7 +165,6 @@
             margin-left: auto;
         }
 
-        /* ===== OVERLAY ===== */
         .overlay-menu {
             position: fixed;
             top: 0;
@@ -187,7 +180,6 @@
             display: block;
         }
 
-        /* ===== CONTENEDOR PRINCIPAL ===== */
         .container {
             max-width: 1600px;
             margin: 20px auto;
@@ -213,7 +205,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* ===== PESTAÑAS ===== */
         .pestana {
             display: none;
             animation: fadeIn 0.4s ease;
@@ -222,7 +213,6 @@
             display: block;
         }
 
-        /* ===== LOGO DE EMPRESA ===== */
         .logo-empresa {
             text-align: center;
             padding: 15px 0 20px 0;
@@ -249,7 +239,6 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
 
-        /* ===== FILTROS ===== */
         .filtros {
             display: flex;
             gap: 15px;
@@ -292,7 +281,6 @@
             min-width: 200px;
         }
 
-        /* ===== BOTONES CON GRADIENTE ===== */
         button {
             background: linear-gradient(135deg, #0a2540, #12385f);
             color: white;
@@ -339,149 +327,19 @@
         .btn-ventas { background: linear-gradient(135deg, #6d28d9, #7c3aed); }
         .btn-ventas:hover { background: linear-gradient(135deg, #5b21b6, #6d28d9); color: white; }
 
-        /* Botones de asistencia con gradientes */
+        /* Botones de asistencia */
         .btn-llego { background: linear-gradient(135deg, #1b5e20, #2e7d32); font-size: 0.75rem; padding: 5px 10px; }
         .btn-no-llego { background: linear-gradient(135deg, #b71c1c, #c62828); font-size: 0.75rem; padding: 5px 10px; }
         .btn-cita { background: linear-gradient(135deg, #d97706, #f59e0b); font-size: 0.75rem; padding: 5px 10px; }
-        .btn-cita-nuevo { background: linear-gradient(135deg, #6d28d9, #7c3aed); font-size: 0.75rem; padding: 5px 10px; }
+        .btn-rpx2 { background: linear-gradient(135deg, #6d28d9, #7c3aed); font-size: 0.75rem; padding: 5px 10px; }
+        .btn-rpx3 { background: linear-gradient(135deg, #dc2626, #ef4444); font-size: 0.75rem; padding: 5px 10px; }
         .btn-contesto { background: linear-gradient(135deg, #0891b2, #06b6d4); font-size: 0.75rem; padding: 5px 10px; }
         .btn-no-contesto { background: linear-gradient(135deg, #6b7280, #7f8c8d); font-size: 0.75rem; padding: 5px 10px; }
+        .btn-pendiente { background: linear-gradient(135deg, #f59e0b, #fbbf24); font-size: 0.75rem; padding: 5px 10px; color: #0a2540; }
         .btn-desbloquear { background: linear-gradient(135deg, #d97706, #f59e0b); font-size: 0.7rem; padding: 3px 8px; }
         .btn-desbloquear:hover { background: linear-gradient(135deg, #b45309, #d97706); color: white; }
 
-        /* ===== TABLA ===== */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 0.85rem;
-            overflow-x: auto;
-            display: block;
-        }
-        th, td {
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 8px;
-            text-align: left;
-            vertical-align: top;
-        }
-        th {
-            background: rgba(10, 37, 64, 0.8);
-            backdrop-filter: blur(10px);
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-        td {
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(5px);
-        }
-        tr:hover td {
-            background: rgba(255, 255, 255, 0.7);
-        }
-
-        .asistencia-btns {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .asistencia-estado {
-            font-weight: bold;
-            padding: 4px 8px;
-            border-radius: 20px;
-            display: inline-block;
-            font-size: 0.75rem;
-        }
-        .estado-llego { background: #c8e6c9; color: #1b5e20; }
-        .estado-no-llego { background: #ffcdd2; color: #b71c1c; }
-        .estado-cita { background: #fff3e0; color: #e65100; }
-        .estado-cita-nuevo { background: #ede9fe; color: #5b21b6; }
-        .estado-contesto { background: #cffafe; color: #0e7490; }
-        .estado-no-contesto { background: #e0e0e0; color: #424242; }
-        .sin-registro { color: rgba(100, 116, 139, 0.7); font-style: italic; }
-
-        .comentario-textarea {
-            width: 250px;
-            min-width: 200px;
-            font-size: 0.8rem;
-            padding: 8px;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            resize: vertical;
-            font-family: inherit;
-            background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(5px);
-        }
-        .comentario-textarea:focus {
-            outline: none;
-            border-color: #d4af37;
-            background: rgba(255, 255, 255, 0.8);
-        }
-        .comentario-textarea:disabled {
-            background: rgba(241, 245, 249, 0.4);
-            color: #64748b;
-        }
-
-        .footer {
-            margin-top: 20px;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.7);
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-            padding-top: 15px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-
-        .resumen {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 12px 18px;
-            border-radius: 12px;
-            margin: 15px 0;
-            font-weight: bold;
-            border-left: 4px solid #d4af37;
-            color: rgba(255, 255, 255, 0.9);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-        .resumen span {
-            margin-right: 20px;
-        }
-
-        .fila-bloqueada {
-            background: rgba(241, 245, 249, 0.4) !important;
-            opacity: 0.85;
-        }
-        .fila-bloqueada td {
-            background: rgba(241, 245, 249, 0.3);
-            border-color: rgba(203, 213, 225, 0.4);
-        }
-
-        .badge-bloqueado {
-            background: #dc2626;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.6rem;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-
-        .cliente-acompanante {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .cliente-principal {
-            font-weight: bold;
-            color: #0a2540;
-        }
-        .acompanante {
-            font-size: 0.8rem;
-            color: rgba(100, 116, 139, 0.8);
-        }
-
-        /* ===== FORMULARIO PAPELETAS ===== */
+        /* ===== ESTILOS DE PAPELETAS ===== */
         .form-papeleta {
             background: rgba(255, 255, 255, 0.12);
             backdrop-filter: blur(10px);
@@ -674,7 +532,6 @@
             background: linear-gradient(135deg, #991b1b, #b91c1c);
         }
 
-        /* ===== BOTONES NUEVOS PAPELETAS ===== */
         .btn-confirmacion-final {
             background: linear-gradient(135deg, #047857, #059669);
             color: white;
@@ -977,113 +834,7 @@
             display: none;
         }
 
-        /* ===== STATS GRID ===== */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .stats-card {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.20);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            border-left: 4px solid #0a2540;
-        }
-        .stats-card .numero {
-            font-size: 2rem;
-            font-weight: 700;
-            color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
-        .stats-card .etiqueta {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-        }
-        .stats-card.verde { border-left-color: #2e7d32; }
-        .stats-card.naranja { border-left-color: #e65100; }
-        .stats-card.azul { border-left-color: #2563eb; }
-
-        .tabla-estadisticas-papeletas {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-        .tabla-estadisticas-papeletas th {
-            background: rgba(10, 37, 64, 0.8);
-            backdrop-filter: blur(10px);
-            color: white;
-            padding: 10px;
-            text-align: left;
-        }
-        .tabla-estadisticas-papeletas td {
-            padding: 8px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        /* ===== MODALES ===== */
-        .modal-estadisticas, .modal-inactivos, .modal-reporte-mensual, .modal-ventas, .modal-password {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            backdrop-filter: blur(3px);
-        }
-        .modal-estadisticas-contenido, .modal-inactivos-contenido, .modal-reporte-contenido, .modal-ventas-contenido, .modal-password-contenido {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            margin: 5% auto;
-            padding: 25px;
-            border-radius: 25px;
-            width: 90%;
-            max-width: 500px;
-            max-height: 85vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid rgba(226, 232, 240, 0.5);
-            padding-bottom: 15px;
-            margin-bottom: 20px;
-        }
-        .modal-header h2 {
-            margin: 0;
-            color: #0a2540;
-        }
-        .cerrar-modal {
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            color: #64748b;
-        }
-        .cerrar-modal:hover {
-            color: #c62828;
-        }
-        .password-input {
-            padding: 12px;
-            width: 100%;
-            border: 2px solid rgba(226, 232, 240, 0.5);
-            border-radius: 12px;
-            font-size: 1rem;
-            margin: 15px 0;
-            background: rgba(255,255,255,0.6);
-        }
-
-        /* ===== MODAL PAPELETA COMPLETA ===== */
+        /* ===== MODALES PAPELETAS ===== */
         .modal-papeleta-completa {
             display: none;
             position: fixed;
@@ -1176,10 +927,6 @@
         }
         .modal-papeleta-completa .seccion-telefonos .telefono-item .tel-valor {
             color: #0a2540;
-        }
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-30px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== MODAL CONFIRMACIÓN FINAL ===== */
@@ -1366,22 +1113,6 @@
         .modal-confirmacion-final .btn-cerrar-confirmacion:hover {
             background: linear-gradient(135deg, #12385f, #1a4a7a);
         }
-        @media (max-width: 600px) {
-            .modal-confirmacion-final .fila-datos {
-                grid-template-columns: 1fr;
-            }
-            .modal-confirmacion-final .campo-confirmacion {
-                flex-direction: column;
-                padding: 6px 0;
-            }
-            .modal-confirmacion-final .campo-confirmacion .etiqueta-conf {
-                min-width: auto;
-                font-size: 0.8rem;
-            }
-            .modal-confirmacion-final .campo-confirmacion .valor-conf {
-                font-size: 0.85rem;
-            }
-        }
 
         /* ===== MODAL REPROGRAMAR ===== */
         .modal-reprogramar {
@@ -1524,6 +1255,55 @@
             margin-top: 4px;
         }
 
+        /* ===== STATS GRID ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .stats-card {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.20);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #0a2540;
+        }
+        .stats-card .numero {
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .stats-card .etiqueta {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+        }
+        .stats-card.verde { border-left-color: #2e7d32; }
+        .stats-card.naranja { border-left-color: #e65100; }
+        .stats-card.azul { border-left-color: #2563eb; }
+
+        .tabla-estadisticas-papeletas {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        .tabla-estadisticas-papeletas th {
+            background: rgba(10, 37, 64, 0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+        .tabla-estadisticas-papeletas td {
+            padding: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
         /* ===== TABLAS ESTADÍSTICAS ===== */
         .tabla-estadisticas {
             width: 100%;
@@ -1606,6 +1386,282 @@
             background: linear-gradient(135deg, #12385f, #1a4a7a);
         }
 
+        /* ===== MODALES ===== */
+        .modal-estadisticas, .modal-inactivos, .modal-reporte-mensual, .modal-ventas, .modal-password {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+        }
+        .modal-estadisticas-contenido, .modal-inactivos-contenido, .modal-reporte-contenido, .modal-ventas-contenido, .modal-password-contenido {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin: 5% auto;
+            padding: 25px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .modal-inactivos-contenido {
+            max-width: 900px;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid rgba(226, 232, 240, 0.5);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-header h2 {
+            margin: 0;
+            color: #0a2540;
+        }
+        .cerrar-modal {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+        }
+        .cerrar-modal:hover {
+            color: #c62828;
+        }
+        .password-input {
+            padding: 12px;
+            width: 100%;
+            border: 2px solid rgba(226, 232, 240, 0.5);
+            border-radius: 12px;
+            font-size: 1rem;
+            margin: 15px 0;
+            background: rgba(255,255,255,0.6);
+        }
+
+        /* ===== FILTROS INACTIVOS ===== */
+        .filtro-inactivos {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+            align-items: center;
+        }
+        .filtro-inactivos select, .filtro-inactivos input {
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(203, 213, 225, 0.5);
+            font-size: 0.9rem;
+            background: rgba(255,255,255,0.6);
+        }
+        .filtro-inactivos select:focus, .filtro-inactivos input:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: rgba(255,255,255,0.8);
+        }
+
+        .cita-item-inactivo {
+            border: 1px solid rgba(226, 232, 240, 0.5);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.5);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+        }
+        .cita-item-inactivo .cita-info {
+            flex: 1;
+            min-width: 200px;
+        }
+        .cita-item-inactivo .cita-info .nombre {
+            font-weight: 600;
+            color: #0a2540;
+        }
+        .cita-item-inactivo .cita-info .detalle {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+        .cita-item-inactivo .cita-acciones {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .btn-marcar-no-llego {
+            background: linear-gradient(135deg, #b71c1c, #c62828);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-marcar-no-llego:hover {
+            background: linear-gradient(135deg, #991b1b, #b71c1c);
+        }
+        .btn-marcar-llego {
+            background: linear-gradient(135deg, #1b5e20, #2e7d32);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-marcar-llego:hover {
+            background: linear-gradient(135deg, #145a1d, #1b5e20);
+        }
+        .badge-inactivo {
+            background: #dc2626;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            margin-left: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            display: block;
+        }
+        th, td {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        th {
+            background: rgba(10, 37, 64, 0.8);
+            backdrop-filter: blur(10px);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        td {
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .asistencia-btns {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .asistencia-estado {
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 0.75rem;
+        }
+        .estado-llego { background: #c8e6c9; color: #1b5e20; }
+        .estado-no-llego { background: #ffcdd2; color: #b71c1c; }
+        .estado-cita { background: #fff3e0; color: #e65100; }
+        .estado-rpx2 { background: #ede9fe; color: #5b21b6; }
+        .estado-rpx3 { background: #fecaca; color: #991b1b; }
+        .estado-contesto { background: #cffafe; color: #0e7490; }
+        .estado-no-contesto { background: #e0e0e0; color: #424242; }
+        .estado-pendiente { background: #fef3c7; color: #92400e; }
+        .sin-registro { color: rgba(100, 116, 139, 0.7); font-style: italic; }
+
+        .comentario-textarea {
+            width: 250px;
+            min-width: 200px;
+            font-size: 0.8rem;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            resize: vertical;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+        }
+        .comentario-textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .comentario-textarea:disabled {
+            background: rgba(241, 245, 249, 0.4);
+            color: #64748b;
+        }
+
+        .footer {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 15px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .resumen {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-weight: bold;
+            border-left: 4px solid #d4af37;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .resumen span {
+            margin-right: 20px;
+        }
+
+        .fila-bloqueada {
+            background: rgba(241, 245, 249, 0.4) !important;
+            opacity: 0.85;
+        }
+        .fila-bloqueada td {
+            background: rgba(241, 245, 249, 0.3);
+            border-color: rgba(203, 213, 225, 0.4);
+        }
+
+        .badge-bloqueado {
+            background: #dc2626;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        .cliente-acompanante {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .cliente-principal {
+            font-weight: bold;
+            color: #0a2540;
+        }
+        .acompanante {
+            font-size: 0.8rem;
+            color: rgba(100, 116, 139, 0.8);
+        }
+
         /* ===== TOAST ===== */
         .toast {
             position: fixed;
@@ -1625,6 +1681,11 @@
         @keyframes slideUp {
             from { transform: translateY(30px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== RESPONSIVE ===== */
@@ -1668,6 +1729,11 @@
             .menu-lateral {
                 width: 280px;
                 left: -290px;
+            }
+            .modal-inactivos-contenido {
+                max-width: 95%;
+                margin: 2% auto;
+                padding: 15px;
             }
         }
         @media (max-width: 500px) {
@@ -1834,7 +1900,7 @@
                 <button id="recargarBtn" style="background:#475569;">🔄 Recargar</button>
                 <button id="descargarExcelBtn" class="btn-excel">📊 Descargar Excel</button>
                 <button id="btnEstadisticasSup" class="btn-estadisticas">📈 Estadísticas</button>
-                <button id="btnInactivosSup" class="btn-inactivos">🚫 Inactivos</button>
+                <button id="btnInactivosSup" class="btn-inactivos">🚫 Supervisores Inactivos</button>
                 <button id="btnReporteMensual" class="btn-reporte-mensual">📆 Reporte Mensual</button>
                 <button id="btnCargarExcel" class="btn-cargar-excel">📥 Cargar Excel</button>
                 <button id="btnVentas" class="btn-ventas">📊 Ventas por Base</button>
@@ -1868,7 +1934,7 @@
             </div>
             <div class="footer">
                 ✅ Registro en tiempo real | Los cambios se guardan automáticamente en Firebase<br>
-                🎯 <strong>Leyenda:</strong> 📅 Cita (agendó) | 🔄 Cita de nuevo (reagendó) | 📞 Contestó | 📵 No contestó<br>
+                🎯 <strong>Leyenda:</strong> 📅 Cita (agendó) | 🔄 RPx2 (reagendó 2 veces) | 🔴 RPx3 (reagendó 3 veces - borra registro) | 📞 Contestó | 📵 No contestó | ⏳ Pendiente<br>
                 🔒 <strong>Citas bloqueadas:</strong> Las citas marcadas como "Llegó" quedan bloqueadas para evitar cambios accidentales
             </div>
         </div>
@@ -2227,8 +2293,8 @@
         let papeletasSupCache = [];
         let conteoFechasCache = null;
         let papeletaReprogramarId = null;
+        let citasInactivosCache = [];
 
-        // Timers para debounce
         let renderTimeout = null;
         let searchTimeout = null;
         let listenerTimeout = null;
@@ -2249,11 +2315,13 @@
             'ARACELI TORRES': 'araceli2024'
         };
 
+        // Lista actualizada de supervisores inactivos
         const SUPERVISORES_INACTIVOS = [
             'YARET NAJERA',
-            'ABRAHAM ROLDAN',
             'MACARENA ZAMORA',
-            'MISAEL NAVARRO',
+            'PRISCILA GARCIA',
+            'ABRAHAM ROLDAN',
+            'ISAEL NAVARRO',
             'ARACELI TORRES'
         ];
 
@@ -2341,7 +2409,6 @@
             return cita.asistencia === 'Llegó';
         }
 
-        // ========== TOAST OPTIMIZADO ==========
         function mostrarToast(mensaje, tipo = 'success') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
@@ -2359,7 +2426,7 @@
             }, 3000);
         }
 
-        // ========== 🔐 AUTENTICACIÓN ANÓNIMA ==========
+        // ========== AUTENTICACIÓN ==========
         let authPromise = null;
 
         async function autenticarFirebase() {
@@ -2386,7 +2453,7 @@
             return authPromise;
         }
 
-        // ========== FUNCIONES DEL MENÚ ==========
+        // ========== MENÚ ==========
         const menuBtn = document.getElementById('menuBtn');
         const menuLateral = document.getElementById('menuLateral');
         const overlayMenu = document.getElementById('overlayMenu');
@@ -2602,7 +2669,7 @@
         function cargarSupervisores() {
             database.ref('supervisoras').once('value').then(snapshot => {
                 const data = snapshot.val();
-                supervisoresList = data && Array.isArray(data) ? data : ['ABRAHAM ROLDAN','LUIS COLULA','MACARENA ZAMORA','THALIA PINEDA','YARET NAJERA','MISAEL NAVARRO'];
+                supervisoresList = data && Array.isArray(data) ? data : ['ABRAHAM ROLDAN','LUIS COLULA','MACARENA ZAMORA','THALIA PINEDA','YARET NAJERA','MISAEL NAVARRO','ARACELI TORRES','PRISCILA GARCIA','ISAEL NAVARRO'];
                 
                 const selects = ['filtroSupervisor', 'p_supervisor', 'filtroPapeletasSupervisor', 'passwordPapeletasSupervisor'];
                 selects.forEach(id => {
@@ -2670,9 +2737,8 @@
                 return;
             }
 
-            // Usar DocumentFragment para mejor rendimiento
             const fragment = document.createDocumentFragment();
-            let llegaron = 0, noLlegaron = 0, citasAgendadas = 0, citasDeNuevo = 0, contestaron = 0, noContesto = 0;
+            let llegaron = 0, noLlegaron = 0, citasAgendadas = 0, rpx2 = 0, rpx3 = 0, contestaron = 0, noContesto = 0, pendientes = 0;
 
             citas.forEach(cita => {
                 const tr = document.createElement('tr');
@@ -2742,19 +2808,25 @@
                 const estadoLlamada = cita.estadoLlamada || '';
                 let estadoHtml = '';
                 if (estadoLlamada === 'Cita') {
-                    estadoHtml = '<span class="asistencia-estado estado-cita">📅 Cita agendada</span>';
+                    estadoHtml = '<span class="asistencia-estado estado-cita">📅 Cita</span>';
                     citasAgendadas++;
-                } else if (estadoLlamada === 'Cita de nuevo') {
-                    estadoHtml = '<span class="asistencia-estado estado-cita-nuevo">🔄 Cita de nuevo</span>';
-                    citasDeNuevo++;
+                } else if (estadoLlamada === 'RPx2') {
+                    estadoHtml = '<span class="asistencia-estado estado-rpx2">🔄 RPx2</span>';
+                    rpx2++;
+                } else if (estadoLlamada === 'RPx3') {
+                    estadoHtml = '<span class="asistencia-estado estado-rpx3">🔴 RPx3</span>';
+                    rpx3++;
                 } else if (estadoLlamada === 'Contestó') {
                     estadoHtml = '<span class="asistencia-estado estado-contesto">📞 Contestó</span>';
                     contestaron++;
                 } else if (estadoLlamada === 'No contestó') {
                     estadoHtml = '<span class="asistencia-estado estado-no-contesto">📵 No contestó</span>';
                     noContesto++;
+                } else if (estadoLlamada === 'Pendiente') {
+                    estadoHtml = '<span class="asistencia-estado estado-pendiente">⏳ Pendiente</span>';
+                    pendientes++;
                 } else {
-                    estadoHtml = '<span class="sin-registro">⚪ Pendiente</span>';
+                    estadoHtml = '<span class="sin-registro">⚪ Sin registrar</span>';
                 }
                 tdEstadoLlamada.innerHTML = estadoHtml;
                 tr.appendChild(tdEstadoLlamada);
@@ -2804,11 +2876,19 @@
                     btnCita.onclick = () => registrarEstadoLlamada(cita.id, 'Cita');
                     tdAcciones.appendChild(btnCita);
                     
-                    const btnCitaNuevo = document.createElement('button');
-                    btnCitaNuevo.textContent = '🔄 Cita de nuevo';
-                    btnCitaNuevo.className = 'btn-cita-nuevo';
-                    btnCitaNuevo.onclick = () => registrarEstadoLlamada(cita.id, 'Cita de nuevo');
-                    tdAcciones.appendChild(btnCitaNuevo);
+                    // RPx2 - Reemplaza "Cita de nuevo"
+                    const btnRPx2 = document.createElement('button');
+                    btnRPx2.textContent = '🔄 RPx2';
+                    btnRPx2.className = 'btn-rpx2';
+                    btnRPx2.onclick = () => registrarEstadoLlamada(cita.id, 'RPx2');
+                    tdAcciones.appendChild(btnRPx2);
+                    
+                    // RPx3 - Borra el registro
+                    const btnRPx3 = document.createElement('button');
+                    btnRPx3.textContent = '🔴 RPx3';
+                    btnRPx3.className = 'btn-rpx3';
+                    btnRPx3.onclick = () => registrarRPx3(cita.id);
+                    tdAcciones.appendChild(btnRPx3);
                     
                     const btnContesto = document.createElement('button');
                     btnContesto.textContent = '📞 Contestó';
@@ -2821,6 +2901,13 @@
                     btnNoContesto.className = 'btn-no-contesto';
                     btnNoContesto.onclick = () => registrarEstadoLlamada(cita.id, 'No contestó');
                     tdAcciones.appendChild(btnNoContesto);
+                    
+                    // Botón Pendiente - para revertir estados
+                    const btnPendiente = document.createElement('button');
+                    btnPendiente.textContent = '⏳ Pendiente';
+                    btnPendiente.className = 'btn-pendiente';
+                    btnPendiente.onclick = () => registrarEstadoLlamada(cita.id, 'Pendiente');
+                    tdAcciones.appendChild(btnPendiente);
                 }
                 tr.appendChild(tdAcciones);
                 
@@ -2838,14 +2925,47 @@
                 <span>📋 Total citas: ${citas.length}</span>
                 <span>✅ Llegaron: ${llegaron}</span>
                 <span>❌ No llegaron: ${noLlegaron}</span>
-                <span>📅 Cita agendada: ${citasAgendadas}</span>
-                <span>🔄 Cita de nuevo: ${citasDeNuevo}</span>
+                <span>📅 Cita: ${citasAgendadas}</span>
+                <span>🔄 RPx2: ${rpx2}</span>
+                <span>🔴 RPx3: ${rpx3}</span>
                 <span>📞 Contestó: ${contestaron}</span>
                 <span>📵 No contestó: ${noContesto}</span>
+                <span>⏳ Pendiente: ${pendientes}</span>
                 <span>🔒 Bloqueadas: ${llegaron}</span>
             `;
         }
 
+        // ========== NUEVA FUNCIÓN: RPx3 (BORRA REGISTRO) ==========
+        async function registrarRPx3(id) {
+            if (!confirm('⚠️ ¿Estás seguro de marcar esta cita como RPx3? Esto BORRARÁ el registro permanentemente.')) return;
+            
+            try {
+                const snapshot = await database.ref(`registrosPremanifiesto/${id}`).once('value');
+                const cita = snapshot.val();
+                
+                if (!cita) {
+                    mostrarToast('❌ La cita ya no existe', 'error');
+                    return;
+                }
+                
+                await database.ref('registrosEliminados').push({
+                    citaOriginal: cita,
+                    fechaEliminacion: new Date().toISOString(),
+                    motivo: 'RPx3 - Tercera reprogramación',
+                    eliminadoPor: supervisorSeleccionado || 'Desconocido'
+                });
+                
+                await database.ref(`registrosPremanifiesto/${id}`).remove();
+                
+                mostrarToast('🔴 Registro eliminado por RPx3');
+                cargarCitasPorFecha();
+            } catch (error) {
+                console.error('Error al eliminar por RPx3:', error);
+                mostrarToast('❌ Error al eliminar el registro', 'error');
+            }
+        }
+
+        // ========== FUNCIONES DE ASISTENCIA ==========
         async function registrarAsistencia(id, estado) {
             try {
                 await database.ref(`registrosPremanifiesto/${id}`).update({
@@ -2865,7 +2985,7 @@
                     estadoLlamada: estado,
                     fechaEstadoLlamada: new Date().toISOString()
                 });
-                mostrarToast(`📞 Estado llamada: ${estado}`);
+                mostrarToast(`📞 Estado: ${estado}`);
                 cargarCitasPorFecha();
             } catch (error) {
                 mostrarToast('Error al guardar', 'error');
@@ -2937,7 +3057,350 @@
             document.getElementById('p_clave').value = 'SF';
         }
 
-        // ===== MOSTRAR PAPELETA COMPLETA =====
+        function actualizarBotonCalendario() {
+            const btn = document.getElementById('btnToggleCalendario');
+            if (!btn) return;
+            if (calendarioVisible) {
+                btn.textContent = '✕ Cerrar calendario';
+                btn.classList.add('activo');
+            } else {
+                btn.textContent = '📅 Ver calendario';
+                btn.classList.remove('activo');
+            }
+        }
+
+        // ========== LISTENER EN TIEMPO REAL ==========
+        let papeletasListener = null;
+
+        function iniciarListenerPapeletas() {
+            if (papeletasListener) return;
+            
+            papeletasListener = database.ref('papeletas').on('value', (snapshot) => {
+                clearTimeout(listenerTimeout);
+                listenerTimeout = setTimeout(() => {
+                    const data = snapshot.val();
+                    if (!data) {
+                        papeletasCache = [];
+                        papeletasSupCache = [];
+                        conteoFechasCache = {};
+                        if (papeletasDesbloqueado && document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                            document.getElementById('tablaPapeletasBody').innerHTML = 
+                                '<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">No hay papeletas guardadas</td></tr>';
+                            document.getElementById('totalPapeletas').textContent = '(0)';
+                            if (calendarioVisible) renderizarCalendarioPapeletas();
+                        }
+                        return;
+                    }
+
+                    papeletasCache = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+                    papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
+
+                    if (papeletasDesbloqueado) {
+                        actualizarCachePapeletasSupervisor();
+                        if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
+                            renderizarPapeletas();
+                            if (calendarioVisible) renderizarCalendarioPapeletas();
+                        }
+                    }
+                    listenerTimeout = null;
+                }, 500);
+            });
+        }
+
+        // ========== PAPELETAS FUNCIONES ==========
+        async function cargarPapeletas() {
+            if (!papeletasDesbloqueado) return;
+            
+            try {
+                const snapshot = await database.ref('papeletas').once('value');
+                const data = snapshot.val();
+                
+                if (!data) {
+                    papeletasCache = [];
+                    papeletasSupCache = [];
+                    conteoFechasCache = {};
+                    document.getElementById('tablaPapeletasBody').innerHTML = 
+                        '<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">No hay papeletas guardadas</td></tr>';
+                    document.getElementById('totalPapeletas').textContent = '(0)';
+                    return;
+                }
+
+                papeletasCache = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+                papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
+                actualizarCachePapeletasSupervisor();
+                renderizarPapeletas();
+
+            } catch (error) {
+                console.error('Error cargando papeletas:', error);
+                mostrarToast('❌ Error al cargar papeletas', 'error');
+            }
+        }
+
+        function actualizarCachePapeletasSupervisor() {
+            if (!supervisorPapeletasAuth) {
+                papeletasSupCache = [];
+                conteoFechasCache = {};
+                return;
+            }
+            papeletasSupCache = papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
+            conteoFechasCache = {};
+            papeletasSupCache.forEach(p => {
+                const fecha = obtenerFechaCitaPapeleta(p);
+                if (fecha) conteoFechasCache[fecha] = (conteoFechasCache[fecha] || 0) + 1;
+            });
+            document.getElementById('totalPapeletas').textContent = `(${papeletasSupCache.length})`;
+        }
+
+        function renderizarPapeletas() {
+            if (!papeletasDesbloqueado) return;
+            
+            clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(() => {
+                const tbody = document.getElementById('tablaPapeletasBody');
+                const filtradas = obtenerPapeletasFiltradas();
+                actualizarBannerFecha(filtradas);
+
+                if (!filtradas || !filtradas.length) {
+                    const msg = fechaCitaFiltro
+                        ? 'No hay papeletas con cita en esta fecha'
+                        : 'No hay papeletas que coincidan con los filtros';
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">${msg}</td></tr>`;
+                    return;
+                }
+
+                const fragment = document.createDocumentFragment();
+                
+                filtradas.forEach((p, index) => {
+                    const tr = document.createElement('tr');
+                    const tel = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
+                    const fecha = formatearFechaCorta(p.fechaHora);
+                    
+                    const tieneConfirmacion = p.asistenciaConfirmada === true;
+                    const esIncontactable = p.incontactable === true;
+                    const tieneReprogramacion = p.fechaReprogramacion ? true : false;
+                    
+                    let estadoBadge = '';
+                    if (tieneConfirmacion) estadoBadge = '<span style="color:#16a34a; font-weight:bold;">✅</span>';
+                    else if (esIncontactable) estadoBadge = '<span style="color:#dc2626; font-weight:bold;">📵</span>';
+                    else if (tieneReprogramacion) estadoBadge = '<span style="color:#f59e0b; font-weight:bold;">🔄</span>';
+                    
+                    tr.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong> ${estadoBadge}</td>
+                        <td>${escaparHtml(tel)}</td>
+                        <td>${escaparHtml(p.supervisor || '-')}</td>
+                        <td>${escaparHtml(fecha)}</td>
+                        <td>${escaparHtml(p.estadoCivil || '-')}</td>
+                        <td>👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores</td>
+                        <td style="min-width: 200px;">
+                            <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')" title="Ver detalles">VER</button>
+                            <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')" title="Confirmación final">✅ Conf</button>
+                            <button class="btn-confirmar-asistencia" onclick="confirmarAsistencia('${p.id}')" title="Confirmar asistencia">📋 Asist</button>
+                            <button class="btn-incontactable" onclick="marcarIncontactable('${p.id}')" title="Marcar como incontactable">📵 No</button>
+                            <button class="btn-reprogramar" onclick="mostrarReprogramar('${p.id}')" title="Reprogramar cita">🔄 Repro</button>
+                            <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')" title="Eliminar">🗑️</button>
+                        </td>
+                    `;
+                    fragment.appendChild(tr);
+                });
+
+                tbody.innerHTML = '';
+                tbody.appendChild(fragment);
+            }, 150);
+        }
+
+        function obtenerPapeletasFiltradas() {
+            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
+            let filtradas = papeletasSupCache.length ? papeletasSupCache : papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
+
+            if (fechaCitaFiltro) {
+                filtradas = filtradas.filter(p => obtenerFechaCitaPapeleta(p) === fechaCitaFiltro);
+            }
+
+            if (busqueda) {
+                filtradas = filtradas.filter(p => {
+                    const nombre = (p.nombre || '').toLowerCase();
+                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
+                    return nombre.includes(busqueda) || telefono.includes(busqueda);
+                });
+            }
+            return filtradas;
+        }
+
+        function actualizarBannerFecha(filtradas) {
+            const banner = document.getElementById('fechaCitaBanner');
+            if (!fechaCitaFiltro) {
+                banner.style.display = 'none';
+                return;
+            }
+            document.getElementById('fechaCitaBannerTexto').textContent = formatearFechaCorta(fechaCitaFiltro);
+            document.getElementById('fechaCitaBannerCount').textContent = filtradas.length;
+            banner.style.display = 'flex';
+        }
+
+        function limpiarFiltroFecha() {
+            fechaCitaFiltro = '';
+            document.getElementById('filtroFechaCitaRapido').value = '';
+            document.getElementById('fechaCitaBanner').style.display = 'none';
+            if (calendarioVisible) renderizarCalendarioPapeletas();
+            renderizarPapeletas();
+        }
+
+        function filtrarPapeletas() {
+            renderizarPapeletas();
+        }
+
+        // ===== CALENDARIO =====
+        function toggleCalendarioPapeletas() {
+            calendarioVisible = !calendarioVisible;
+            const container = document.getElementById('calendarioPapeletasContainer');
+            container.style.display = calendarioVisible ? 'block' : 'none';
+            actualizarBotonCalendario();
+            if (calendarioVisible) {
+                actualizarCachePapeletasSupervisor();
+                renderizarCalendarioPapeletas();
+            }
+        }
+
+        function renderizarCalendarioPapeletas() {
+            if (!papeletasDesbloqueado || !calendarioVisible) return;
+
+            const grid = document.getElementById('calendarioPapeletasGrid');
+            const mesLabel = document.getElementById('calendarioPapeletasMes');
+            if (!grid || !mesLabel) return;
+
+            if (!conteoFechasCache) actualizarCachePapeletasSupervisor();
+
+            mesLabel.textContent = `${MESES_ES[calendarioMesActual]} ${calendarioAnioActual}`;
+
+            const hoy = new Date();
+            const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
+
+            const ultimoDia = new Date(calendarioAnioActual, calendarioMesActual + 1, 0).getDate();
+            const inicioSemana = new Date(calendarioAnioActual, calendarioMesActual, 1).getDay();
+
+            let html = DIAS_ES.map(d => `<div class="calendario-dia-nombre">${d}</div>`).join('');
+            html += '<div class="calendario-dia vacio"></div>'.repeat(inicioSemana);
+
+            for (let dia = 1; dia <= ultimoDia; dia++) {
+                const fechaStr = `${calendarioAnioActual}-${String(calendarioMesActual+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
+                const cantidad = conteoFechasCache[fechaStr] || 0;
+                let clases = 'calendario-dia';
+                if (cantidad > 0) clases += ' con-citas';
+                if (fechaStr === hoyStr) clases += ' hoy';
+                if (fechaStr === fechaCitaFiltro) clases += ' seleccionado';
+
+                const badge = cantidad > 0 ? `<span class="badge-citas">${cantidad}</span>` : '';
+                const click = cantidad > 0 ? ` onclick="seleccionarFechaCita('${fechaStr}')"` : '';
+                html += `<div class="${clases}"${click}>${dia}${badge}</div>`;
+            }
+
+            grid.innerHTML = html;
+
+            const citasMes = Object.entries(conteoFechasCache).reduce((sum, [fecha, n]) => {
+                const [y, m] = fecha.split('-').map(Number);
+                return (y === calendarioAnioActual && m === calendarioMesActual + 1) ? sum + n : sum;
+            }, 0);
+            const totalEl = document.getElementById('totalCitasMes');
+            if (totalEl) totalEl.textContent = citasMes > 0 ? `${citasMes} cita(s) este mes` : '';
+        }
+
+        function seleccionarFechaCita(fecha) {
+            fechaCitaFiltro = fecha;
+            document.getElementById('filtroFechaCitaRapido').value = fecha;
+            calendarioVisible = false;
+            document.getElementById('calendarioPapeletasContainer').style.display = 'none';
+            actualizarBotonCalendario();
+            renderizarPapeletas();
+        }
+
+        // ===== PAPELETAS - GUARDAR =====
+        document.getElementById('formPapeleta').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const authOk = await autenticarFirebase();
+            if (!authOk) {
+                mostrarToast('❌ Error de autenticación. Intenta recargar la página.', 'error');
+                return;
+            }
+            
+            const datos = {
+                nombre: document.getElementById('p_nombre').value.trim(),
+                lugar: document.getElementById('p_lugar').value.trim(),
+                fechaHora: document.getElementById('p_fechaHora').value,
+                supervisor: document.getElementById('p_supervisor').value,
+                clave: document.getElementById('p_clave').value.trim(),
+                hora: document.getElementById('p_hora').value,
+                sr: {
+                    nombre: document.getElementById('p_sr_nombre').value.trim(),
+                    edad: document.getElementById('p_sr_edad').value,
+                    ocupacion: document.getElementById('p_sr_ocupacion').value.trim()
+                },
+                sra: {
+                    nombre: document.getElementById('p_sra_nombre').value.trim(),
+                    edad: document.getElementById('p_sra_edad').value,
+                    ocupacion: document.getElementById('p_sra_ocupacion').value.trim()
+                },
+                estadoCivil: document.getElementById('p_estadoCivil').value,
+                adultos: parseInt(document.getElementById('p_adultos').value) || 0,
+                menores: parseInt(document.getElementById('p_menores').value) || 0,
+                telefonos: {
+                    casa: document.getElementById('p_casa').value.trim(),
+                    srOficina: document.getElementById('p_sr_oficina').value.trim(),
+                    srCelular: document.getElementById('p_sr_celular').value.trim(),
+                    sraOficina: document.getElementById('p_sra_oficina').value.trim(),
+                    sraCelular: document.getElementById('p_sra_celular').value.trim()
+                },
+                ingresos: document.getElementById('p_ingresos').value.trim(),
+                tarjetas: document.getElementById('p_tarjetas').value.trim(),
+                fechaLlamada: document.getElementById('p_fechaLlamada').value,
+                email: document.getElementById('p_email').value.trim(),
+                base: document.getElementById('p_base').value.trim(),
+                notas: document.getElementById('p_notas').value.trim(),
+                fechaCreacion: new Date().toISOString()
+            };
+
+            if (!datos.nombre) {
+                mostrarToast('⚠️ El campo "Nombre del Operador" es obligatorio', 'error');
+                return;
+            }
+            if (!datos.supervisor) {
+                mostrarToast('⚠️ Selecciona un supervisor', 'error');
+                return;
+            }
+
+            try {
+                const newRef = database.ref('papeletas').push();
+                await newRef.set(datos);
+                mostrarToast('✅ Papeleta guardada correctamente');
+                limpiarFormularioPapeleta();
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al guardar:', error);
+                if (error.message && error.message.includes('permission_denied')) {
+                    mostrarToast('🔄 Reintentando autenticación...', 'info');
+                    autenticado = false;
+                    const reAuth = await autenticarFirebase();
+                    if (reAuth) {
+                        try {
+                            const newRef = database.ref('papeletas').push();
+                            await newRef.set(datos);
+                            mostrarToast('✅ Papeleta guardada correctamente');
+                            limpiarFormularioPapeleta();
+                            cargarPapeletas();
+                        } catch (retryError) {
+                            mostrarToast('❌ Error al guardar: ' + retryError.message, 'error');
+                        }
+                    } else {
+                        mostrarToast('❌ No se pudo autenticar. Revisa tu conexión.', 'error');
+                    }
+                } else {
+                    mostrarToast('❌ Error al guardar: ' + error.message, 'error');
+                }
+            }
+        });
+
+        // ===== PAPELETAS - OTRAS FUNCIONES =====
         function mostrarPapeletaCompleta(id) {
             const papeleta = papeletasCache.find(p => p.id === id);
             if (!papeleta) {
@@ -3367,355 +3830,6 @@
             }
         }
 
-        // ===== CARGAR PAPELETAS =====
-        async function cargarPapeletas() {
-            if (!papeletasDesbloqueado) return;
-            
-            try {
-                const snapshot = await database.ref('papeletas').once('value');
-                const data = snapshot.val();
-                
-                if (!data) {
-                    papeletasCache = [];
-                    papeletasSupCache = [];
-                    conteoFechasCache = {};
-                    document.getElementById('tablaPapeletasBody').innerHTML = 
-                        '<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">No hay papeletas guardadas</td></tr>';
-                    document.getElementById('totalPapeletas').textContent = '(0)';
-                    return;
-                }
-
-                papeletasCache = Object.entries(data).map(([id, values]) => ({
-                    id,
-                    ...values
-                }));
-
-                papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
-                actualizarCachePapeletasSupervisor();
-                renderizarPapeletas();
-
-            } catch (error) {
-                console.error('Error cargando papeletas:', error);
-                mostrarToast('❌ Error al cargar papeletas', 'error');
-            }
-        }
-
-        // ===== RENDERIZAR PAPELETAS OPTIMIZADO =====
-        function renderizarPapeletas() {
-            if (!papeletasDesbloqueado) return;
-            
-            clearTimeout(renderTimeout);
-            renderTimeout = setTimeout(() => {
-                const tbody = document.getElementById('tablaPapeletasBody');
-                const filtradas = obtenerPapeletasFiltradas();
-                actualizarBannerFecha(filtradas);
-
-                if (!filtradas || !filtradas.length) {
-                    const msg = fechaCitaFiltro
-                        ? 'No hay papeletas con cita en esta fecha'
-                        : 'No hay papeletas que coincidan con los filtros';
-                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">${msg}</td></tr>`;
-                    return;
-                }
-
-                // Usar fragment para mejor rendimiento
-                const fragment = document.createDocumentFragment();
-                
-                filtradas.forEach((p, index) => {
-                    const tr = document.createElement('tr');
-                    const tel = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
-                    const fecha = formatearFechaCorta(p.fechaHora);
-                    
-                    const tieneConfirmacion = p.asistenciaConfirmada === true;
-                    const esIncontactable = p.incontactable === true;
-                    const tieneReprogramacion = p.fechaReprogramacion ? true : false;
-                    
-                    let estadoBadge = '';
-                    if (tieneConfirmacion) estadoBadge = '<span style="color:#16a34a; font-weight:bold;">✅</span>';
-                    else if (esIncontactable) estadoBadge = '<span style="color:#dc2626; font-weight:bold;">📵</span>';
-                    else if (tieneReprogramacion) estadoBadge = '<span style="color:#f59e0b; font-weight:bold;">🔄</span>';
-                    
-                    tr.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong> ${estadoBadge}</td>
-                        <td>${escaparHtml(tel)}</td>
-                        <td>${escaparHtml(p.supervisor || '-')}</td>
-                        <td>${escaparHtml(fecha)}</td>
-                        <td>${escaparHtml(p.estadoCivil || '-')}</td>
-                        <td>👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores</td>
-                        <td style="min-width: 200px;">
-                            <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')" title="Ver detalles">VER</button>
-                            <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')" title="Confirmación final">✅ Conf</button>
-                            <button class="btn-confirmar-asistencia" onclick="confirmarAsistencia('${p.id}')" title="Confirmar asistencia">📋 Asist</button>
-                            <button class="btn-incontactable" onclick="marcarIncontactable('${p.id}')" title="Marcar como incontactable">📵 No</button>
-                            <button class="btn-reprogramar" onclick="mostrarReprogramar('${p.id}')" title="Reprogramar cita">🔄 Repro</button>
-                            <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')" title="Eliminar">🗑️</button>
-                        </td>
-                    `;
-                    fragment.appendChild(tr);
-                });
-
-                tbody.innerHTML = '';
-                tbody.appendChild(fragment);
-            }, 150);
-        }
-
-        function obtenerPapeletasFiltradas() {
-            const busqueda = document.getElementById('filtroPapeletasBuscar').value.trim().toLowerCase();
-            let filtradas = papeletasSupCache.length ? papeletasSupCache : papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
-
-            if (fechaCitaFiltro) {
-                filtradas = filtradas.filter(p => obtenerFechaCitaPapeleta(p) === fechaCitaFiltro);
-            }
-
-            if (busqueda) {
-                filtradas = filtradas.filter(p => {
-                    const nombre = (p.nombre || '').toLowerCase();
-                    const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
-                    return nombre.includes(busqueda) || telefono.includes(busqueda);
-                });
-            }
-            return filtradas;
-        }
-
-        function actualizarCachePapeletasSupervisor() {
-            if (!supervisorPapeletasAuth) {
-                papeletasSupCache = [];
-                conteoFechasCache = {};
-                return;
-            }
-            papeletasSupCache = papeletasCache.filter(p => p.supervisor === supervisorPapeletasAuth);
-            conteoFechasCache = {};
-            papeletasSupCache.forEach(p => {
-                const fecha = obtenerFechaCitaPapeleta(p);
-                if (fecha) conteoFechasCache[fecha] = (conteoFechasCache[fecha] || 0) + 1;
-            });
-            document.getElementById('totalPapeletas').textContent = `(${papeletasSupCache.length})`;
-        }
-
-        function actualizarBotonCalendario() {
-            const btn = document.getElementById('btnToggleCalendario');
-            if (!btn) return;
-            if (calendarioVisible) {
-                btn.textContent = '✕ Cerrar calendario';
-                btn.classList.add('activo');
-            } else {
-                btn.textContent = '📅 Ver calendario';
-                btn.classList.remove('activo');
-            }
-        }
-
-        function actualizarBannerFecha(filtradas) {
-            const banner = document.getElementById('fechaCitaBanner');
-            if (!fechaCitaFiltro) {
-                banner.style.display = 'none';
-                return;
-            }
-            document.getElementById('fechaCitaBannerTexto').textContent = formatearFechaCorta(fechaCitaFiltro);
-            document.getElementById('fechaCitaBannerCount').textContent = filtradas.length;
-            banner.style.display = 'flex';
-        }
-
-        function limpiarFiltroFecha() {
-            fechaCitaFiltro = '';
-            document.getElementById('filtroFechaCitaRapido').value = '';
-            document.getElementById('fechaCitaBanner').style.display = 'none';
-            if (calendarioVisible) renderizarCalendarioPapeletas();
-            renderizarPapeletas();
-        }
-
-        function filtrarPapeletas() {
-            renderizarPapeletas();
-        }
-
-        // ===== CALENDARIO DE CITAS EN PAPELETAS =====
-        function toggleCalendarioPapeletas() {
-            calendarioVisible = !calendarioVisible;
-            const container = document.getElementById('calendarioPapeletasContainer');
-            container.style.display = calendarioVisible ? 'block' : 'none';
-            actualizarBotonCalendario();
-            if (calendarioVisible) {
-                actualizarCachePapeletasSupervisor();
-                renderizarCalendarioPapeletas();
-            }
-        }
-
-        function renderizarCalendarioPapeletas() {
-            if (!papeletasDesbloqueado || !calendarioVisible) return;
-
-            const grid = document.getElementById('calendarioPapeletasGrid');
-            const mesLabel = document.getElementById('calendarioPapeletasMes');
-            if (!grid || !mesLabel) return;
-
-            if (!conteoFechasCache) actualizarCachePapeletasSupervisor();
-
-            mesLabel.textContent = `${MESES_ES[calendarioMesActual]} ${calendarioAnioActual}`;
-
-            const hoy = new Date();
-            const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
-
-            const ultimoDia = new Date(calendarioAnioActual, calendarioMesActual + 1, 0).getDate();
-            const inicioSemana = new Date(calendarioAnioActual, calendarioMesActual, 1).getDay();
-
-            let html = DIAS_ES.map(d => `<div class="calendario-dia-nombre">${d}</div>`).join('');
-            html += '<div class="calendario-dia vacio"></div>'.repeat(inicioSemana);
-
-            for (let dia = 1; dia <= ultimoDia; dia++) {
-                const fechaStr = `${calendarioAnioActual}-${String(calendarioMesActual+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-                const cantidad = conteoFechasCache[fechaStr] || 0;
-                let clases = 'calendario-dia';
-                if (cantidad > 0) clases += ' con-citas';
-                if (fechaStr === hoyStr) clases += ' hoy';
-                if (fechaStr === fechaCitaFiltro) clases += ' seleccionado';
-
-                const badge = cantidad > 0 ? `<span class="badge-citas">${cantidad}</span>` : '';
-                const click = cantidad > 0 ? ` onclick="seleccionarFechaCita('${fechaStr}')"` : '';
-                html += `<div class="${clases}"${click}>${dia}${badge}</div>`;
-            }
-
-            grid.innerHTML = html;
-
-            const citasMes = Object.entries(conteoFechasCache).reduce((sum, [fecha, n]) => {
-                const [y, m] = fecha.split('-').map(Number);
-                return (y === calendarioAnioActual && m === calendarioMesActual + 1) ? sum + n : sum;
-            }, 0);
-            const totalEl = document.getElementById('totalCitasMes');
-            if (totalEl) totalEl.textContent = citasMes > 0 ? `${citasMes} cita(s) este mes` : '';
-        }
-
-        function seleccionarFechaCita(fecha) {
-            fechaCitaFiltro = fecha;
-            document.getElementById('filtroFechaCitaRapido').value = fecha;
-            calendarioVisible = false;
-            document.getElementById('calendarioPapeletasContainer').style.display = 'none';
-            actualizarBotonCalendario();
-            renderizarPapeletas();
-        }
-
-        // ===== GUARDAR PAPELETA =====
-        document.getElementById('formPapeleta').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const authOk = await autenticarFirebase();
-            if (!authOk) {
-                mostrarToast('❌ Error de autenticación. Intenta recargar la página.', 'error');
-                return;
-            }
-            
-            const datos = {
-                nombre: document.getElementById('p_nombre').value.trim(),
-                lugar: document.getElementById('p_lugar').value.trim(),
-                fechaHora: document.getElementById('p_fechaHora').value,
-                supervisor: document.getElementById('p_supervisor').value,
-                clave: document.getElementById('p_clave').value.trim(),
-                hora: document.getElementById('p_hora').value,
-                sr: {
-                    nombre: document.getElementById('p_sr_nombre').value.trim(),
-                    edad: document.getElementById('p_sr_edad').value,
-                    ocupacion: document.getElementById('p_sr_ocupacion').value.trim()
-                },
-                sra: {
-                    nombre: document.getElementById('p_sra_nombre').value.trim(),
-                    edad: document.getElementById('p_sra_edad').value,
-                    ocupacion: document.getElementById('p_sra_ocupacion').value.trim()
-                },
-                estadoCivil: document.getElementById('p_estadoCivil').value,
-                adultos: parseInt(document.getElementById('p_adultos').value) || 0,
-                menores: parseInt(document.getElementById('p_menores').value) || 0,
-                telefonos: {
-                    casa: document.getElementById('p_casa').value.trim(),
-                    srOficina: document.getElementById('p_sr_oficina').value.trim(),
-                    srCelular: document.getElementById('p_sr_celular').value.trim(),
-                    sraOficina: document.getElementById('p_sra_oficina').value.trim(),
-                    sraCelular: document.getElementById('p_sra_celular').value.trim()
-                },
-                ingresos: document.getElementById('p_ingresos').value.trim(),
-                tarjetas: document.getElementById('p_tarjetas').value.trim(),
-                fechaLlamada: document.getElementById('p_fechaLlamada').value,
-                email: document.getElementById('p_email').value.trim(),
-                base: document.getElementById('p_base').value.trim(),
-                notas: document.getElementById('p_notas').value.trim(),
-                fechaCreacion: new Date().toISOString()
-            };
-
-            if (!datos.nombre) {
-                mostrarToast('⚠️ El campo "Nombre del Operador" es obligatorio', 'error');
-                return;
-            }
-            if (!datos.supervisor) {
-                mostrarToast('⚠️ Selecciona un supervisor', 'error');
-                return;
-            }
-
-            try {
-                const newRef = database.ref('papeletas').push();
-                await newRef.set(datos);
-                mostrarToast('✅ Papeleta guardada correctamente');
-                limpiarFormularioPapeleta();
-                cargarPapeletas();
-            } catch (error) {
-                console.error('Error al guardar:', error);
-                if (error.message && error.message.includes('permission_denied')) {
-                    mostrarToast('🔄 Reintentando autenticación...', 'info');
-                    autenticado = false;
-                    const reAuth = await autenticarFirebase();
-                    if (reAuth) {
-                        try {
-                            const newRef = database.ref('papeletas').push();
-                            await newRef.set(datos);
-                            mostrarToast('✅ Papeleta guardada correctamente');
-                            limpiarFormularioPapeleta();
-                            cargarPapeletas();
-                        } catch (retryError) {
-                            mostrarToast('❌ Error al guardar: ' + retryError.message, 'error');
-                        }
-                    } else {
-                        mostrarToast('❌ No se pudo autenticar. Revisa tu conexión.', 'error');
-                    }
-                } else {
-                    mostrarToast('❌ Error al guardar: ' + error.message, 'error');
-                }
-            }
-        });
-
-        // ===== LISTENER EN TIEMPO REAL OPTIMIZADO =====
-        let papeletasListener = null;
-
-        function iniciarListenerPapeletas() {
-            if (papeletasListener) return;
-            
-            papeletasListener = database.ref('papeletas').on('value', (snapshot) => {
-                clearTimeout(listenerTimeout);
-                listenerTimeout = setTimeout(() => {
-                    const data = snapshot.val();
-                    if (!data) {
-                        papeletasCache = [];
-                        papeletasSupCache = [];
-                        conteoFechasCache = {};
-                        if (papeletasDesbloqueado && document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
-                            document.getElementById('tablaPapeletasBody').innerHTML = 
-                                '<tr><td colspan="8" style="text-align:center; color:rgba(255,255,255,0.7);">No hay papeletas guardadas</td></tr>';
-                            document.getElementById('totalPapeletas').textContent = '(0)';
-                            if (calendarioVisible) renderizarCalendarioPapeletas();
-                        }
-                        return;
-                    }
-
-                    papeletasCache = Object.entries(data).map(([id, values]) => ({ id, ...values }));
-                    papeletasCache.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
-
-                    if (papeletasDesbloqueado) {
-                        actualizarCachePapeletasSupervisor();
-                        if (document.getElementById('pestana-mis-papeletas').classList.contains('active')) {
-                            renderizarPapeletas();
-                            if (calendarioVisible) renderizarCalendarioPapeletas();
-                        }
-                    }
-                    listenerTimeout = null;
-                }, 500);
-            });
-        }
-
         // ===== ESTADÍSTICAS PAPELETAS =====
         async function mostrarEstadisticasPapeletas() {
             try {
@@ -3910,7 +4024,7 @@
             }
         }
 
-        // ===== SUPERVISORES INACTIVOS =====
+        // ===== SUPERVISORES INACTIVOS CON FILTRO DE CITAS =====
         async function mostrarSupervisoresInactivos() {
             try {
                 const snapshot = await database.ref('registrosPremanifiesto').once('value');
@@ -3921,101 +4035,196 @@
                 }
 
                 let todasCitas = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+                citasInactivosCache = todasCitas;
                 
-                const estadisticasInactivos = {};
-                let totalCitasInactivos = 0;
-                
-                SUPERVISORES_INACTIVOS.forEach(supervisor => {
-                    estadisticasInactivos[supervisor] = {
-                        total: 0,
-                        llegaron: 0,
-                        noLlegaron: 0,
-                        sinMarcar: 0
-                    };
-                });
-                
-                todasCitas.forEach(cita => {
-                    const supervisor = cita.supervisora || '';
-                    if (SUPERVISORES_INACTIVOS.includes(supervisor)) {
-                        estadisticasInactivos[supervisor].total++;
-                        totalCitasInactivos++;
-                        
-                        if (cita.asistencia === 'Llegó') {
-                            estadisticasInactivos[supervisor].llegaron++;
-                        } else if (cita.asistencia === 'No llegó') {
-                            estadisticasInactivos[supervisor].noLlegaron++;
-                        } else {
-                            estadisticasInactivos[supervisor].sinMarcar++;
-                        }
-                    }
-                });
-                
-                const inactivosArray = Object.entries(estadisticasInactivos).map(([supervisor, stats]) => ({
-                    supervisor,
-                    ...stats
-                })).sort((a, b) => b.total - a.total);
+                const fechasDisponibles = [...new Set(todasCitas.map(c => c.diaEvento).filter(Boolean))].sort();
                 
                 let html = `
-                    <div style="margin-bottom: 20px; padding: 15px; background: rgba(254,242,242,0.4); backdrop-filter:blur(5px); border-radius: 12px; border-left: 4px solid #dc2626;">
-                        <p style="margin: 0;"><strong>🚫 Supervisores que ya no están activos</strong></p>
+                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(254,242,242,0.4); backdrop-filter:blur(5px); border-radius: 12px; border-left: 4px solid #dc2626;">
+                        <p style="margin: 0;"><strong>🚫 Supervisores Inactivos</strong></p>
                         <p style="margin: 5px 0 0 0; font-size: 0.9rem; color: #64748b;">
-                            Total de citas asignadas: <strong style="color: #dc2626;">${totalCitasInactivos}</strong>
+                            ${SUPERVISORES_INACTIVOS.join(', ')}
                         </p>
                     </div>
-                    <div style="overflow-x: auto;">
-                        <table class="tabla-inactivos">
-                            <thead>
-                                <tr>
-                                    <th>Supervisor Inactivo</th>
-                                    <th>Total Citas</th>
-                                    <th>✅ Llegaron</th>
-                                    <th>❌ No llegaron</th>
-                                    <th>⚪ Sin marcar</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+                    
+                    <div class="filtro-inactivos">
+                        <div>
+                            <label><strong>📅 Fecha:</strong></label>
+                            <select id="filtroFechaInactivos">
+                                <option value="">Todas las fechas</option>
                 `;
                 
-                if (inactivosArray.every(s => s.total === 0)) {
-                    html += `
-                        <tr>
-                            <td colspan="6" style="text-align:center; padding: 30px; color: #64748b;">
-                                ✅ No hay citas asignadas a supervisores inactivos
-                            </td>
-                        </tr>
-                    `;
-                } else {
-                    inactivosArray.forEach(stat => {
-                        const sinMarcarClass = stat.sinMarcar > 0 ? 'sin-marcar' : '';
-                        
-                        html += `
-                            <tr>
-                                <td style="text-align:left; font-weight:bold;">${stat.supervisor}</td>
-                                <td><strong>${stat.total}</strong></td>
-                                <td style="color:#2e7d32;">${stat.llegaron}</td>
-                                <td style="color:#c62828;">${stat.noLlegaron}</td>
-                                <td class="${sinMarcarClass}">${stat.sinMarcar}</td>
-                                <td>
-                                    <span class="inactivo-tag">INACTIVO</span>
-                                    ${stat.total > 0 ? ` <span style="font-size:0.75rem; color:#dc2626;">⚠️ ${stat.total} cita(s)</span>` : ''}
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
+                fechasDisponibles.forEach(fecha => {
+                    const fechaFormateada = formatearFechaCorta(fecha);
+                    html += `<option value="${fecha}">${fechaFormateada}</option>`;
+                });
                 
                 html += `
-                        </tbody>
-                    </table>
-                </div>
+                            </select>
+                        </div>
+                        <div>
+                            <label><strong>👩‍💼 Supervisor:</strong></label>
+                            <select id="filtroSupervisorInactivos">
+                                <option value="">Todos</option>
+                `;
+                
+                SUPERVISORES_INACTIVOS.forEach(sup => {
+                    html += `<option value="${sup}">${sup}</option>`;
+                });
+                
+                html += `
+                            </select>
+                        </div>
+                        <div>
+                            <label><strong>Estado:</strong></label>
+                            <select id="filtroEstadoInactivos">
+                                <option value="">Todos</option>
+                                <option value="Llegó">✅ Llegó</option>
+                                <option value="No llegó">❌ No llegó</option>
+                                <option value="Sin registrar">⚪ Sin registrar</option>
+                            </select>
+                        </div>
+                        <button id="btnAplicarFiltroInactivos" class="btn-buscar">🔍 Filtrar</button>
+                        <button id="btnLimpiarFiltroInactivos" class="btn-limpiar-busqueda">✖️ Limpiar</button>
+                    </div>
+                    
+                    <div id="listaCitasInactivas">
+                        <p style="text-align:center; color:#64748b;">Selecciona los filtros y presiona "Filtrar"</p>
+                    </div>
                 `;
                 
                 document.getElementById('contenidoInactivos').innerHTML = html;
                 
+                document.getElementById('btnAplicarFiltroInactivos').addEventListener('click', aplicarFiltroInactivos);
+                document.getElementById('btnLimpiarFiltroInactivos').addEventListener('click', () => {
+                    document.getElementById('filtroFechaInactivos').value = '';
+                    document.getElementById('filtroSupervisorInactivos').value = '';
+                    document.getElementById('filtroEstadoInactivos').value = '';
+                    aplicarFiltroInactivos();
+                });
+                
+                aplicarFiltroInactivos();
+                
             } catch (error) {
                 console.error("Error:", error);
                 document.getElementById('contenidoInactivos').innerHTML = '<p style="color:red;">Error al cargar los supervisores inactivos</p>';
+            }
+        }
+
+        function aplicarFiltroInactivos() {
+            const fechaFiltro = document.getElementById('filtroFechaInactivos').value;
+            const supervisorFiltro = document.getElementById('filtroSupervisorInactivos').value;
+            const estadoFiltro = document.getElementById('filtroEstadoInactivos').value;
+            
+            let citasFiltradas = citasInactivosCache.filter(cita => {
+                if (!SUPERVISORES_INACTIVOS.includes(cita.supervisora)) return false;
+                
+                if (fechaFiltro && cita.diaEvento !== fechaFiltro) return false;
+                
+                if (supervisorFiltro && cita.supervisora !== supervisorFiltro) return false;
+                
+                if (estadoFiltro) {
+                    const estadoActual = cita.asistencia || 'Sin registrar';
+                    if (estadoFiltro === 'Sin registrar' && estadoActual !== 'Sin registrar') return false;
+                    if (estadoFiltro !== 'Sin registrar' && estadoActual !== estadoFiltro) return false;
+                }
+                
+                return true;
+            });
+            
+            citasFiltradas.sort((a, b) => {
+                if (a.diaEvento !== b.diaEvento) return (a.diaEvento || '').localeCompare(b.diaEvento || '');
+                return (a.hora || '').localeCompare(b.hora || '');
+            });
+            
+            const container = document.getElementById('listaCitasInactivas');
+            
+            if (citasFiltradas.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:30px; color:#64748b;">
+                        ✅ No hay citas asignadas a supervisores inactivos con estos filtros
+                    </div>
+                `;
+                return;
+            }
+            
+            const total = citasFiltradas.length;
+            const llegaron = citasFiltradas.filter(c => c.asistencia === 'Llegó').length;
+            const noLlegaron = citasFiltradas.filter(c => c.asistencia === 'No llegó').length;
+            const sinMarcar = citasFiltradas.filter(c => !c.asistencia || c.asistencia === 'Sin registrar').length;
+            
+            let html = `
+                <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:15px; padding:12px; background:rgba(255,255,255,0.3); backdrop-filter:blur(5px); border-radius:10px;">
+                    <span><strong>📋 Total:</strong> ${total}</span>
+                    <span style="color:#2e7d32;"><strong>✅ Llegaron:</strong> ${llegaron}</span>
+                    <span style="color:#c62828;"><strong>❌ No llegaron:</strong> ${noLlegaron}</span>
+                    <span style="color:#e65100;"><strong>⚪ Sin marcar:</strong> ${sinMarcar}</span>
+                </div>
+                <div style="max-height: 400px; overflow-y: auto;">
+            `;
+            
+            citasFiltradas.forEach(cita => {
+                const estadoAsistencia = cita.asistencia || 'Sin registrar';
+                const estadoColor = estadoAsistencia === 'Llegó' ? '✅' : 
+                                   estadoAsistencia === 'No llegó' ? '❌' : '⚪';
+                const estadoClass = estadoAsistencia === 'Llegó' ? 'estado-llego' : 
+                                   estadoAsistencia === 'No llegó' ? 'estado-no-llego' : 'sin-registro';
+                
+                html += `
+                    <div class="cita-item-inactivo">
+                        <div class="cita-info">
+                            <div class="nombre">${cita.nombre || 'Sin nombre'}</div>
+                            <div class="detalle">
+                                📅 ${formatearFechaCorta(cita.diaEvento)} | ⏰ ${cita.hora || '-'} | 
+                                👩‍💼 ${cita.supervisora || '-'}
+                                <span class="badge-inactivo">INACTIVO</span>
+                            </div>
+                            <div class="detalle">
+                                📞 ${cita.telefono || '-'} | 🏨 ${cita.hotel || '-'} | 
+                                <span class="asistencia-estado ${estadoClass}">${estadoColor} ${estadoAsistencia}</span>
+                            </div>
+                        </div>
+                        <div class="cita-acciones">
+                            ${cita.asistencia !== 'Llegó' ? `
+                                <button class="btn-marcar-llego" onclick="marcarAsistenciaInactivo('${cita.id}', 'Llegó')">✅ Llegó</button>
+                            ` : ''}
+                            ${cita.asistencia !== 'No llegó' ? `
+                                <button class="btn-marcar-no-llego" onclick="marcarAsistenciaInactivo('${cita.id}', 'No llegó')">❌ No llegó</button>
+                            ` : ''}
+                            ${cita.asistencia ? `
+                                <button class="btn-pendiente" onclick="marcarAsistenciaInactivo('${cita.id}', null)">⏳ Pendiente</button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        async function marcarAsistenciaInactivo(id, estado) {
+            try {
+                if (estado === null) {
+                    await database.ref(`registrosPremanifiesto/${id}`).update({
+                        asistencia: null,
+                        fechaRegistroAsistencia: null
+                    });
+                    mostrarToast('⏳ Marcado como pendiente');
+                } else {
+                    await database.ref(`registrosPremanifiesto/${id}`).update({
+                        asistencia: estado,
+                        fechaRegistroAsistencia: new Date().toISOString()
+                    });
+                    mostrarToast(`✅ Asistencia: ${estado}`);
+                }
+                aplicarFiltroInactivos();
+                if (document.getElementById('pestana-panel').classList.contains('active')) {
+                    cargarCitasPorFecha();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarToast('❌ Error al actualizar', 'error');
             }
         }
 
@@ -4240,9 +4449,11 @@
             const llegaron = citasFiltradasActuales.filter(c => c.asistencia === 'Llegó').length;
             const noLlegaron = citasFiltradasActuales.filter(c => c.asistencia === 'No llegó').length;
             const citasAgendadas = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Cita').length;
-            const citasDeNuevo = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Cita de nuevo').length;
+            const rpx2 = citasFiltradasActuales.filter(c => c.estadoLlamada === 'RPx2').length;
+            const rpx3 = citasFiltradasActuales.filter(c => c.estadoLlamada === 'RPx3').length;
             const contestaron = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Contestó').length;
             const noContesto = citasFiltradasActuales.filter(c => c.estadoLlamada === 'No contestó').length;
+            const pendientes = citasFiltradasActuales.filter(c => c.estadoLlamada === 'Pendiente').length;
 
             const resumen = [
                 { "REPORTE DE SEGUIMIENTO - DESTINATION CONNECT": "" },
@@ -4253,10 +4464,12 @@
                 { "Total citas": citasFiltradasActuales.length },
                 { "Llegaron": llegaron },
                 { "No llegaron": noLlegaron },
-                { "Citas agendadas (por llamada)": citasAgendadas },
-                { "Citas de nuevo (reagendadas)": citasDeNuevo },
+                { "Citas (agendadas)": citasAgendadas },
+                { "RPx2 (reagendadas 2 veces)": rpx2 },
+                { "RPx3 (reagendadas 3 veces - eliminadas)": rpx3 },
                 { "Contestaron (sin cita aún)": contestaron },
                 { "No contestaron": noContesto },
+                { "Pendientes": pendientes },
                 {},
                 { "--- DETALLE DE CITAS ---": "" }
             ];
@@ -4605,7 +4818,6 @@
         const modalReporteMensual = document.getElementById('modalReporteMensual');
         const modalVentas = document.getElementById('modalVentas');
 
-        // Cerrar modales al hacer click fuera
         window.addEventListener('click', (e) => {
             if (e.target === modalEstadisticas) modalEstadisticas.style.display = 'none';
             if (e.target === modalInactivos) modalInactivos.style.display = 'none';
@@ -4622,7 +4834,6 @@
             }
         });
 
-        // Cerrar modales con botones
         document.querySelector('.cerrar-estadisticas').addEventListener('click', () => { modalEstadisticas.style.display = 'none'; });
         document.querySelector('.cerrar-inactivos').addEventListener('click', () => { modalInactivos.style.display = 'none'; });
         document.querySelector('.cerrar-reporte-mensual').addEventListener('click', () => { modalReporteMensual.style.display = 'none'; });
@@ -4636,7 +4847,6 @@
         document.getElementById('cerrarReprogramar').addEventListener('click', cerrarReprogramar);
 
         // ========== EVENT LISTENERS PRINCIPALES ==========
-        // Panel principal
         document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasPorFecha);
         document.getElementById('recargarBtn').addEventListener('click', () => {
             if (fechaSeleccionada) cargarCitasPorFecha();
@@ -4647,7 +4857,6 @@
         document.getElementById('buscarBtn').addEventListener('click', buscarPorNombreOTelefono);
         document.getElementById('limpiarBusquedaBtn').addEventListener('click', limpiarBusqueda);
 
-        // Debounce para búsqueda en tiempo real
         document.getElementById('buscarInput').addEventListener('input', () => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(buscarPorNombreOTelefono, 500);
@@ -4659,8 +4868,8 @@
             }
         });
 
-        // Botones de acciones
         document.getElementById('descargarExcelBtn').addEventListener('click', descargarExcelProfesional);
+        
         document.getElementById('btnEstadisticasSup').addEventListener('click', () => {
             document.getElementById('contenidoEstadisticas').innerHTML = `
                 <div style="text-align: center; padding: 20px;">
@@ -4717,7 +4926,6 @@
         document.getElementById('btnCargarReporteMes').addEventListener('click', cargarReporteMensual);
         document.getElementById('btnDescargarReporteMes').addEventListener('click', descargarReporteMensualExcel);
 
-        // Papeletas eventos
         document.getElementById('btnFiltrarPapeletas').addEventListener('click', filtrarPapeletas);
         document.getElementById('btnToggleCalendario').addEventListener('click', toggleCalendarioPapeletas);
         document.getElementById('btnLimpiarFechaCita').addEventListener('click', limpiarFiltroFecha);
@@ -4745,7 +4953,6 @@
             cargarPapeletas().then(() => mostrarToast('🔄 Papeletas recargadas'));
         });
 
-        // Calendario navegación
         document.getElementById('calPrevMes').addEventListener('click', () => {
             calendarioMesActual--;
             if (calendarioMesActual < 0) { calendarioMesActual = 11; calendarioAnioActual--; }
@@ -4771,13 +4978,18 @@
         const hoy = new Date().toISOString().split('T')[0];
         document.getElementById('fechaEvento').value = hoy;
 
-        // Iniciar autenticación en segundo plano
         setTimeout(() => autenticarFirebase(), 500);
 
         console.log('✅ CRM Optimizado - Rendimiento mejorado');
         console.log('🔐 Contraseña Panel Principal: admin123');
         console.log('🔐 Contraseña Estadísticas: supervisor2024');
         console.log('🔐 Contraseñas Mis Papeletas: nombre2024 (ej: thalia2024)');
+        console.log('📋 Cambios realizados:');
+        console.log('   ✅ "Cita de nuevo" → "RPx2"');
+        console.log('   ✅ Nuevo botón "RPx3" que BORRA el registro');
+        console.log('   ✅ Botón "Pendiente" para revertir estados');
+        console.log('   ✅ Supervisores Inactivos con filtros y citas');
+        console.log('   ✅ Lista actualizada: YARET NAJERA, MACARENA ZAMORA, PRISCILA GARCIA, ABRAHAM ROLDAN, ISAEL NAVARRO, ARACELI TORRES');
     </script>
 </body>
 </html>
