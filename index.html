@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -2346,23 +2346,44 @@
 
         function formatearFechaCorta(fecha) {
             if (!fecha) return '-';
-            return new Date(fecha).toLocaleDateString('es-MX', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
+            // CORREGIDO: Usar parseo más seguro para evitar problemas de zona horaria
+            try {
+                // Si es una fecha en formato ISO (YYYY-MM-DD), la parseamos directamente
+                if (typeof fecha === 'string' && fecha.match(/^\d{4}-\d{2}-\d{2}/)) {
+                    const partes = fecha.split('-');
+                    const año = parseInt(partes[0]);
+                    const mes = parseInt(partes[1]) - 1;
+                    const dia = parseInt(partes[2]);
+                    return new Date(año, mes, dia).toLocaleDateString('es-MX', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit'
+                    });
+                }
+                return new Date(fecha).toLocaleDateString('es-MX', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            } catch(e) {
+                return '-';
+            }
         }
 
         function formatearFechaHora(fecha) {
             if (!fecha) return '-';
-            return new Date(fecha).toLocaleString('es-MX', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: true
-            });
+            try {
+                return new Date(fecha).toLocaleString('es-MX', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } catch(e) {
+                return '-';
+            }
         }
 
         function convertirHoraAMPM(hora) {
@@ -3274,6 +3295,7 @@
             mesLabel.textContent = `${MESES_ES[calendarioMesActual]} ${calendarioAnioActual}`;
 
             const hoy = new Date();
+            // CORREGIDO: Usar formato YYYY-MM-DD con manejo adecuado de meses
             const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
 
             const ultimoDia = new Date(calendarioAnioActual, calendarioMesActual + 1, 0).getDate();
