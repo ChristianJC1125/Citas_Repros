@@ -519,6 +519,19 @@
             background: linear-gradient(135deg, #1e40af, #1d4ed8);
         }
 
+        .btn-editar-papeleta {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-editar-papeleta:hover {
+            background: linear-gradient(135deg, #b45309, #d97706);
+        }
+
         .btn-eliminar-papeleta {
             background: linear-gradient(135deg, #b91c1c, #dc2626);
             color: white;
@@ -569,6 +582,19 @@
         }
         .btn-incontactable:hover {
             background: linear-gradient(135deg, #991b1b, #b91c1c);
+        }
+
+        .btn-no-asistio {
+            background: linear-gradient(135deg, #b71c1c, #c62828);
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .btn-no-asistio:hover {
+            background: linear-gradient(135deg, #991b1b, #b71c1c);
         }
 
         .btn-reprogramar {
@@ -1255,6 +1281,139 @@
             margin-top: 4px;
         }
 
+        /* ===== MODAL EDITAR PAPELETA ===== */
+        .modal-editar-papeleta {
+            display: none;
+            position: fixed;
+            z-index: 2003;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-editar-papeleta .modal-contenido {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin: 2% auto;
+            padding: 30px 35px;
+            border-radius: 24px;
+            width: 92%;
+            max-width: 800px;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .modal-editar-papeleta .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-editar-papeleta .modal-header h3 {
+            color: #0a2540;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .modal-editar-papeleta .modal-header h3 i {
+            color: #f59e0b;
+            margin-right: 10px;
+        }
+        .modal-editar-papeleta .cerrar-modal-editar {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+        }
+        .modal-editar-papeleta .cerrar-modal-editar:hover {
+            color: #c62828;
+        }
+        .modal-editar-papeleta .campo-editar {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        .modal-editar-papeleta .campo-editar label {
+            font-weight: 600;
+            color: #0a2540;
+            font-size: 0.85rem;
+        }
+        .modal-editar-papeleta .campo-editar input,
+        .modal-editar-papeleta .campo-editar select,
+        .modal-editar-papeleta .campo-editar textarea {
+            padding: 8px 12px;
+            border: 1.5px solid rgba(220, 225, 232, 0.5);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: 0.2s;
+            background: rgba(255,255,255,0.6);
+        }
+        .modal-editar-papeleta .campo-editar input:focus,
+        .modal-editar-papeleta .campo-editar select:focus,
+        .modal-editar-papeleta .campo-editar textarea:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+            background: rgba(255,255,255,0.8);
+        }
+        .modal-editar-papeleta .campo-editar textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-editar-papeleta .grid-2-editar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 20px;
+        }
+        .modal-editar-papeleta .grid-2-editar .campo-editar {
+            margin-bottom: 8px;
+        }
+        .modal-editar-papeleta .btn-guardar-edicion {
+            background: linear-gradient(135deg, #d97706, #f59e0b);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .modal-editar-papeleta .btn-guardar-edicion:hover {
+            background: linear-gradient(135deg, #b45309, #d97706);
+        }
+        .modal-editar-papeleta .btn-cancelar-edicion {
+            background: linear-gradient(135deg, #475569, #64748b);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            margin-top: 8px;
+        }
+        .modal-editar-papeleta .btn-cancelar-edicion:hover {
+            background: linear-gradient(135deg, #334155, #475569);
+        }
+
         /* ===== STATS GRID ===== */
         .stats-grid {
             display: grid;
@@ -1735,6 +1894,9 @@
                 margin: 2% auto;
                 padding: 15px;
             }
+            .modal-editar-papeleta .grid-2-editar {
+                grid-template-columns: 1fr;
+            }
         }
         @media (max-width: 500px) {
             .form-papeleta .phone-group {
@@ -1860,6 +2022,19 @@
         </div>
     </div>
 
+    <!-- ===== MODAL EDITAR PAPELETA ===== -->
+    <div id="modalEditarPapeleta" class="modal-editar-papeleta">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3><i class="fas fa-edit"></i> EDITAR PAPELETA</h3>
+                <button class="cerrar-modal-editar" id="cerrarEditarPapeleta">&times;</button>
+            </div>
+            <div id="contenidoEditarPapeleta">
+                <!-- Se llena dinámicamente con JavaScript -->
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================================ -->
     <!-- ===== CONTENEDOR PRINCIPAL ===== -->
     <!-- ============================================================ -->
@@ -1923,12 +2098,13 @@
                             <th style="min-width: 120px;">Operador</th>
                             <th style="min-width: 100px;">Asistencia</th>
                             <th style="min-width: 130px;">Estado Llamada</th>
+                            <th style="min-width: 150px;">Base Datos</th>
                             <th style="min-width: 260px;">Comentarios</th>
                             <th style="min-width: 380px;">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="citasBody">
-                        <tr><td colspan="11" style="text-align:center;">Selecciona una fecha y presiona "Cargar citas"</td></tr>
+                        <tr><td colspan="12" style="text-align:center;">Selecciona una fecha y presiona "Cargar citas"</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -2167,7 +2343,7 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Nombre</th>
+                            <th>Cliente</th>
                             <th>Teléfono</th>
                             <th>Supervisor</th>
                             <th>Fecha</th>
@@ -2293,6 +2469,7 @@
         let papeletasSupCache = [];
         let conteoFechasCache = null;
         let papeletaReprogramarId = null;
+        let papeletaEditarId = null;
         let citasInactivosCache = [];
 
         let renderTimeout = null;
@@ -2346,9 +2523,7 @@
 
         function formatearFechaCorta(fecha) {
             if (!fecha) return '-';
-            // CORREGIDO: Usar parseo más seguro para evitar problemas de zona horaria
             try {
-                // Si es una fecha en formato ISO (YYYY-MM-DD), la parseamos directamente
                 if (typeof fecha === 'string' && fecha.match(/^\d{4}-\d{2}-\d{2}/)) {
                     const partes = fecha.split('-');
                     const año = parseInt(partes[0]);
@@ -2400,6 +2575,22 @@
         function obtenerFechaCitaPapeleta(p) {
             if (!p.fechaHora) return null;
             return p.fechaHora.split('T')[0];
+        }
+
+        function obtenerNombreCliente(papeleta) {
+            if (papeleta.sr?.nombre && papeleta.sra?.nombre) {
+                return `👨 ${papeleta.sr.nombre} (Sr.) 👩 ${papeleta.sra.nombre} (Sra.)`;
+            } else if (papeleta.sr?.nombre) {
+                return `👨 ${papeleta.sr.nombre} (Sr.)`;
+            } else if (papeleta.sra?.nombre) {
+                return `👩 ${papeleta.sra.nombre} (Sra.)`;
+            } else {
+                return papeleta.nombre || 'Sin nombre';
+            }
+        }
+
+        function obtenerTelefonoCliente(papeleta) {
+            return papeleta.telefonos?.srCelular || papeleta.telefonos?.sraCelular || papeleta.telefonos?.casa || '-';
         }
 
         function separarClienteYAcompanante(nombreCompleto) {
@@ -2753,7 +2944,7 @@
         function mostrarCitas(citas) {
             const tbody = document.getElementById('citasBody');
             if (!citas || !citas.length) {
-                tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;">📭 No hay citas para mostrar</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;">📭 No hay citas para mostrar</td></tr>';
                 document.getElementById('resumenContainer').style.display = 'none';
                 return;
             }
@@ -2852,6 +3043,11 @@
                 tdEstadoLlamada.innerHTML = estadoHtml;
                 tr.appendChild(tdEstadoLlamada);
 
+                // Base Datos
+                const tdBase = document.createElement('td');
+                tdBase.textContent = cita.baseDatos || '-';
+                tr.appendChild(tdBase);
+
                 // Comentarios
                 const tdComentarios = document.createElement('td');
                 const textarea = document.createElement('textarea');
@@ -2897,14 +3093,12 @@
                     btnCita.onclick = () => registrarEstadoLlamada(cita.id, 'Cita');
                     tdAcciones.appendChild(btnCita);
                     
-                    // RPx2 - Reemplaza "Cita de nuevo"
                     const btnRPx2 = document.createElement('button');
                     btnRPx2.textContent = '🔄 RPx2';
                     btnRPx2.className = 'btn-rpx2';
                     btnRPx2.onclick = () => registrarEstadoLlamada(cita.id, 'RPx2');
                     tdAcciones.appendChild(btnRPx2);
                     
-                    // RPx3 - Borra el registro
                     const btnRPx3 = document.createElement('button');
                     btnRPx3.textContent = '🔴 RPx3';
                     btnRPx3.className = 'btn-rpx3';
@@ -2923,7 +3117,6 @@
                     btnNoContesto.onclick = () => registrarEstadoLlamada(cita.id, 'No contestó');
                     tdAcciones.appendChild(btnNoContesto);
                     
-                    // Botón Pendiente - para revertir estados
                     const btnPendiente = document.createElement('button');
                     btnPendiente.textContent = '⏳ Pendiente';
                     btnPendiente.className = 'btn-pendiente';
@@ -2938,7 +3131,6 @@
             tbody.innerHTML = '';
             tbody.appendChild(fragment);
 
-            // Actualizar resumen
             const resumenContainer = document.getElementById('resumenContainer');
             resumenContainer.style.display = 'block';
             resumenContainer.innerHTML = `
@@ -3193,30 +3385,35 @@
                 
                 filtradas.forEach((p, index) => {
                     const tr = document.createElement('tr');
-                    const tel = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '-';
+                    const tel = obtenerTelefonoCliente(p);
                     const fecha = formatearFechaCorta(p.fechaHora);
+                    const nombreCliente = obtenerNombreCliente(p);
                     
                     const tieneConfirmacion = p.asistenciaConfirmada === true;
                     const esIncontactable = p.incontactable === true;
+                    const noAsistio = p.noAsistio === true;
                     const tieneReprogramacion = p.fechaReprogramacion ? true : false;
                     
                     let estadoBadge = '';
                     if (tieneConfirmacion) estadoBadge = '<span style="color:#16a34a; font-weight:bold;">✅</span>';
+                    else if (noAsistio) estadoBadge = '<span style="color:#dc2626; font-weight:bold;">❌ No asistió</span>';
                     else if (esIncontactable) estadoBadge = '<span style="color:#dc2626; font-weight:bold;">📵</span>';
                     else if (tieneReprogramacion) estadoBadge = '<span style="color:#f59e0b; font-weight:bold;">🔄</span>';
                     
                     tr.innerHTML = `
                         <td>${index + 1}</td>
-                        <td><strong>${escaparHtml(p.nombre || 'Sin nombre')}</strong> ${estadoBadge}</td>
+                        <td><strong>${escaparHtml(nombreCliente)}</strong> ${estadoBadge}</td>
                         <td>${escaparHtml(tel)}</td>
                         <td>${escaparHtml(p.supervisor || '-')}</td>
                         <td>${escaparHtml(fecha)}</td>
                         <td>${escaparHtml(p.estadoCivil || '-')}</td>
                         <td>👤 ${p.adultos || 0} adultos, 👶 ${p.menores || 0} menores</td>
-                        <td style="min-width: 200px;">
+                        <td style="min-width: 280px;">
                             <button class="btn-ver-papeleta" onclick="mostrarPapeletaCompleta('${p.id}')" title="Ver detalles">VER</button>
+                            <button class="btn-editar-papeleta" onclick="editarPapeleta('${p.id}')" title="Editar papeleta">✏️ Editar</button>
                             <button class="btn-confirmacion-final" onclick="mostrarConfirmacionFinal('${p.id}')" title="Confirmación final">✅ Conf</button>
                             <button class="btn-confirmar-asistencia" onclick="confirmarAsistencia('${p.id}')" title="Confirmar asistencia">📋 Asist</button>
+                            <button class="btn-no-asistio" onclick="marcarNoAsistio('${p.id}')" title="Marcar como No asistió">❌ No</button>
                             <button class="btn-incontactable" onclick="marcarIncontactable('${p.id}')" title="Marcar como incontactable">📵 No</button>
                             <button class="btn-reprogramar" onclick="mostrarReprogramar('${p.id}')" title="Reprogramar cita">🔄 Repro</button>
                             <button class="btn-eliminar-papeleta" onclick="eliminarPapeleta('${p.id}')" title="Eliminar">🗑️</button>
@@ -3241,8 +3438,10 @@
             if (busqueda) {
                 filtradas = filtradas.filter(p => {
                     const nombre = (p.nombre || '').toLowerCase();
+                    const srNombre = (p.sr?.nombre || '').toLowerCase();
+                    const sraNombre = (p.sra?.nombre || '').toLowerCase();
                     const telefono = p.telefonos?.srCelular || p.telefonos?.sraCelular || p.telefonos?.casa || '';
-                    return nombre.includes(busqueda) || telefono.includes(busqueda);
+                    return nombre.includes(busqueda) || srNombre.includes(busqueda) || sraNombre.includes(busqueda) || telefono.includes(busqueda);
                 });
             }
             return filtradas;
@@ -3295,7 +3494,6 @@
             mesLabel.textContent = `${MESES_ES[calendarioMesActual]} ${calendarioAnioActual}`;
 
             const hoy = new Date();
-            // CORREGIDO: Usar formato YYYY-MM-DD con manejo adecuado de meses
             const hoyStr = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}-${String(hoy.getDate()).padStart(2,'0')}`;
 
             const ultimoDia = new Date(calendarioAnioActual, calendarioMesActual + 1, 0).getDate();
@@ -3808,6 +4006,35 @@
             }
         }
 
+        // ===== NO ASISTIÓ =====
+        async function marcarNoAsistio(id) {
+            if (!confirm('❌ ¿Confirmar que esta persona NO ASISTIÓ a la cita?')) return;
+            
+            try {
+                const papeleta = papeletasCache.find(p => p.id === id);
+                if (!papeleta) {
+                    mostrarToast('❌ Papeleta no encontrada', 'error');
+                    return;
+                }
+
+                const comentarioActual = papeleta.notas || '';
+                const nuevoComentario = `❌ NO ASISTIÓ: ${new Date().toLocaleDateString('es-MX')} ${new Date().toLocaleTimeString('es-MX')}\n${comentarioActual}`;
+
+                await database.ref(`papeletas/${id}`).update({
+                    noAsistio: true,
+                    fechaNoAsistio: new Date().toISOString(),
+                    asistenciaConfirmada: false,
+                    notas: nuevoComentario
+                });
+
+                mostrarToast('❌ Marcado como "No asistió" correctamente');
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al marcar No asistió:', error);
+                mostrarToast('❌ Error al marcar No asistió', 'error');
+            }
+        }
+
         // ===== INCONTACTABLE =====
         async function marcarIncontactable(id) {
             const motivo = prompt('📝 Motivo por el cual no se puede contactar:');
@@ -3850,6 +4077,243 @@
                 console.error('Error al eliminar:', error);
                 mostrarToast('❌ Error al eliminar', 'error');
             }
+        }
+
+        // ===== EDITAR PAPELETA =====
+        function editarPapeleta(id) {
+            const papeleta = papeletasCache.find(p => p.id === id);
+            if (!papeleta) {
+                mostrarToast('❌ Papeleta no encontrada', 'error');
+                return;
+            }
+
+            papeletaEditarId = id;
+
+            let html = `
+                <div class="info-cliente-repro" style="border-left-color: #f59e0b;">
+                    <div class="nombre-cliente">✏️ Editando: ${papeleta.nombre || 'Sin nombre'}</div>
+                    <div class="detalle-cliente">👩‍💼 ${papeleta.supervisor || 'Sin supervisor'} | 📅 ${formatearFechaCorta(papeleta.fechaHora)}</div>
+                </div>
+
+                <div class="grid-2-editar">
+                    <div class="campo-editar">
+                        <label>Nombre del Operador *</label>
+                        <input type="text" id="edit_nombre" value="${escaparHtml(papeleta.nombre || '')}" required>
+                    </div>
+                    <div class="campo-editar">
+                        <label>Lugar</label>
+                        <select id="edit_lugar">
+                            <option value="">Seleccionar lugar...</option>
+                            <option value="HOTEL SHERATON" ${papeleta.lugar === 'HOTEL SHERATON' ? 'selected' : ''}>HOTEL SHERATON</option>
+                            <option value="HOTEL FONTAN" ${papeleta.lugar === 'HOTEL FONTAN' ? 'selected' : ''}>HOTEL FONTAN</option>
+                            <option value="RESTAURANTE DAIKOKU" ${papeleta.lugar === 'RESTAURANTE DAIKOKU' ? 'selected' : ''}>RESTAURANTE DAIKOKU</option>
+                        </select>
+                    </div>
+                    <div class="campo-editar">
+                        <label>Fecha</label>
+                        <input type="date" id="edit_fechaHora" value="${papeleta.fechaHora || ''}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>Supervisor *</label>
+                        <select id="edit_supervisor" required>
+                            <option value="">Seleccionar supervisor...</option>
+                            ${supervisoresList.map(s => `<option value="${s}" ${papeleta.supervisor === s ? 'selected' : ''}>${s}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="campo-editar">
+                        <label>Clave</label>
+                        <input type="text" id="edit_clave" value="${escaparHtml(papeleta.clave || 'SF')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>Hora</label>
+                        <input type="time" id="edit_hora" value="${papeleta.hora || ''}">
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 2px dashed rgba(226,232,240,0.5); margin: 16px 0;">
+
+                <div class="grid-2-editar">
+                    <div class="campo-editar">
+                        <label>👨 Sr. Nombre</label>
+                        <input type="text" id="edit_sr_nombre" value="${escaparHtml(papeleta.sr?.nombre || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>Sr. Edad</label>
+                        <input type="number" id="edit_sr_edad" value="${papeleta.sr?.edad || ''}" min="0">
+                    </div>
+                    <div class="campo-editar" style="grid-column: 1 / -1;">
+                        <label>Sr. Ocupación</label>
+                        <input type="text" id="edit_sr_ocupacion" value="${escaparHtml(papeleta.sr?.ocupacion || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>👩 Sra. Nombre</label>
+                        <input type="text" id="edit_sra_nombre" value="${escaparHtml(papeleta.sra?.nombre || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>Sra. Edad</label>
+                        <input type="number" id="edit_sra_edad" value="${papeleta.sra?.edad || ''}" min="0">
+                    </div>
+                    <div class="campo-editar" style="grid-column: 1 / -1;">
+                        <label>Sra. Ocupación</label>
+                        <input type="text" id="edit_sra_ocupacion" value="${escaparHtml(papeleta.sra?.ocupacion || '')}">
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 2px dashed rgba(226,232,240,0.5); margin: 16px 0;">
+
+                <div class="grid-2-editar">
+                    <div class="campo-editar">
+                        <label>Estado Civil</label>
+                        <select id="edit_estadoCivil">
+                            <option value="">Seleccionar...</option>
+                            <option ${papeleta.estadoCivil === 'Soltero/a' ? 'selected' : ''}>Soltero/a</option>
+                            <option ${papeleta.estadoCivil === 'Casado/a' ? 'selected' : ''}>Casado/a</option>
+                            <option ${papeleta.estadoCivil === 'Divorciado/a' ? 'selected' : ''}>Divorciado/a</option>
+                            <option ${papeleta.estadoCivil === 'Viudo/a' ? 'selected' : ''}>Viudo/a</option>
+                            <option ${papeleta.estadoCivil === 'Unión libre' ? 'selected' : ''}>Unión libre</option>
+                        </select>
+                    </div>
+                    <div class="campo-editar">
+                        <label>Adultos</label>
+                        <input type="number" id="edit_adultos" value="${papeleta.adultos || 0}" min="0">
+                    </div>
+                    <div class="campo-editar">
+                        <label>Menores</label>
+                        <input type="number" id="edit_menores" value="${papeleta.menores || 0}" min="0">
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 2px dashed rgba(226,232,240,0.5); margin: 16px 0;">
+
+                <div class="grid-2-editar">
+                    <div class="campo-editar">
+                        <label>🏠 Casa</label>
+                        <input type="tel" id="edit_casa" value="${escaparHtml(papeleta.telefonos?.casa || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>🏢 Sr. Oficina</label>
+                        <input type="tel" id="edit_sr_oficina" value="${escaparHtml(papeleta.telefonos?.srOficina || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>📱 Sr. Celular</label>
+                        <input type="tel" id="edit_sr_celular" value="${escaparHtml(papeleta.telefonos?.srCelular || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>🏢 Sra. Oficina</label>
+                        <input type="tel" id="edit_sra_oficina" value="${escaparHtml(papeleta.telefonos?.sraOficina || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>📱 Sra. Celular</label>
+                        <input type="tel" id="edit_sra_celular" value="${escaparHtml(papeleta.telefonos?.sraCelular || '')}">
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 2px dashed rgba(226,232,240,0.5); margin: 16px 0;">
+
+                <div class="grid-2-editar">
+                    <div class="campo-editar">
+                        <label>💰 Ingresos</label>
+                        <input type="text" id="edit_ingresos" value="${escaparHtml(papeleta.ingresos || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>💳 Tarjetas</label>
+                        <input type="text" id="edit_tarjetas" value="${escaparHtml(papeleta.tarjetas || '')}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>📞 Fecha Llamada</label>
+                        <input type="date" id="edit_fechaLlamada" value="${papeleta.fechaLlamada || ''}">
+                    </div>
+                    <div class="campo-editar">
+                        <label>✉️ Email</label>
+                        <input type="email" id="edit_email" value="${escaparHtml(papeleta.email || '')}">
+                    </div>
+                    <div class="campo-editar" style="grid-column: 1 / -1;">
+                        <label>📂 Base</label>
+                        <input type="text" id="edit_base" value="${escaparHtml(papeleta.base || '')}">
+                    </div>
+                </div>
+
+                <hr style="border: none; border-top: 2px dashed rgba(226,232,240,0.5); margin: 16px 0;">
+
+                <div class="campo-editar">
+                    <label>📝 COMENTARIOS</label>
+                    <textarea id="edit_notas" rows="4">${escaparHtml(papeleta.notas || '')}</textarea>
+                </div>
+
+                <button class="btn-guardar-edicion" onclick="guardarEdicionPapeleta()">💾 Guardar Cambios</button>
+                <button class="btn-cancelar-edicion" onclick="cerrarEditarPapeleta()">✕ Cancelar</button>
+            `;
+
+            document.getElementById('contenidoEditarPapeleta').innerHTML = html;
+            document.getElementById('modalEditarPapeleta').style.display = 'block';
+        }
+
+        async function guardarEdicionPapeleta() {
+            if (!papeletaEditarId) {
+                mostrarToast('❌ Error: No se encontró la papeleta', 'error');
+                return;
+            }
+
+            const datos = {
+                nombre: document.getElementById('edit_nombre').value.trim(),
+                lugar: document.getElementById('edit_lugar').value,
+                fechaHora: document.getElementById('edit_fechaHora').value,
+                supervisor: document.getElementById('edit_supervisor').value,
+                clave: document.getElementById('edit_clave').value.trim(),
+                hora: document.getElementById('edit_hora').value,
+                sr: {
+                    nombre: document.getElementById('edit_sr_nombre').value.trim(),
+                    edad: document.getElementById('edit_sr_edad').value,
+                    ocupacion: document.getElementById('edit_sr_ocupacion').value.trim()
+                },
+                sra: {
+                    nombre: document.getElementById('edit_sra_nombre').value.trim(),
+                    edad: document.getElementById('edit_sra_edad').value,
+                    ocupacion: document.getElementById('edit_sra_ocupacion').value.trim()
+                },
+                estadoCivil: document.getElementById('edit_estadoCivil').value,
+                adultos: parseInt(document.getElementById('edit_adultos').value) || 0,
+                menores: parseInt(document.getElementById('edit_menores').value) || 0,
+                telefonos: {
+                    casa: document.getElementById('edit_casa').value.trim(),
+                    srOficina: document.getElementById('edit_sr_oficina').value.trim(),
+                    srCelular: document.getElementById('edit_sr_celular').value.trim(),
+                    sraOficina: document.getElementById('edit_sra_oficina').value.trim(),
+                    sraCelular: document.getElementById('edit_sra_celular').value.trim()
+                },
+                ingresos: document.getElementById('edit_ingresos').value.trim(),
+                tarjetas: document.getElementById('edit_tarjetas').value.trim(),
+                fechaLlamada: document.getElementById('edit_fechaLlamada').value,
+                email: document.getElementById('edit_email').value.trim(),
+                base: document.getElementById('edit_base').value.trim(),
+                notas: document.getElementById('edit_notas').value.trim(),
+                fechaEdicion: new Date().toISOString(),
+                editadoPor: supervisorPapeletasAuth
+            };
+
+            if (!datos.nombre) {
+                mostrarToast('⚠️ El campo "Nombre del Operador" es obligatorio', 'error');
+                return;
+            }
+            if (!datos.supervisor) {
+                mostrarToast('⚠️ Selecciona un supervisor', 'error');
+                return;
+            }
+
+            try {
+                await database.ref(`papeletas/${papeletaEditarId}`).update(datos);
+                mostrarToast('✅ Papeleta actualizada correctamente');
+                cerrarEditarPapeleta();
+                cargarPapeletas();
+            } catch (error) {
+                console.error('Error al actualizar:', error);
+                mostrarToast('❌ Error al actualizar: ' + error.message, 'error');
+            }
+        }
+
+        function cerrarEditarPapeleta() {
+            document.getElementById('modalEditarPapeleta').style.display = 'none';
+            papeletaEditarId = null;
         }
 
         // ===== ESTADÍSTICAS PAPELETAS =====
@@ -4854,6 +5318,9 @@
             if (e.target === document.getElementById('modalReprogramar')) {
                 cerrarReprogramar();
             }
+            if (e.target === document.getElementById('modalEditarPapeleta')) {
+                cerrarEditarPapeleta();
+            }
         });
 
         document.querySelector('.cerrar-estadisticas').addEventListener('click', () => { modalEstadisticas.style.display = 'none'; });
@@ -4867,6 +5334,7 @@
             document.getElementById('modalConfirmacionFinal').style.display = 'none';
         });
         document.getElementById('cerrarReprogramar').addEventListener('click', cerrarReprogramar);
+        document.getElementById('cerrarEditarPapeleta').addEventListener('click', cerrarEditarPapeleta);
 
         // ========== EVENT LISTENERS PRINCIPALES ==========
         document.getElementById('cargarCitasBtn').addEventListener('click', cargarCitasPorFecha);
@@ -5007,11 +5475,11 @@
         console.log('🔐 Contraseña Estadísticas: supervisor2024');
         console.log('🔐 Contraseñas Mis Papeletas: nombre2024 (ej: thalia2024)');
         console.log('📋 Cambios realizados:');
-        console.log('   ✅ "Cita de nuevo" → "RPx2"');
-        console.log('   ✅ Nuevo botón "RPx3" que BORRA el registro');
-        console.log('   ✅ Botón "Pendiente" para revertir estados');
-        console.log('   ✅ Supervisores Inactivos con filtros y citas');
-        console.log('   ✅ Lista actualizada: YARET NAJERA, MACARENA ZAMORA, PRISCILA GARCIA, ABRAHAM ROLDAN, ISAEL NAVARRO, ARACELI TORRES');
+        console.log('   ✅ Botón "❌ No asistió" funcionando correctamente');
+        console.log('   ✅ Columna "Base Datos" en Panel Principal');
+        console.log('   ✅ Botón "✏️ Editar" en Mis Papeletas con todos los campos');
+        console.log('   ✅ Columna "Cliente" que muestra Sr/Sra correctamente');
+        console.log('   ✅ Celda mejorada con ambos clientes si existen');
     </script>
 </body>
 </html>
