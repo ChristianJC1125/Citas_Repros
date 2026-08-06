@@ -327,6 +327,9 @@
         .btn-ventas { background: linear-gradient(135deg, #6d28d9, #7c3aed); }
         .btn-ventas:hover { background: linear-gradient(135deg, #5b21b6, #6d28d9); color: white; }
 
+        .btn-limpiar-duplicados { background: linear-gradient(135deg, #dc2626, #ef4444); }
+        .btn-limpiar-duplicados:hover { background: linear-gradient(135deg, #b91c1c, #dc2626); color: white; }
+
         /* Botones de asistencia */
         .btn-llego { background: linear-gradient(135deg, #1b5e20, #2e7d32); font-size: 0.75rem; padding: 5px 10px; }
         .btn-no-llego { background: linear-gradient(135deg, #b71c1c, #c62828); font-size: 0.75rem; padding: 5px 10px; }
@@ -1983,7 +1986,6 @@
         </div>
     </div>
 
-    <!-- ===== MODAL PAPELETA COMPLETA ===== -->
     <div id="modalPapeletaCompleta" class="modal-papeleta-completa">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -1991,12 +1993,11 @@
                 <span class="cerrar-modal-papeleta" id="cerrarPapeletaCompleta">&times;</span>
             </div>
             <div id="contenidoPapeletaCompleta">
-                <!-- Se llena dinámicamente con JavaScript -->
+
             </div>
         </div>
     </div>
 
-    <!-- ===== MODAL CONFIRMACIÓN FINAL ===== -->
     <div id="modalConfirmacionFinal" class="modal-confirmacion-final">
         <div class="modal-contenido">
             <div class="modal-header">
@@ -2004,7 +2005,7 @@
                 <button class="cerrar-modal-confirmacion" id="cerrarConfirmacionFinal">&times;</button>
             </div>
             <div id="contenidoConfirmacionFinal">
-                <!-- Se llena dinámicamente con JavaScript -->
+               
             </div>
         </div>
     </div>
@@ -2035,9 +2036,6 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== CONTENEDOR PRINCIPAL ===== -->
-    <!-- ============================================================ -->
     <div class="container" id="mainContainer">
 
         <!-- ===== LOGO DE EMPRESA ===== -->
@@ -2047,7 +2045,6 @@
             <span class="subtitulo">DESTINATION CONNECT GROUP</span>
         </div>
 
-        <!-- ===== PESTAÑA: PANEL PRINCIPAL ===== -->
         <div id="pestana-panel" class="pestana">
             <div class="filtros">
                 <div>
@@ -2058,6 +2055,15 @@
                     <label>👩‍💼 Supervisor:</label>
                     <select id="filtroSupervisor">
                         <option value="">Todos</option>
+                    </select>
+                </div>
+                <div>
+                    <label>🔍 Eliminar duplicados por:</label>
+                    <select id="filtroDuplicados" style="padding:8px 12px; border-radius:12px; border:1px solid rgba(255,255,255,0.25); font-size:0.9rem; background:rgba(255,255,255,0.6); backdrop-filter:blur(5px); color:#0a2540;">
+                        <option value="nombre">Nombre</option>
+                        <option value="telefono">Teléfono</option>
+                        <option value="ambos">Nombre + Teléfono</option>
+                        <option value="ninguno">❌ No eliminar</option>
                     </select>
                 </div>
                 <div>
@@ -2073,6 +2079,7 @@
             <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:-10px; margin-bottom:15px;">
                 <button id="cargarCitasBtn">🔍 Cargar citas</button>
                 <button id="recargarBtn" style="background:#475569;">🔄 Recargar</button>
+                <button id="btnLimpiarDuplicados" class="btn-limpiar-duplicados">🧹 Limpiar Duplicados</button>
                 <button id="descargarExcelBtn" class="btn-excel">📊 Descargar Excel</button>
                 <button id="btnEstadisticasSup" class="btn-estadisticas">📈 Estadísticas</button>
                 <button id="btnInactivosSup" class="btn-inactivos">🚫 Supervisores Inactivos</button>
@@ -2638,6 +2645,64 @@
             }, 3000);
         }
 
+        // ========== FUNCIÓN PARA ELIMINAR DUPLICADOS ==========
+        function eliminarDuplicados(citas, criterio = 'nombre') {
+            if (criterio === 'ninguno' || !citas || citas.length === 0) {
+                return citas;
+            }
+
+            const vistos = new Set();
+            const duplicados = new Set();
+            const resultado = [];
+            
+            // Primero, identificar duplicados
+            citas.forEach(cita => {
+                let clave = '';
+                if (criterio === 'nombre') {
+                    clave = (cita.nombre || '').trim().toUpperCase().replace(/\s+/g, ' ');
+                } else if (criterio === 'telefono') {
+                    clave = (cita.telefono || '').replace(/[\s\-\(\)]/g, '');
+                } else if (criterio === 'ambos') {
+                    const nombre = (cita.nombre || '').trim().toUpperCase().replace(/\s+/g, ' ');
+                    const telefono = (cita.telefono || '').replace(/[\s\-\(\)]/g, '');
+                    clave = `${nombre}|${telefono}`;
+                }
+                
+                if (clave && vistos.has(clave)) {
+                    duplicados.add(clave);
+                } else {
+                    vistos.add(clave);
+                }
+            });
+            
+            // Segundo paso: filtrar, quedándonos con el primer registro de cada duplicado
+            const vistosFinal = new Set();
+            citas.forEach(cita => {
+                let clave = '';
+                if (criterio === 'nombre') {
+                    clave = (cita.nombre || '').trim().toUpperCase().replace(/\s+/g, ' ');
+                } else if (criterio === 'telefono') {
+                    clave = (cita.telefono || '').replace(/[\s\-\(\)]/g, '');
+                } else if (criterio === 'ambos') {
+                    const nombre = (cita.nombre || '').trim().toUpperCase().replace(/\s+/g, ' ');
+                    const telefono = (cita.telefono || '').replace(/[\s\-\(\)]/g, '');
+                    clave = `${nombre}|${telefono}`;
+                }
+                
+                // Si la clave está duplicada y ya la hemos visto, la saltamos
+                if (duplicados.has(clave)) {
+                    if (!vistosFinal.has(clave)) {
+                        vistosFinal.add(clave);
+                        resultado.push(cita);
+                    }
+                } else {
+                    resultado.push(cita);
+                }
+            });
+            
+            return resultado;
+        }
+
         // ========== AUTENTICACIÓN ==========
         let authPromise = null;
 
@@ -2910,6 +2975,7 @@
             
             fechaSeleccionada = fechaEvento;
             supervisorSeleccionado = document.getElementById('filtroSupervisor').value;
+            const criterioDuplicados = document.getElementById('filtroDuplicados').value;
 
             try {
                 const snapshot = await database.ref('registrosPremanifiesto').once('value');
@@ -2930,12 +2996,24 @@
                     filtradas = filtradas.filter(c => c.supervisora === supervisorSeleccionado);
                 }
 
+                // ===== ELIMINAR DUPLICADOS =====
+                const originalCount = filtradas.length;
+                if (criterioDuplicados !== 'ninguno') {
+                    filtradas = eliminarDuplicados(filtradas, criterioDuplicados);
+                }
+                const duplicadosEliminados = originalCount - filtradas.length;
+
                 filtradas.sort((a,b) => (a.hora || '').localeCompare(b.hora || '') || (a.citaPorDia || 0) - (b.citaPorDia || 0));
                 
                 citasOriginales = filtradas;
                 citasFiltradasActuales = [...citasOriginales];
                 mostrarCitas(citasFiltradasActuales);
-                mostrarToast(`📋 ${filtradas.length} cita(s) cargadas`);
+                
+                let msg = `📋 ${filtradas.length} cita(s) cargadas`;
+                if (duplicadosEliminados > 0) {
+                    msg += ` (${duplicadosEliminados} duplicados eliminados por ${criterioDuplicados})`;
+                }
+                mostrarToast(msg);
             } catch (error) {
                 mostrarToast('Error de conexión', 'error');
             }
@@ -3260,6 +3338,33 @@
             citasFiltradasActuales = [...citasOriginales];
             mostrarCitas(citasFiltradasActuales);
             mostrarToast('Búsqueda limpiada');
+        }
+
+        // ========== FUNCIÓN PARA LIMPIAR DUPLICADOS MANUALMENTE ==========
+        function limpiarDuplicadosManual() {
+            if (citasOriginales.length === 0) {
+                mostrarToast('⚠️ Primero carga las citas', 'error');
+                return;
+            }
+            
+            const criterio = document.getElementById('filtroDuplicados').value;
+            if (criterio === 'ninguno') {
+                mostrarToast('⚠️ Selecciona un criterio de duplicado', 'error');
+                return;
+            }
+            
+            const limpias = eliminarDuplicados(citasOriginales, criterio);
+            const eliminados = citasOriginales.length - limpias.length;
+            
+            if (eliminados === 0) {
+                mostrarToast('✅ No se encontraron duplicados');
+                return;
+            }
+            
+            citasFiltradasActuales = limpias;
+            citasOriginales = limpias;
+            mostrarCitas(limpias);
+            mostrarToast(`🧹 ${eliminados} duplicados eliminados (${criterio})`);
         }
 
         // ========== FUNCIONES DE PAPELETAS ==========
@@ -5342,8 +5447,10 @@
             if (fechaSeleccionada) cargarCitasPorFecha();
             else mostrarToast('⚠️ Selecciona una fecha primero', 'error');
         });
+        document.getElementById('btnLimpiarDuplicados').addEventListener('click', limpiarDuplicadosManual);
         document.getElementById('fechaEvento').addEventListener('change', cargarCitasPorFecha);
         document.getElementById('filtroSupervisor').addEventListener('change', cargarCitasPorFecha);
+        document.getElementById('filtroDuplicados').addEventListener('change', cargarCitasPorFecha);
         document.getElementById('buscarBtn').addEventListener('click', buscarPorNombreOTelefono);
         document.getElementById('limpiarBusquedaBtn').addEventListener('click', limpiarBusqueda);
 
@@ -5470,16 +5577,17 @@
 
         setTimeout(() => autenticarFirebase(), 500);
 
-        console.log('✅ CRM Optimizado - Rendimiento mejorado');
+        console.log('✅ CRM Optimizado - Con eliminación de duplicados');
         console.log('🔐 Contraseña Panel Principal: admin123');
         console.log('🔐 Contraseña Estadísticas: supervisor2024');
         console.log('🔐 Contraseñas Mis Papeletas: nombre2024 (ej: thalia2024)');
-        console.log('📋 Cambios realizados:');
+        console.log('📋 Funcionalidades:');
         console.log('   ✅ Botón "❌ No asistió" funcionando correctamente');
         console.log('   ✅ Columna "Base Datos" en Panel Principal');
-        console.log('   ✅ Botón "✏️ Editar" en Mis Papeletas con todos los campos');
-        console.log('   ✅ Columna "Cliente" que muestra Sr/Sra correctamente');
-        console.log('   ✅ Celda mejorada con ambos clientes si existen');
+        console.log('   ✅ Botón "✏️ Editar" en Mis Papeletas');
+        console.log('   ✅ Columna "Cliente" con Sr/Sra');
+        console.log('   ✅ Eliminación de duplicados por Nombre, Teléfono o Ambos');
+        console.log('   ✅ Botón "🧹 Limpiar Duplicados" manual');
     </script>
 </body>
 </html>
