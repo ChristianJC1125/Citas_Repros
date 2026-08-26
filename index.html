@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -329,6 +329,9 @@
 
         .btn-limpiar-duplicados { background: linear-gradient(135deg, #dc2626, #ef4444); }
         .btn-limpiar-duplicados:hover { background: linear-gradient(135deg, #b91c1c, #dc2626); color: white; }
+
+        .btn-accesos { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
+        .btn-accesos:hover { background: linear-gradient(135deg, #6d28d9, #7c3aed); }
 
         /* Botones de asistencia */
         .btn-llego { background: linear-gradient(135deg, #1b5e20, #2e7d32); font-size: 0.75rem; padding: 5px 10px; }
@@ -857,7 +860,7 @@
             font-size: 0.8rem;
         }
         .btn-cerrar-sesion-papeletas:hover {
-            background: linear-gradient(135deg, #334155, #475569);
+            background: linear-gradient(135deg, #334155, #47548b);
         }
         .fecha-cita-seleccionada {
             display: none;
@@ -1850,6 +1853,109 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* ===== MODAL ACCESOS ===== */
+        .modal-accesos {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-accesos .modal-contenido {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            margin: 2% auto;
+            padding: 30px 35px;
+            border-radius: 24px;
+            width: 92%;
+            max-width: 1000px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            animation: slideDown 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .modal-accesos .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #7c3aed;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .modal-accesos .modal-header h3 {
+            color: #0a2540;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .modal-accesos .modal-header h3 i {
+            color: #7c3aed;
+            margin-right: 10px;
+        }
+        .modal-accesos .cerrar-modal-accesos {
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #64748b;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+        }
+        .modal-accesos .cerrar-modal-accesos:hover {
+            color: #c62828;
+        }
+        .modal-accesos .tabla-accesos {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        .modal-accesos .tabla-accesos th {
+            background: #0a2540;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        .modal-accesos .tabla-accesos td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(226,232,240,0.5);
+            color: #1e293b;
+        }
+        .modal-accesos .tabla-accesos tr:hover td {
+            background: rgba(241,245,249,0.4);
+        }
+        .modal-accesos .total-accesos {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8fafc;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .modal-accesos .btn-descargar-accesos {
+            background: linear-gradient(135deg, #0a2540, #12385f);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .modal-accesos .btn-descargar-accesos:hover {
+            background: linear-gradient(135deg, #12385f, #1a4a7a);
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1200px) {
             .comentario-textarea { width: 180px; min-width: 150px; }
@@ -1900,6 +2006,13 @@
             .modal-editar-papeleta .grid-2-editar {
                 grid-template-columns: 1fr;
             }
+            .modal-accesos .tabla-accesos {
+                font-size: 0.7rem;
+            }
+            .modal-accesos .tabla-accesos th,
+            .modal-accesos .tabla-accesos td {
+                padding: 6px 8px;
+            }
         }
         @media (max-width: 500px) {
             .form-papeleta .phone-group {
@@ -1912,6 +2025,10 @@
             }
             .logo-empresa img {
                 max-width: 110px;
+            }
+            .modal-accesos .modal-contenido {
+                padding: 15px;
+                margin: 2% auto;
             }
         }
     </style>
@@ -2036,6 +2153,19 @@
         </div>
     </div>
 
+    <!-- ===== MODAL ACCESOS ===== -->
+    <div id="modalAccesos" class="modal-accesos">
+        <div class="modal-contenido">
+            <div class="modal-header">
+                <h3><i class="fas fa-eye"></i> REGISTRO DE ACCESOS AL PANEL</h3>
+                <button class="cerrar-modal-accesos" id="cerrarModalAccesos">&times;</button>
+            </div>
+            <div id="contenidoAccesos">
+                <p style="text-align:center; color:#64748b; padding:30px;">Cargando registros de acceso...</p>
+            </div>
+        </div>
+    </div>
+
     <div class="container" id="mainContainer">
 
         <!-- ===== LOGO DE EMPRESA ===== -->
@@ -2086,6 +2216,7 @@
                 <button id="btnReporteMensual" class="btn-reporte-mensual">📆 Reporte Mensual</button>
                 <button id="btnCargarExcel" class="btn-cargar-excel">📥 Cargar Excel</button>
                 <button id="btnVentas" class="btn-ventas">📊 Ventas por Base</button>
+                <button id="btnVerAccesos" class="btn-accesos">👁️ Ver Accesos</button>
             </div>
 
             <input type="file" id="inputExcel" accept=".xlsx,.xls" style="display:none;">
@@ -2485,7 +2616,7 @@
         let busquedaPapeletasTimer = null;
         let toastTimeout = null;
 
-        const PASSWORD_PANEL = "admin123";
+        const PASSWORD_PANEL = "repros2026";
         const PASSWORD_ESTADISTICAS = "supervisor2024";
         const PASSWORD_DESBLOQUEO = "admin123";
 
@@ -2645,6 +2776,154 @@
             }, 3000);
         }
 
+        // ========== FUNCIÓN PARA OBTENER IP ==========
+        async function obtenerIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                return data.ip || 'IP no disponible';
+            } catch (error) {
+                return 'IP no disponible';
+            }
+        }
+
+        // ========== FUNCIÓN PARA REGISTRAR ACCESO ==========
+        async function registrarAccesoPanel(usuario = 'admin', nombreUsuario = 'Administrador') {
+            try {
+                await database.ref('logs/accesos_panel').push({
+                    usuario: usuario,
+                    nombreUsuario: nombreUsuario || usuario,
+                    fecha: new Date().toISOString(),
+                    ip: await obtenerIP(),
+                    userAgent: navigator.userAgent,
+                    pantalla: `${window.screen.width}x${window.screen.height}`,
+                    idioma: navigator.language,
+                    tipo: 'acceso_panel_principal'
+                });
+                console.log('✅ Acceso registrado para:', nombreUsuario || usuario);
+            } catch (error) {
+                console.error('Error al registrar acceso:', error);
+            }
+        }
+
+        // ========== FUNCIÓN PARA VER ACCESOS ==========
+        async function verAccesosPanel() {
+            try {
+                const snapshot = await database.ref('logs/accesos_panel')
+                    .orderByChild('fecha')
+                    .limitToLast(200)
+                    .once('value');
+                
+                const data = snapshot.val();
+                if (!data) {
+                    document.getElementById('contenidoAccesos').innerHTML = `
+                        <p style="text-align:center; color:#64748b; padding:30px;">📭 No hay registros de acceso aún</p>
+                    `;
+                    document.getElementById('modalAccesos').style.display = 'block';
+                    return;
+                }
+                
+                const accesos = Object.entries(data).map(([id, values]) => ({ id, ...values }));
+                accesos.reverse();
+                
+                let html = `
+                    <div style="overflow-x:auto;">
+                        <table class="tabla-accesos">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Fecha y Hora</th>
+                                    <th>Usuario</th>
+                                    <th>IP</th>
+                                    <th>Navegador</th>
+                                    <th>Pantalla</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                accesos.forEach((acceso, index) => {
+                    const fecha = new Date(acceso.fecha);
+                    const fechaStr = fecha.toLocaleDateString('es-MX') + ' ' + fecha.toLocaleTimeString('es-MX');
+                    const userAgent = acceso.userAgent ? acceso.userAgent.substring(0, 35) + '...' : 'No disponible';
+                    const nombreUsuario = acceso.nombreUsuario || acceso.usuario || 'admin';
+                    
+                    html += `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td style="font-weight:500;">${fechaStr}</td>
+                            <td><strong>${nombreUsuario}</strong></td>
+                            <td style="color:#2563eb;">${acceso.ip || 'No disponible'}</td>
+                            <td style="font-size:0.75rem; color:#64748b;">${userAgent}</td>
+                            <td style="font-size:0.75rem; color:#64748b;">${acceso.pantalla || 'No disponible'}</td>
+                        </tr>
+                    `;
+                });
+                
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="total-accesos">
+                        <span style="color:#64748b;">Total de accesos registrados: <strong>${accesos.length}</strong></span>
+                        <button class="btn-descargar-accesos" onclick="descargarLogAccesos()">📥 Descargar Excel</button>
+                    </div>
+                `;
+                
+                document.getElementById('contenidoAccesos').innerHTML = html;
+                document.getElementById('modalAccesos').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error al obtener accesos:', error);
+                document.getElementById('contenidoAccesos').innerHTML = `
+                    <p style="text-align:center; color:#dc2626; padding:30px;">❌ Error al cargar los registros de acceso</p>
+                `;
+                document.getElementById('modalAccesos').style.display = 'block';
+            }
+        }
+
+        // ========== FUNCIÓN PARA DESCARGAR LOG DE ACCESOS ==========
+        function descargarLogAccesos() {
+            const tabla = document.querySelector('.tabla-accesos');
+            if (!tabla) {
+                mostrarToast('❌ No hay datos para descargar', 'error');
+                return;
+            }
+            
+            const rows = tabla.querySelectorAll('tbody tr');
+            const datos = [];
+            
+            rows.forEach(row => {
+                const celdas = row.querySelectorAll('td');
+                if (celdas.length >= 5) {
+                    datos.push({
+                        'N°': celdas[0].textContent,
+                        'Fecha': celdas[1].textContent,
+                        'Usuario': celdas[2].textContent,
+                        'IP': celdas[3].textContent,
+                        'Navegador': celdas[4].textContent || 'No disponible',
+                        'Pantalla': celdas[5] ? celdas[5].textContent : 'No disponible'
+                    });
+                }
+            });
+            
+            if (datos.length === 0) {
+                mostrarToast('❌ No hay datos para descargar', 'error');
+                return;
+            }
+            
+            try {
+                const ws = XLSX.utils.json_to_sheet(datos);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, 'Accesos_Panel');
+                XLSX.writeFile(wb, `Accesos_Panel_${new Date().toISOString().split('T')[0]}.xlsx`);
+                mostrarToast('📥 Log de accesos descargado correctamente');
+            } catch (error) {
+                console.error('Error al descargar:', error);
+                mostrarToast('❌ Error al descargar el log', 'error');
+            }
+        }
+
         // ========== FUNCIÓN PARA ELIMINAR DUPLICADOS ==========
         function eliminarDuplicados(citas, criterio = 'nombre') {
             if (criterio === 'ninguno' || !citas || citas.length === 0) {
@@ -2655,7 +2934,6 @@
             const duplicados = new Set();
             const resultado = [];
             
-            // Primero, identificar duplicados
             citas.forEach(cita => {
                 let clave = '';
                 if (criterio === 'nombre') {
@@ -2675,7 +2953,6 @@
                 }
             });
             
-            // Segundo paso: filtrar, quedándonos con el primer registro de cada duplicado
             const vistosFinal = new Set();
             citas.forEach(cita => {
                 let clave = '';
@@ -2689,7 +2966,6 @@
                     clave = `${nombre}|${telefono}`;
                 }
                 
-                // Si la clave está duplicada y ya la hemos visto, la saltamos
                 if (duplicados.has(clave)) {
                     if (!vistosFinal.has(clave)) {
                         vistosFinal.add(clave);
@@ -2763,9 +3039,11 @@
             document.querySelectorAll('.menu-item').forEach(b => b.classList.remove('active'));
         });
 
-        document.getElementById('verificarPasswordPanel').addEventListener('click', () => {
+        document.getElementById('verificarPasswordPanel').addEventListener('click', async () => {
             const pass = document.getElementById('passwordPanel').value;
             if (pass === PASSWORD_PANEL) {
+                await registrarAccesoPanel('admin', 'Administrador Principal');
+                
                 modalPassword.style.display = 'none';
                 panelDesbloqueado = true;
                 document.getElementById('menuPanel').classList.remove('locked');
@@ -2996,7 +3274,6 @@
                     filtradas = filtradas.filter(c => c.supervisora === supervisorSeleccionado);
                 }
 
-                // ===== ELIMINAR DUPLICADOS =====
                 const originalCount = filtradas.length;
                 if (criterioDuplicados !== 'ninguno') {
                     filtradas = eliminarDuplicados(filtradas, criterioDuplicados);
@@ -3035,12 +3312,10 @@
                 const bloqueada = estaBloqueada(cita);
                 if (bloqueada) tr.className = 'fila-bloqueada';
                 
-                // N° Cita
                 const tdCita = document.createElement('td');
                 tdCita.textContent = cita.citaPorDia || cita.cita || '-';
                 tr.appendChild(tdCita);
                 
-                // Cliente
                 const tdCliente = document.createElement('td');
                 const { cliente, acompanante } = separarClienteYAcompanante(cita.nombre);
                 tdCliente.innerHTML = `
@@ -3052,32 +3327,26 @@
                 `;
                 tr.appendChild(tdCliente);
                 
-                // Teléfono
                 const tdTel = document.createElement('td');
                 tdTel.textContent = cita.telefono || '-';
                 tr.appendChild(tdTel);
                 
-                // Hora
                 const tdHora = document.createElement('td');
                 tdHora.textContent = cita.hora || '-';
                 tr.appendChild(tdHora);
                 
-                // Hotel
                 const tdHotel = document.createElement('td');
                 tdHotel.textContent = cita.hotel || '-';
                 tr.appendChild(tdHotel);
                 
-                // Supervisor
                 const tdSup = document.createElement('td');
                 tdSup.textContent = cita.supervisora || '-';
                 tr.appendChild(tdSup);
                 
-                // Operador
                 const tdOp = document.createElement('td');
                 tdOp.textContent = cita.operador || '-';
                 tr.appendChild(tdOp);
 
-                // Asistencia
                 const tdAsistencia = document.createElement('td');
                 const asistencia = cita.asistencia;
                 let asistenciaHtml = '';
@@ -3093,7 +3362,6 @@
                 tdAsistencia.innerHTML = asistenciaHtml;
                 tr.appendChild(tdAsistencia);
 
-                // Estado Llamada
                 const tdEstadoLlamada = document.createElement('td');
                 const estadoLlamada = cita.estadoLlamada || '';
                 let estadoHtml = '';
@@ -3121,12 +3389,10 @@
                 tdEstadoLlamada.innerHTML = estadoHtml;
                 tr.appendChild(tdEstadoLlamada);
 
-                // Base Datos
                 const tdBase = document.createElement('td');
                 tdBase.textContent = cita.baseDatos || '-';
                 tr.appendChild(tdBase);
 
-                // Comentarios
                 const tdComentarios = document.createElement('td');
                 const textarea = document.createElement('textarea');
                 textarea.value = cita.comentarios || '';
@@ -3142,7 +3408,6 @@
                 tdComentarios.appendChild(textarea);
                 tr.appendChild(tdComentarios);
 
-                // Acciones
                 const tdAcciones = document.createElement('td');
                 tdAcciones.className = 'asistencia-btns';
                 
@@ -5408,12 +5673,14 @@
         const modalInactivos = document.getElementById('modalInactivos');
         const modalReporteMensual = document.getElementById('modalReporteMensual');
         const modalVentas = document.getElementById('modalVentas');
+        const modalAccesos = document.getElementById('modalAccesos');
 
         window.addEventListener('click', (e) => {
             if (e.target === modalEstadisticas) modalEstadisticas.style.display = 'none';
             if (e.target === modalInactivos) modalInactivos.style.display = 'none';
             if (e.target === modalReporteMensual) modalReporteMensual.style.display = 'none';
             if (e.target === modalVentas) modalVentas.style.display = 'none';
+            if (e.target === modalAccesos) modalAccesos.style.display = 'none';
             if (e.target === document.getElementById('modalPapeletaCompleta')) {
                 document.getElementById('modalPapeletaCompleta').style.display = 'none';
             }
@@ -5432,6 +5699,8 @@
         document.querySelector('.cerrar-inactivos').addEventListener('click', () => { modalInactivos.style.display = 'none'; });
         document.querySelector('.cerrar-reporte-mensual').addEventListener('click', () => { modalReporteMensual.style.display = 'none'; });
         document.querySelector('.cerrar-ventas').addEventListener('click', () => { modalVentas.style.display = 'none'; });
+        document.querySelector('.cerrar-modal-accesos').addEventListener('click', () => { modalAccesos.style.display = 'none'; });
+        document.getElementById('cerrarModalAccesos').addEventListener('click', () => { modalAccesos.style.display = 'none'; });
         document.getElementById('cerrarPapeletaCompleta').addEventListener('click', function() {
             document.getElementById('modalPapeletaCompleta').style.display = 'none';
         });
@@ -5567,6 +5836,15 @@
             renderizarCalendarioPapeletas();
         });
 
+        // ===== BOTÓN VER ACCESOS =====
+        document.getElementById('btnVerAccesos').addEventListener('click', () => {
+            if (!panelDesbloqueado) {
+                mostrarToast('🔐 Primero desbloquea el panel', 'error');
+                return;
+            }
+            verAccesosPanel();
+        });
+
         // ========== INICIALIZACIÓN ==========
         cargarSupervisores();
         iniciarListenerPapeletas();
@@ -5588,6 +5866,8 @@
         console.log('   ✅ Columna "Cliente" con Sr/Sra');
         console.log('   ✅ Eliminación de duplicados por Nombre, Teléfono o Ambos');
         console.log('   ✅ Botón "🧹 Limpiar Duplicados" manual');
+        console.log('   ✅ Registro de accesos al Panel Principal');
+        console.log('   ✅ Botón "👁️ Ver Accesos" para monitorear quién entra');
     </script>
 </body>
 </html>
