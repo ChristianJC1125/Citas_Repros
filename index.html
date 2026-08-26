@@ -2852,27 +2852,29 @@
             }
         }
 
-        // ========== FUNCIÓN PARA REGISTRAR ACCESO (MEJORADA) ==========
-        async function registrarAccesoPanel(usuario = 'admin', nombreUsuario = 'Administrador') {
-            try {
-                const datosEquipo = await obtenerDatosEquipo();
-                await database.ref('logs/accesos_panel').push({
-                    usuario: usuario,
-                    nombreUsuario: nombreUsuario || usuario,
-                    fecha: new Date().toISOString(),
-                    ip: datosEquipo.ip,
-                    sistemaOperativo: datosEquipo.sistemaOperativo,
-                    navegador: datosEquipo.navegador,
-                    userAgent: datosEquipo.userAgent,
-                    pantalla: datosEquipo.pantalla,
-                    idioma: datosEquipo.idioma,
-                    tipo: 'acceso_panel_principal'
-                });
-                console.log('✅ Acceso registrado para:', nombreUsuario || usuario);
-            } catch (error) {
-                console.warn('⚠️ No se pudo registrar el acceso:', error.message);
-            }
-        }
+        // ========== REGISTRO DE ACCESOS (SIN BLOQUEAR) ==========
+async function registrarAccesoPanel(usuario = 'admin', nombreUsuario = 'Administrador') {
+    try {
+        const datosEquipo = await obtenerDatosEquipo();
+        await database.ref('logs/accesos_panel').push({
+            usuario: usuario,
+            nombreUsuario: nombreUsuario || usuario,
+            fecha: new Date().toISOString(),
+            ip: datosEquipo.ip,
+            sistemaOperativo: datosEquipo.sistemaOperativo,
+            navegador: datosEquipo.navegador,
+            userAgent: datosEquipo.userAgent,
+            pantalla: datosEquipo.pantalla,
+            idioma: datosEquipo.idioma,
+            tipo: 'acceso_panel_principal'
+        });
+        console.log('✅ Acceso registrado para:', nombreUsuario || usuario);
+    } catch (error) {
+        // Solo mostramos advertencia, NO BLOQUEAMOS el acceso
+        console.warn('⚠️ No se pudo registrar el acceso (permisos insuficientes):', error.message);
+        // El usuario puede seguir usando el panel aunque falle el registro
+    }
+}
 
         // ========== FUNCIÓN PARA VER ACCESOS (MEJORADA) ==========
         async function verAccesosPanel() {
@@ -3610,60 +3612,119 @@
             `;
         }
 
-        // ========== FUNCIÓN RPx3 CORREGIDA (ELIMINA DIRECTAMENTE) ==========
-        async function registrarRPx3(id) {
-            console.log('🔴 RPx3 - Eliminación directa ID:', id);
-            
-            if (!id) {
-                mostrarToast('❌ Error: ID de cita no válido', 'error');
-                return;
-            }
-            
-            if (!confirm('⚠️ ¿Estás seguro de marcar esta cita como RPx3? Esto BORRARÁ el registro permanentemente.')) {
-                console.log('❌ Cancelado por el usuario');
-                return;
-            }
-            
-            try {
-                // Verificar autenticación
-                const authOk = await autenticarFirebase();
-                if (!authOk) {
-                    mostrarToast('❌ Error de autenticación', 'error');
-                    return;
-                }
-                
-                // Verificar que la cita existe
-                const snapshot = await database.ref(`registrosPremanifiesto/${id}`).once('value');
-                const cita = snapshot.val();
-                
-                if (!cita) {
-                    mostrarToast('❌ La cita ya no existe', 'error');
-                    console.error('❌ Cita no encontrada');
-                    return;
-                }
-                
-                console.log('📄 Cita encontrada:', cita.nombre || 'Sin nombre');
-                
-                // ELIMINAR DIRECTAMENTE
-                await database.ref(`registrosPremanifiesto/${id}`).remove();
-                console.log('✅ Registro eliminado de la base principal');
-                
-                mostrarToast('🔴 Registro eliminado por RPx3');
-                
-                // Recargar la tabla
-                setTimeout(() => {
-                    cargarCitasPorFecha();
-                }, 300);
-                
-            } catch (error) {
-                console.error('❌ Error en RPx3:', error);
-                if (error.message && error.message.includes('permission_denied')) {
-                    mostrarToast('❌ No tienes permisos para eliminar. Verifica las reglas de Firebase.', 'error');
-                } else {
-                    mostrarToast('❌ Error al eliminar: ' + error.message, 'error');
-                }
-            }
+        // ========== RPx3 - ELIMINA DIRECTAMENTE (SIN COPIAS) ==========
+async function registrarRPx3(id) {
+    console.log('🔴 RPx3 - Eliminación directa ID:', id);
+    
+    if (!id) {
+        mostrarToast('❌ Error: ID de cita no válido', 'error');
+        return;
+    }
+    
+    if (!confirm('⚠️ ¿Estás seguro de marcar esta cita como RPx3? Se ELIMINARÁ permanentemente.')) {
+        console.log('❌ Cancelado por el usuario');
+        return;
+    }
+    
+    try {
+        // Verificar autenticación
+        const authOk = await autenticarFirebase();
+        if (!authOk) {
+            mostrarToast('❌ Error de autenticación', 'error');
+            return;
         }
+        
+        // Verificar que la cita existe
+        console.log('📡 Buscando cita en Firebase...');
+        const snapshot = await database.ref(`registrosPremanifiesto/${id}`).once('value');
+        const cita = snapshot.val();
+        
+        if (!cita) {
+            mostrarToast('❌ La cita ya no existe o fue eliminada', 'error');
+            console.error('❌ Cita no encontrada');
+            return;
+        }
+        
+        console.log('📄 Cita encontrada:', cita.nombre || 'Sin nombre');
+        
+        // ==== ELIMINAR DIRECTAMENTE - SIN COPIAS DE SEGURIDAD ====
+        await database.ref(`registrosPremanifiesto/${id}`).remove();
+        console.log('✅ Registro eliminado de la base principal');
+        
+        mostrarToast('🔴 Registro eliminado por RPx3');
+        
+        // Recargar la tabla después de un breve retraso
+        setTimeout(() => {
+            cargarCitasPorFecha();
+        }, 300);
+        
+    } catch (error) {
+        console.error('❌ Error en RPx3:', error);
+        
+        // Si el error es de permisos, mostrar mensaje claro
+        if (error.message && error.message.includes('permission_denied')) {
+            mostrarToast('❌ No tienes permisos para eliminar. Cambia las reglas de Firebase.', 'error');
+        } else {
+            mostrarToast('❌ Error al eliminar: ' + error.message, 'error');
+        }
+    }
+}// ========== RPx3 - ELIMINA DIRECTAMENTE (SIN COPIAS) ==========
+async function registrarRPx3(id) {
+    console.log('🔴 RPx3 - Eliminación directa ID:', id);
+    
+    if (!id) {
+        mostrarToast('❌ Error: ID de cita no válido', 'error');
+        return;
+    }
+    
+    if (!confirm('⚠️ ¿Estás seguro de marcar esta cita como RPx3? Se ELIMINARÁ permanentemente.')) {
+        console.log('❌ Cancelado por el usuario');
+        return;
+    }
+    
+    try {
+        // Verificar autenticación
+        const authOk = await autenticarFirebase();
+        if (!authOk) {
+            mostrarToast('❌ Error de autenticación', 'error');
+            return;
+        }
+        
+        // Verificar que la cita existe
+        console.log('📡 Buscando cita en Firebase...');
+        const snapshot = await database.ref(`registrosPremanifiesto/${id}`).once('value');
+        const cita = snapshot.val();
+        
+        if (!cita) {
+            mostrarToast('❌ La cita ya no existe o fue eliminada', 'error');
+            console.error('❌ Cita no encontrada');
+            return;
+        }
+        
+        console.log('📄 Cita encontrada:', cita.nombre || 'Sin nombre');
+        
+        // ==== ELIMINAR DIRECTAMENTE - SIN COPIAS DE SEGURIDAD ====
+        await database.ref(`registrosPremanifiesto/${id}`).remove();
+        console.log('✅ Registro eliminado de la base principal');
+        
+        mostrarToast('🔴 Registro eliminado por RPx3');
+        
+        // Recargar la tabla después de un breve retraso
+        setTimeout(() => {
+            cargarCitasPorFecha();
+        }, 300);
+        
+    } catch (error) {
+        console.error('❌ Error en RPx3:', error);
+        
+        // Si el error es de permisos, mostrar mensaje claro
+        if (error.message && error.message.includes('permission_denied')) {
+            mostrarToast('❌ No tienes permisos para eliminar. Cambia las reglas de Firebase.', 'error');
+        } else {
+            mostrarToast('❌ Error al eliminar: ' + error.message, 'error');
+        }
+    }
+}
 
         // ========== FUNCIONES DE ASISTENCIA ==========
         async function registrarAsistencia(id, estado) {
