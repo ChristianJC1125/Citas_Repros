@@ -2232,11 +2232,13 @@
                 <button id="btnInactivosSup" class="btn-inactivos">🚫 Supervisores Inactivos</button>
                 <button id="btnReporteMensual" class="btn-reporte-mensual">📆 Reporte Mensual</button>
                 <button id="btnCargarExcel" class="btn-cargar-excel">📥 Cargar Excel</button>
+                <button id="btnCargarExcelPanel" class="btn-cargar-excel" style="background:linear-gradient(135deg, #0d9488, #14b8a6);">📥 Cargar Excel al Panel</button>
                 <button id="btnVentas" class="btn-ventas">📊 Ventas por Base</button>
                 <button id="btnVerAccesos" class="btn-accesos">👁️ Ver Accesos</button>
             </div>
 
             <input type="file" id="inputExcel" accept=".xlsx,.xls" style="display:none;">
+            <input type="file" id="inputExcelPanel" accept=".xlsx,.xls" style="display:none;">
 
             <div id="resumenContainer" class="resumen" style="display: none;"></div>
 
@@ -2853,28 +2855,28 @@
         }
 
         // ========== REGISTRO DE ACCESOS (SIN BLOQUEAR) ==========
-async function registrarAccesoPanel(usuario = 'admin', nombreUsuario = 'Administrador') {
-    try {
-        const datosEquipo = await obtenerDatosEquipo();
-        await database.ref('logs/accesos_panel').push({
-            usuario: usuario,
-            nombreUsuario: nombreUsuario || usuario,
-            fecha: new Date().toISOString(),
-            ip: datosEquipo.ip,
-            sistemaOperativo: datosEquipo.sistemaOperativo,
-            navegador: datosEquipo.navegador,
-            userAgent: datosEquipo.userAgent,
-            pantalla: datosEquipo.pantalla,
-            idioma: datosEquipo.idioma,
-            tipo: 'acceso_panel_principal'
-        });
-        console.log('✅ Acceso registrado para:', nombreUsuario || usuario);
-    } catch (error) {
-        // Solo mostramos advertencia, NO BLOQUEAMOS el acceso
-        console.warn('⚠️ No se pudo registrar el acceso (permisos insuficientes):', error.message);
-        // El usuario puede seguir usando el panel aunque falle el registro
-    }
-}
+        async function registrarAccesoPanel(usuario = 'admin', nombreUsuario = 'Administrador') {
+            try {
+                const datosEquipo = await obtenerDatosEquipo();
+                await database.ref('logs/accesos_panel').push({
+                    usuario: usuario,
+                    nombreUsuario: nombreUsuario || usuario,
+                    fecha: new Date().toISOString(),
+                    ip: datosEquipo.ip,
+                    sistemaOperativo: datosEquipo.sistemaOperativo,
+                    navegador: datosEquipo.navegador,
+                    userAgent: datosEquipo.userAgent,
+                    pantalla: datosEquipo.pantalla,
+                    idioma: datosEquipo.idioma,
+                    tipo: 'acceso_panel_principal'
+                });
+                console.log('✅ Acceso registrado para:', nombreUsuario || usuario);
+            } catch (error) {
+                // Solo mostramos advertencia, NO BLOQUEAMOS el acceso
+                console.warn('⚠️ No se pudo registrar el acceso (permisos insuficientes):', error.message);
+                // El usuario puede seguir usando el panel aunque falle el registro
+            }
+        }
 
         // ========== FUNCIÓN PARA VER ACCESOS (MEJORADA) ==========
         async function verAccesosPanel() {
@@ -3613,118 +3615,62 @@ async function registrarAccesoPanel(usuario = 'admin', nombreUsuario = 'Administ
         }
 
         // ========== RPx3 - ELIMINA DIRECTAMENTE (SIN COPIAS) ==========
-async function registrarRPx3(id) {
-    console.log('🔴 RPx3 - Eliminación directa ID:', id);
-    
-    if (!id) {
-        mostrarToast('❌ Error: ID de cita no válido', 'error');
-        return;
-    }
-    
-    if (!confirm('⚠️ ¿Estás seguro de marcar esta cita como RPx3? Se ELIMINARÁ permanentemente.')) {
-        console.log('❌ Cancelado por el usuario');
-        return;
-    }
-    
-    try {
-        // Verificar autenticación
-        const authOk = await autenticarFirebase();
-        if (!authOk) {
-            mostrarToast('❌ Error de autenticación', 'error');
-            return;
+        async function registrarRPx3(id) {
+            console.log('🔴 RPx3 - Eliminación directa ID:', id);
+            
+            if (!id) {
+                mostrarToast('❌ Error: ID de cita no válido', 'error');
+                return;
+            }
+            
+            if (!confirm('⚠️ ¿Estás seguro de marcar esta cita como RPx3? Se ELIMINARÁ permanentemente.')) {
+                console.log('❌ Cancelado por el usuario');
+                return;
+            }
+            
+            try {
+                // Verificar autenticación
+                const authOk = await autenticarFirebase();
+                if (!authOk) {
+                    mostrarToast('❌ Error de autenticación', 'error');
+                    return;
+                }
+                
+                // Verificar que la cita existe
+                console.log('📡 Buscando cita en Firebase...');
+                const snapshot = await database.ref(`registrosPremanifiesto/${id}`).once('value');
+                const cita = snapshot.val();
+                
+                if (!cita) {
+                    mostrarToast('❌ La cita ya no existe o fue eliminada', 'error');
+                    console.error('❌ Cita no encontrada');
+                    return;
+                }
+                
+                console.log('📄 Cita encontrada:', cita.nombre || 'Sin nombre');
+                
+                // ==== ELIMINAR DIRECTAMENTE - SIN COPIAS DE SEGURIDAD ====
+                await database.ref(`registrosPremanifiesto/${id}`).remove();
+                console.log('✅ Registro eliminado de la base principal');
+                
+                mostrarToast('🔴 Registro eliminado por RPx3');
+                
+                // Recargar la tabla después de un breve retraso
+                setTimeout(() => {
+                    cargarCitasPorFecha();
+                }, 300);
+                
+            } catch (error) {
+                console.error('❌ Error en RPx3:', error);
+                
+                // Si el error es de permisos, mostrar mensaje claro
+                if (error.message && error.message.includes('permission_denied')) {
+                    mostrarToast('❌ No tienes permisos para eliminar. Cambia las reglas de Firebase.', 'error');
+                } else {
+                    mostrarToast('❌ Error al eliminar: ' + error.message, 'error');
+                }
+            }
         }
-        
-        // Verificar que la cita existe
-        console.log('📡 Buscando cita en Firebase...');
-        const snapshot = await database.ref(`registrosPremanifiesto/${id}`).once('value');
-        const cita = snapshot.val();
-        
-        if (!cita) {
-            mostrarToast('❌ La cita ya no existe o fue eliminada', 'error');
-            console.error('❌ Cita no encontrada');
-            return;
-        }
-        
-        console.log('📄 Cita encontrada:', cita.nombre || 'Sin nombre');
-        
-        // ==== ELIMINAR DIRECTAMENTE - SIN COPIAS DE SEGURIDAD ====
-        await database.ref(`registrosPremanifiesto/${id}`).remove();
-        console.log('✅ Registro eliminado de la base principal');
-        
-        mostrarToast('🔴 Registro eliminado por RPx3');
-        
-        // Recargar la tabla después de un breve retraso
-        setTimeout(() => {
-            cargarCitasPorFecha();
-        }, 300);
-        
-    } catch (error) {
-        console.error('❌ Error en RPx3:', error);
-        
-        // Si el error es de permisos, mostrar mensaje claro
-        if (error.message && error.message.includes('permission_denied')) {
-            mostrarToast('❌ No tienes permisos para eliminar. Cambia las reglas de Firebase.', 'error');
-        } else {
-            mostrarToast('❌ Error al eliminar: ' + error.message, 'error');
-        }
-    }
-}// ========== RPx3 - ELIMINA DIRECTAMENTE (SIN COPIAS) ==========
-async function registrarRPx3(id) {
-    console.log('🔴 RPx3 - Eliminación directa ID:', id);
-    
-    if (!id) {
-        mostrarToast('❌ Error: ID de cita no válido', 'error');
-        return;
-    }
-    
-    if (!confirm('⚠️ ¿Estás seguro de marcar esta cita como RPx3? Se ELIMINARÁ permanentemente.')) {
-        console.log('❌ Cancelado por el usuario');
-        return;
-    }
-    
-    try {
-        // Verificar autenticación
-        const authOk = await autenticarFirebase();
-        if (!authOk) {
-            mostrarToast('❌ Error de autenticación', 'error');
-            return;
-        }
-        
-        // Verificar que la cita existe
-        console.log('📡 Buscando cita en Firebase...');
-        const snapshot = await database.ref(`registrosPremanifiesto/${id}`).once('value');
-        const cita = snapshot.val();
-        
-        if (!cita) {
-            mostrarToast('❌ La cita ya no existe o fue eliminada', 'error');
-            console.error('❌ Cita no encontrada');
-            return;
-        }
-        
-        console.log('📄 Cita encontrada:', cita.nombre || 'Sin nombre');
-        
-        // ==== ELIMINAR DIRECTAMENTE - SIN COPIAS DE SEGURIDAD ====
-        await database.ref(`registrosPremanifiesto/${id}`).remove();
-        console.log('✅ Registro eliminado de la base principal');
-        
-        mostrarToast('🔴 Registro eliminado por RPx3');
-        
-        // Recargar la tabla después de un breve retraso
-        setTimeout(() => {
-            cargarCitasPorFecha();
-        }, 300);
-        
-    } catch (error) {
-        console.error('❌ Error en RPx3:', error);
-        
-        // Si el error es de permisos, mostrar mensaje claro
-        if (error.message && error.message.includes('permission_denied')) {
-            mostrarToast('❌ No tienes permisos para eliminar. Cambia las reglas de Firebase.', 'error');
-        } else {
-            mostrarToast('❌ Error al eliminar: ' + error.message, 'error');
-        }
-    }
-}
 
         // ========== FUNCIONES DE ASISTENCIA ==========
         async function registrarAsistencia(id, estado) {
@@ -5668,6 +5614,114 @@ async function registrarRPx3(id) {
             e.target.value = '';
         }
 
+        // ===== CARGAR EXCEL AL PANEL PRINCIPAL =====
+        document.getElementById('btnCargarExcelPanel').addEventListener('click', function() {
+            document.getElementById('inputExcelPanel').click();
+        });
+
+        document.getElementById('inputExcelPanel').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const data = new Uint8Array(event.target.result);
+                    const workbook = XLSX.read(data, { type: 'array' });
+                    
+                    // Tomar la primera hoja del Excel
+                    const primeraHoja = workbook.SheetNames[0];
+                    const hoja = workbook.Sheets[primeraHoja];
+                    const datos = XLSX.utils.sheet_to_json(hoja, { defval: '' });
+
+                    if (datos.length === 0) {
+                        mostrarToast('⚠️ El Excel está vacío', 'error');
+                        return;
+                    }
+
+                    // Mapear las columnas del Excel a las que necesita el sistema
+                    const citasCargadas = datos.map(row => {
+                        // Buscar columnas por nombre (flexible)
+                        const columnas = Object.keys(row);
+                        const colNombre = columnas.find(c => /cliente|nombre|familia|acompañante/i.test(c));
+                        const colTelefono = columnas.find(c => /tel[eé]fono|celular|phone/i.test(c));
+                        const colHora = columnas.find(c => /hora/i.test(c));
+                        const colHotel = columnas.find(c => /hotel/i.test(c));
+                        const colSupervisor = columnas.find(c => /supervisor/i.test(c));
+                        const colOperador = columnas.find(c => /operador/i.test(c));
+                        const colAsistencia = columnas.find(c => /asistencia|llegó|no llegó/i.test(c));
+                        const colEstadoLlamada = columnas.find(c => /estado llamada|estado_llamada|llamada/i.test(c));
+                        const colBase = columnas.find(c => /base datos|base_datos|base/i.test(c));
+                        const colComentarios = columnas.find(c => /comentarios|observaciones|notas/i.test(c));
+                        const colCita = columnas.find(c => /n° cita|numero cita|num_cita|cita/i.test(c));
+
+                        // Intentar obtener el nombre y acompañante
+                        let nombreCompleto = '';
+                        let acompanante = '';
+                        if (colNombre) {
+                            const nombreValor = String(row[colNombre] || '').trim();
+                            // Si tiene "/" o "y", separar
+                            if (nombreValor.includes('/')) {
+                                const partes = nombreValor.split('/').map(p => p.trim());
+                                nombreCompleto = partes[0] || '';
+                                acompanante = partes.slice(1).join(' / ') || '';
+                            } else if (nombreValor.includes(' y ') || nombreValor.includes(' Y ')) {
+                                const sep = nombreValor.includes(' Y ') ? ' Y ' : ' y ';
+                                const partes = nombreValor.split(sep).map(p => p.trim());
+                                nombreCompleto = partes[0] || '';
+                                acompanante = partes.slice(1).join(sep) || '';
+                            } else {
+                                nombreCompleto = nombreValor;
+                            }
+                        }
+
+                        // Si hay acompañante, lo mostramos como "nombre / acompañante"
+                        const nombreFinal = acompanante ? `${nombreCompleto} / ${acompanante}` : nombreCompleto;
+
+                        // Obtener número de cita
+                        let numCita = '';
+                        if (colCita) {
+                            numCita = String(row[colCita] || '').trim();
+                        }
+
+                        return {
+                            citaPorDia: numCita || '',
+                            cita: numCita || '',
+                            nombre: nombreFinal || '',
+                            telefono: colTelefono ? String(row[colTelefono] || '').trim() : '',
+                            hora: colHora ? String(row[colHora] || '').trim() : '',
+                            hotel: colHotel ? String(row[colHotel] || '').trim() : '',
+                            supervisora: colSupervisor ? String(row[colSupervisor] || '').trim() : '',
+                            operador: colOperador ? String(row[colOperador] || '').trim() : '',
+                            asistencia: colAsistencia ? String(row[colAsistencia] || '').trim() : '',
+                            estadoLlamada: colEstadoLlamada ? String(row[colEstadoLlamada] || '').trim() : '',
+                            baseDatos: colBase ? String(row[colBase] || '').trim() : '',
+                            comentarios: colComentarios ? String(row[colComentarios] || '').trim() : '',
+                            diaEvento: document.getElementById('fechaEvento').value || new Date().toISOString().split('T')[0],
+                            fechaRegistro: new Date().toISOString(),
+                            _original: row
+                        };
+                    });
+
+                    // Mostrar en la tabla
+                    if (citasCargadas.length > 0) {
+                        citasOriginales = citasCargadas;
+                        citasFiltradasActuales = [...citasOriginales];
+                        mostrarCitas(citasFiltradasActuales);
+                        mostrarToast(`✅ ${citasCargadas.length} registros cargados desde Excel`);
+                    } else {
+                        mostrarToast('⚠️ No se pudieron cargar los datos', 'error');
+                    }
+
+                } catch (error) {
+                    console.error('Error al leer Excel:', error);
+                    mostrarToast('❌ Error al leer el archivo Excel', 'error');
+                }
+            };
+            reader.readAsArrayBuffer(file);
+            e.target.value = ''; // Limpiar input
+        });
+
         // ===== ESTADÍSTICAS DE VENTAS =====
         function mostrarEstadisticasVentas() {
             const container = document.getElementById('contenidoVentas');
@@ -6060,8 +6114,8 @@ async function registrarRPx3(id) {
 
         setTimeout(() => autenticarFirebase(), 500);
 
-        console.log('✅ CRM Optimizado - Con eliminación de duplicados');
-        console.log('🔐 Contraseña Panel Principal: admin123');
+        console.log('✅ CRM Optimizado - Con carga de Excel al Panel');
+        console.log('🔐 Contraseña Panel Principal: repros2026');
         console.log('🔐 Contraseña Estadísticas: supervisor2024');
         console.log('🔐 Contraseñas Mis Papeletas: nombre2024 (ej: thalia2024)');
         console.log('📋 Funcionalidades:');
@@ -6073,6 +6127,7 @@ async function registrarRPx3(id) {
         console.log('   ✅ Botón "🧹 Limpiar Duplicados" manual');
         console.log('   ✅ Registro de accesos al Panel Principal');
         console.log('   ✅ Botón "👁️ Ver Accesos" con IP y datos del equipo');
+        console.log('   ✅ Botón "📥 Cargar Excel al Panel" para cargar archivos directamente');
     </script>
 </body>
 </html>
