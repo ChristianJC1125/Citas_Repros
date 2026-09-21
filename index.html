@@ -2233,6 +2233,7 @@
                 <button id="btnReporteMensual" class="btn-reporte-mensual">📆 Reporte Mensual</button>
                 <button id="btnCargarExcel" class="btn-cargar-excel">📥 Cargar Excel</button>
                 <button id="btnCargarExcelPanel" class="btn-cargar-excel" style="background:linear-gradient(135deg, #0d9488, #14b8a6);">📥 Cargar Excel al Panel</button>
+                <button id="btnGuardarExcelFirebase" class="btn-cargar-excel" style="background:linear-gradient(135deg, #7c3aed, #8b5cf6); display:none;">💾 Guardar en Firebase</button>
                 <button id="btnVentas" class="btn-ventas">📊 Ventas por Base</button>
                 <button id="btnVerAccesos" class="btn-accesos">👁️ Ver Accesos</button>
             </div>
@@ -2628,6 +2629,7 @@
         let papeletaReprogramarId = null;
         let papeletaEditarId = null;
         let citasInactivosCache = [];
+        let citasExcelCargadas = []; // Almacena las citas cargadas desde Excel pendientes de guardar
 
         let renderTimeout = null;
         let searchTimeout = null;
@@ -5703,12 +5705,19 @@
                         };
                     });
 
+                    // Guardar en variable global para luego guardar en Firebase
+                    citasExcelCargadas = citasCargadas;
+
                     // Mostrar en la tabla
                     if (citasCargadas.length > 0) {
                         citasOriginales = citasCargadas;
                         citasFiltradasActuales = [...citasOriginales];
                         mostrarCitas(citasFiltradasActuales);
-                        mostrarToast(`✅ ${citasCargadas.length} registros cargados desde Excel`);
+                        
+                        // Mostrar botón para guardar en Firebase
+                        document.getElementById('btnGuardarExcelFirebase').style.display = 'inline-block';
+                        
+                        mostrarToast(`✅ ${citasCargadas.length} registros cargados. Presiona "💾 Guardar en Firebase" para persistirlos.`);
                     } else {
                         mostrarToast('⚠️ No se pudieron cargar los datos', 'error');
                     }
@@ -5720,6 +5729,91 @@
             };
             reader.readAsArrayBuffer(file);
             e.target.value = ''; // Limpiar input
+        });
+
+        // ===== GUARDAR DATOS DEL EXCEL EN FIREBASE =====
+        document.getElementById('btnGuardarExcelFirebase').addEventListener('click', async function() {
+            if (!citasExcelCargadas || citasExcelCargadas.length === 0) {
+                mostrarToast('⚠️ No hay datos de Excel para guardar', 'error');
+                return;
+            }
+
+            if (!confirm(`¿Guardar ${citasExcelCargadas.length} registros en Firebase? Esta acción los hará permanentes.`)) {
+                return;
+            }
+
+            const btn = this;
+            btn.disabled = true;
+            btn.textContent = '⏳ Guardando...';
+
+            try {
+                const authOk = await autenticarFirebase();
+                if (!authOk) {
+                    mostrarToast('❌ Error de autenticación', 'error');
+                    btn.disabled = false;
+                    btn.textContent = '💾 Guardar en Firebase';
+                    return;
+                }
+
+                let guardados = 0;
+                let errores = 0;
+
+                // Guardar cada cita en Firebase
+                for (const cita of citasExcelCargadas) {
+                    try {
+                        // Crear una copia limpia sin el campo _original
+                        const citaParaGuardar = {
+                            citaPorDia: cita.citaPorDia || '',
+                            cita: cita.cita || '',
+                            nombre: cita.nombre || '',
+                            telefono: cita.telefono || '',
+                            hora: cita.hora || '',
+                            hotel: cita.hotel || '',
+                            supervisora: cita.supervisora || '',
+                            operador: cita.operador || '',
+                            asistencia: cita.asistencia || '',
+                            estadoLlamada: cita.estadoLlamada || '',
+                            baseDatos: cita.baseDatos || '',
+                            comentarios: cita.comentarios || '',
+                            diaEvento: cita.diaEvento || document.getElementById('fechaEvento').value,
+                            fechaRegistro: new Date().toISOString(),
+                            cargadoDesdeExcel: true
+                        };
+
+                        const newRef = database.ref('registrosPremanifiesto').push();
+                        await newRef.set(citaParaGuardar);
+                        guardados++;
+                    } catch (err) {
+                        console.error('Error al guardar cita:', err);
+                        errores++;
+                    }
+                }
+
+                if (guardados > 0) {
+                    mostrarToast(`✅ ${guardados} registros guardados en Firebase${errores > 0 ? ` (${errores} errores)` : ''}`);
+                    
+                    // Ocultar botón y limpiar variable
+                    btn.style.display = 'none';
+                    btn.disabled = false;
+                    btn.textContent = '💾 Guardar en Firebase';
+                    citasExcelCargadas = [];
+                    
+                    // Recargar las citas desde Firebase
+                    setTimeout(() => {
+                        cargarCitasPorFecha();
+                    }, 500);
+                } else {
+                    mostrarToast('❌ No se pudieron guardar los registros', 'error');
+                    btn.disabled = false;
+                    btn.textContent = '💾 Guardar en Firebase';
+                }
+
+            } catch (error) {
+                console.error('Error al guardar en Firebase:', error);
+                mostrarToast('❌ Error al guardar: ' + error.message, 'error');
+                btn.disabled = false;
+                btn.textContent = '💾 Guardar en Firebase';
+            }
         });
 
         // ===== ESTADÍSTICAS DE VENTAS =====
@@ -6114,7 +6208,7 @@
 
         setTimeout(() => autenticarFirebase(), 500);
 
-        console.log('✅ CRM Optimizado - Con carga de Excel al Panel');
+        console.log('✅ CRM Optimizado - Con carga de Excel y guardado en Firebase');
         console.log('🔐 Contraseña Panel Principal: repros2026');
         console.log('🔐 Contraseña Estadísticas: supervisor2024');
         console.log('🔐 Contraseñas Mis Papeletas: nombre2024 (ej: thalia2024)');
@@ -6127,7 +6221,8 @@
         console.log('   ✅ Botón "🧹 Limpiar Duplicados" manual');
         console.log('   ✅ Registro de accesos al Panel Principal');
         console.log('   ✅ Botón "👁️ Ver Accesos" con IP y datos del equipo');
-        console.log('   ✅ Botón "📥 Cargar Excel al Panel" para cargar archivos directamente');
+        console.log('   ✅ Botón "📥 Cargar Excel al Panel" para cargar archivos');
+        console.log('   ✅ Botón "💾 Guardar en Firebase" para persistir los datos del Excel');
     </script>
 </body>
 </html>
